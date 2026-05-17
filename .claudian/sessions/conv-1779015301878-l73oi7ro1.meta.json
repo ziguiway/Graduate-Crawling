@@ -4,20 +4,19 @@
   "title": "你感觉我的readme写的咋样",
   "titleGenerationStatus": "failed",
   "createdAt": 1779015301880,
-  "updatedAt": 1779015967369,
-  "lastResponseAt": 1779015967369,
+  "updatedAt": 1779016623523,
+  "lastResponseAt": 1779016623522,
   "sessionId": "3d33ac11-e699-4878-99df-39b3ed3472e5",
   "providerState": {
     "providerSessionId": "3d33ac11-e699-4878-99df-39b3ed3472e5"
   },
   "usage": {
     "model": "opus",
-    "inputTokens": 21357,
+    "inputTokens": 21482,
     "cacheCreationInputTokens": 0,
     "cacheReadInputTokens": 0,
     "contextWindow": 200000,
-    "contextTokens": 21357,
-    "percentage": 11,
-    "contextWindowIsAuthoritative": false
+    "contextTokens": 21482,
+    "percentage": 11
   }
 }
