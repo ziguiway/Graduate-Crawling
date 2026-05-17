@@ -14,7 +14,7 @@
   "generatedAttachmentFileName": "file-${date:{momentJsFormat:'YYYYMMDDHHmmssSSS'}}",
   "includePaths": [],
   "jpegQuality": 0.8,
-  "markdownUrlFormat": "assets/${noteFileName}/$igeneratedAttachmentFileName}",
+  "markdownUrlFormat": "assets/${noteFileName}/${igeneratedAttachmentFileName}",
   "moveAttachmentToProperFolderUsedByMultipleNotesMode": "CopyAll",
   "renamedAttachmentFileName": "",
   "shouldDeleteOrphanAttachments": false,
