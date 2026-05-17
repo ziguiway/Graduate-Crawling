@@ -2,9 +2,9 @@
   "id": "conv-1779015301878-l73oi7ro1",
   "providerId": "claude",
   "title": "你感觉我的readme写的咋样",
-  "titleGenerationStatus": "pending",
+  "titleGenerationStatus": "failed",
   "createdAt": 1779015301880,
-  "updatedAt": 1779015342639,
+  "updatedAt": 1779015486074,
   "lastResponseAt": 1779015342639,
   "sessionId": "3d33ac11-e699-4878-99df-39b3ed3472e5",
   "providerState": {
