@@ -74,3 +74,4 @@ Graduate-Crawling/
 ## License
 
 MIT —— 自由使用，如果能帮到同样工作后读研的人，那是最好的。
+![](assets/README/$igeneratedAttachmentFileName})
