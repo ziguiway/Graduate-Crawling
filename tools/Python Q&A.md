@@ -412,3 +412,64 @@ model.load_state_dict(torch.load('model.pth'))
 
 这些都不用自己写，继承 `nn.Module` 就有了。
 
+---
+
+### 模型里的 `cal_loss` 函数是干嘛的？
+
+**这不是 nn.Module 要求的方法，是自定义的辅助函数。**
+
+```python
+class NeuralNet(nn.Module):
+    def __init__(self, input_dim):
+        super().__init__()
+        self.net = nn.Sequential(...)
+        self.criterion = nn.MSELoss()  # 损失函数放在模型里
+
+    def forward(self, x):
+        return self.net(x).squeeze(1)
+
+    # 自定义的辅助函数，不是必须的
+    def cal_loss(self, pred, target):
+        return self.criterion(pred, target)
+```
+
+**两种写法对比：**
+
+```python
+# 写法一：损失函数放模型里（HW1 的写法）
+model = NeuralNet(input_dim)
+pred = model(x)
+loss = model.cal_loss(pred, target)  # 通过模型计算 loss
+
+# 写法二：损失函数放外面（更常见的写法）
+model = NeuralNet(input_dim)
+criterion = nn.MSELoss()  # 损失函数独立定义
+pred = model(x)
+loss = criterion(pred, target)  # 直接调用
+```
+
+**为什么 HW1 把 loss 放模型里？**
+
+因为注释里写了 `TODO: implement L2 regularization`，方便在 `cal_loss` 里加正则化：
+
+```python
+def cal_loss(self, pred, target):
+    loss = self.criterion(pred, target)
+    # L2 正则化（权重衰减）
+    l2_reg = 0
+    for param in self.parameters():
+        l2_reg += param.norm(2)
+    loss += 0.001 * l2_reg  # lambda = 0.001
+    return loss
+```
+
+**总结：**
+
+| 方法 | 是否必须 | 作用 |
+|---|---|---|
+| `__init__` | ✅ 必须 | 定义网络层 |
+| `forward` | ✅ 必须 | 前向传播 |
+| `cal_loss` | ❌ 自定义 | 封装损失计算，方便加正则化等 |
+
+`cal_loss` 只是代码组织方式，不是 PyTorch 的要求。你也可以把 `criterion` 放外面，效果一样。
+
