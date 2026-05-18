@@ -306,10 +306,109 @@ pred (16, 1):          target (16) 广播成 (1, 16):
 
 **总结：**
 
-| 情况 | pred 形状 | target 形状 | 结果 |
-|---|---|---|---|
-| ✅ 正确 | `(16)` | `(16)` | 16个误差，求平均，正确 |
-| ❌ 不 squeeze | `(16, 1)` | `(16)` | 广播成 (16, 16)，256个误差，完全错误 |
+| 情况          | pred 形状   | target 形状 | 结果                       |
+| ----------- | --------- | --------- | ------------------------ |
+| ✅ 正确        | `(16)`    | `(16)`    | 16个误差，求平均，正确             |
+| ❌ 不 squeeze | `(16, 1)` | `(16)`    | 广播成 (16, 16)，256个误差，完全错误 |
+|             |           |           |                          |
 
 所以 `squeeze(1)` 不是"可选的优化"，而是**必须做**，否则 loss 计算完全错误！
+
+**本质：只要 pred 和 target 形状匹配就行**
+
+```python
+# 方式一：squeeze pred
+pred = model(x).squeeze(1)   # (16, 1) → (16)
+loss = criterion(pred, target)  # (16) vs (16) ✅
+
+# 方式二：unsqueeze target
+pred = model(x)              # (16, 1)
+target = target.unsqueeze(1) # (16) → (16, 1)
+loss = criterion(pred, target)  # (16, 1) vs (16, 1) ✅
+
+# 两种方式都能正确计算，只要形状对得上！
+```
+
+`squeeze` 只是让形状匹配的手段之一，不是唯一解法。核心原则：**pred 和 target 的形状必须一致**。
+
+---
+
+## nn.Module 自定义网络
+
+### 继承 nn.Module 必须实现什么？
+
+**必须实现：**
+- `__init__(self)` - 初始化，定义网络层
+- `forward(self, x)` - 前向传播，定义数据流向
+
+**模板：**
+
+```python
+import torch.nn as nn
+
+class MyModel(nn.Module):
+    def __init__(self):
+        super().__init__()  # 必须调用父类初始化！
+        # 定义网络层
+        self.fc1 = nn.Linear(10, 32)
+        self.fc2 = nn.Linear(32, 1)
+
+    def forward(self, x):
+        # 定义前向传播
+        x = self.fc1(x)
+        x = torch.relu(x)
+        x = self.fc2(x)
+        return x
+
+# 使用
+model = MyModel()
+output = model(input_data)  # 自动调用 forward
+```
+
+**关键点：**
+
+| 方法 | 作用 | 注意事项 |
+|---|---|---|
+| `__init__` | 定义层结构 | 必须先 `super().__init__()` |
+| `forward` | 定义计算流程 | 不要手动调用，用 `model(x)` 自动触发 |
+
+**为什么不用手动调用 forward？**
+
+```python
+model = MyModel()
+
+# ❌ 错误写法
+output = model.forward(x)  # 不推荐
+
+# ✅ 正确写法
+output = model(x)          # 自动调用 forward，还会处理 hooks 等内部逻辑
+```
+
+`model(x)` 内部会调用 `forward`，但还会执行额外的钩子函数和内部处理。
+
+**nn.Module 自动提供的功能：**
+
+继承 `nn.Module` 后，自动获得：
+
+```python
+model = MyModel()
+
+# 1. 参数管理
+model.parameters()      # 获取所有可训练参数
+model.named_parameters() # 获取参数名+参数
+
+# 2. 设备转移
+model.to('cuda')        # 移动到 GPU
+model.to('cpu')         # 移动到 CPU
+
+# 3. 模式切换
+model.train()           # 训练模式（启用 Dropout、BatchNorm）
+model.eval()            # 评估模式（禁用 Dropout、BatchNorm）
+
+# 4. 模型保存/加载
+torch.save(model.state_dict(), 'model.pth')
+model.load_state_dict(torch.load('model.pth'))
+```
+
+这些都不用自己写，继承 `nn.Module` 就有了。
 
