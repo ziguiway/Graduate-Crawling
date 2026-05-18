@@ -1,9 +1,9 @@
 [
-  "obsidian-git",
   "realclaudian",
   "obsidian-excalidraw-plugin",
   "obsidian-custom-attachment-location",
   "open-in-terminal",
   "obsidian-enhancing-export",
-  "jupyter-viewer"
+  "jupyter-viewer",
+  "obsidian-git"
 ]
