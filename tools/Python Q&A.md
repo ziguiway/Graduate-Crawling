@@ -166,3 +166,77 @@ train_data[:, -1]    # 结果: [100, 101, 102]
 | `:3` | 前3个（0,1,2） |
 | `2:` | 从第2个开始到最后 |
 
+---
+
+## PyTorch 张量操作
+
+### `.squeeze(1)` 是什么意思？
+
+**squeeze** 的作用是**移除长度为1的维度**。
+
+```python
+# 假设模型输出形状是 (batch_size, 1)
+# 例如 batch_size=16，输出形状是 (16, 1)
+
+x = self.net(x)        # 形状: (16, 1)
+x = x.squeeze(1)       # 形状: (16)  ← 移除第1维（长度为1的那个）
+
+# 为什么需要这样做？
+# 因为回归任务的标签 y 是一维的 (16)
+# 如果输出是 (16, 1)，和标签形状不匹配，计算 loss 会报错
+# squeeze 后变成 (16)，就能正常计算 MSELoss
+```
+
+**图解：**
+
+```
+原始输出:           squeeze(1) 后:
+[16, 1]             [16]
+┌─────────┐         ┌───┐
+│ [0.5]   │         │0.5│
+│ [0.3]   │   →     │0.3│
+│ [0.8]   │         │0.8│
+│  ...    │         │...│
+└─────────┘         └───┘
+```
+
+**squeeze vs unsqueeze**
+
+| 操作 | 作用 | 示例 |
+|---|---|---|
+| `squeeze(dim)` | 移除指定维度（长度必须为1） | `(16, 1)` → `(16)` |
+| `unsqueeze(dim)` | 在指定位置添加新维度（长度为1） | `(16)` → `(16, 1)` |
+
+**常见用法：**
+
+```python
+# 移除所有长度为1的维度
+x = x.squeeze()       # (1, 16, 1) → (16)
+
+# 只移除特定维度
+x = x.squeeze(0)      # (1, 16, 1) → (16, 1)  第0维被移除
+x = x.squeeze(1)      # (16, 1, 5) → (16, 5)  第1维被移除
+
+# 如果指定维度长度不是1，squeeze 不做任何事
+x = torch.randn(16, 5)
+x = x.squeeze(1)      # 还是 (16, 5)，因为第1维长度是5，不是1
+```
+
+**在 COVID-19 预测任务中的应用：**
+
+```python
+class NeuralNet(nn.Module):
+    def __init__(self, input_dim):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, 1)   # 最后输出维度是 1
+        )
+
+    def forward(self, x):
+        return self.net(x).squeeze(1)  # (batch, 1) → (batch)
+```
+
+这样输出的形状就和标签 `y`（形状 `(batch)`）匹配了，可以直接计算 `MSELoss(pred, target)`。
+

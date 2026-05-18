@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 研0学生，正在学习深度学习
 - 工作两年后重返校园，有编程基础但学术经验不足
 - 主要学习资源：李宏毅机器学习课程
-- 使用 Obsidian 管理知识库
+- 使用 Obsidian 管理知识库（已安装 Obsidian CLI）
 
 ## 开学前目标（2026.09）
 
@@ -49,6 +49,12 @@ uv run jupyter notebook
 
 # 运行 Python 脚本
 uv run python main.py
+
+# Obsidian CLI 操作笔记
+obsidian --help                    # 查看帮助
+obsidian note create <title>       # 创建笔记
+obsidian note open <file>          # 打开笔记
+obsidian search <query>            # 搜索笔记
 ```
 
 ## Python 环境
