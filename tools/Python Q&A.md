@@ -240,3 +240,76 @@ class NeuralNet(nn.Module):
 
 这样输出的形状就和标签 `y`（形状 `(batch)`）匹配了，可以直接计算 `MSELoss(pred, target)`。
 
+---
+
+### 为什么必须去掉那一维？不去会怎样？
+
+**直接演示：**
+
+```python
+import torch
+import torch.nn as nn
+
+# 模拟真实情况
+batch_size = 16
+pred_with_dim = torch.randn(16, 1)   # 模型输出：(16, 1)
+pred_squeezed = pred_with_dim.squeeze(1)  # squeeze后：(16)
+target = torch.randn(16)             # 标签：(16)
+
+criterion = nn.MSELoss()
+
+# ✅ squeeze 后可以正常计算
+loss = criterion(pred_squeezed, target)
+print(loss)  # 正常输出一个数值
+
+# ❌ 不 squeeze 会怎样？
+# PyTorch 会广播 (16, 1) 和 (16)，结果变成 (16, 16)！
+loss_wrong = criterion(pred_with_dim, target)
+print(loss_wrong)  # 数值完全错误！
+```
+
+**为什么会出错？**
+
+```
+pred:     (16, 1)    ← 每个样本一个预测值，但包了一层
+target:   (16)       ← 每个样本一个真实值
+
+MSELoss 内部会做减法：
+pred - target → (16, 1) - (16)
+
+PyTorch 广播规则：把 (16) 当成 (1, 16)
+结果变成：(16, 1) - (1, 16) = (16, 16)  ← 完全错了！
+
+本来应该：16个样本，每个算一个误差
+结果变成：16×16 = 256个误差值（每个预测和每个标签都算了一遍）
+```
+
+**图解广播灾难：**
+
+```
+pred (16, 1):          target (16) 广播成 (1, 16):
+┌────┐                 ┌─────────────────────┐
+│p1  │                 │t1  t2  t3  ...  t16 │
+│p2  │                 └─────────────────────┘
+│... │                 
+│p16 │                 
+└────┘                 
+
+相减后变成 (16, 16):
+┌──────────────────────────┐
+│p1-t1  p1-t2  ...  p1-t16 │  ← 第1个预测和所有标签都算了误差！
+│p2-t1  p2-t2  ...  p2-t16 │
+│...                       │
+│p16-t1 ...     p16-t16    │
+└──────────────────────────┘
+```
+
+**总结：**
+
+| 情况 | pred 形状 | target 形状 | 结果 |
+|---|---|---|---|
+| ✅ 正确 | `(16)` | `(16)` | 16个误差，求平均，正确 |
+| ❌ 不 squeeze | `(16, 1)` | `(16)` | 广播成 (16, 16)，256个误差，完全错误 |
+
+所以 `squeeze(1)` 不是"可选的优化"，而是**必须做**，否则 loss 计算完全错误！
+
