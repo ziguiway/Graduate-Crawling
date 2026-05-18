@@ -1,15 +1,16 @@
 {
   "id": "conv-1779015301878-l73oi7ro1",
   "providerId": "claude",
-  "title": "你感觉我的readme写的咋样",
+  "title": "阅读这个 PDF 并且总结",
   "titleGenerationStatus": "failed",
   "createdAt": 1779015301880,
-  "updatedAt": 1779016623523,
-  "lastResponseAt": 1779016623522,
+  "updatedAt": 1779079464992,
+  "lastResponseAt": 1779079287068,
   "sessionId": "3d33ac11-e699-4878-99df-39b3ed3472e5",
   "providerState": {
     "providerSessionId": "3d33ac11-e699-4878-99df-39b3ed3472e5"
   },
+  "currentNote": "code/Lhy_Machine_Learning/2022 ML/00 Colab&Pytorch/Pytorch_Tutorial_1.pdf",
   "usage": {
     "model": "opus",
     "inputTokens": 21482,
