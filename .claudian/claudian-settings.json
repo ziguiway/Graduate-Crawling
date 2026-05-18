@@ -1,6 +1,6 @@
 {
   "userName": "",
-  "permissionMode": "yolo",
+  "permissionMode": "normal",
   "model": "opus",
   "thinkingBudget": "medium",
   "effortLevel": "high",
@@ -75,7 +75,7 @@
     "claude": "medium"
   },
   "savedProviderPermissionMode": {
-    "claude": "yolo"
+    "claude": "normal"
   },
   "lastCustomModel": "",
   "maxTabs": 3,
