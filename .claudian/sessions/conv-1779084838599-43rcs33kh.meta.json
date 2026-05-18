@@ -1,0 +1,24 @@
+{
+  "id": "conv-1779084838599-43rcs33kh",
+  "providerId": "claude",
+  "title": "总结一下这个 PDF",
+  "titleGenerationStatus": "failed",
+  "createdAt": 1779084838600,
+  "updatedAt": 1779085345379,
+  "lastResponseAt": 1779085345379,
+  "sessionId": "263547e4-7806-47de-af4b-ba12517f1c72",
+  "providerState": {
+    "providerSessionId": "263547e4-7806-47de-af4b-ba12517f1c72"
+  },
+  "currentNote": "code/Lhy_Machine_Learning/2022 ML/00 Colab&Pytorch/Pytorch_Tutorial_1.pdf",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 28141,
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 0,
+    "contextWindow": 200000,
+    "contextTokens": 28141,
+    "percentage": 14,
+    "contextWindowIsAuthoritative": true
+  }
+}
