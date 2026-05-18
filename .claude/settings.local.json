@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(git submodule *)",
+      "Bash(git checkout *)",
+      "Bash(Remove-Item *)"
+    ]
+  }
+}
