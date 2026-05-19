@@ -787,3 +787,38 @@ class COVID19Dataset(Dataset):
 
 **少了任何一个，DataLoader 都会报错！**
 
+
+
+---
+
+### COVID-19 作业 loss 不对/收敛慢的常见原因
+
+**问题 1：没有做特征归一化（最常见！）**
+
+```python
+# 必须加上这个！
+self.data[:, 40:] = \
+    (self.data[:, 40:] - self.data[:, 40:].mean(dim=0, keepdim=True)) \
+    / self.data[:, 40:].std(dim=0, keepdim=True)
+```
+
+- 前 40 维是州的 one-hot（0/1），不用归一化
+- 从第 40 维开始是调查数据，需要归一化
+- 不做归一化会导致梯度更新不稳定，收敛极慢
+
+**问题 2：Adam 学习率太大**
+
+```python
+# Adam 的推荐 lr 是 0.001，不是 0.01！
+lr = 0.001  # ✅ 正确
+lr = 0.01   # ❌ 太大了
+```
+
+**问题 3：early_stop 设置太大**
+
+```python
+early_stop: 50   # 足够了，不用 200
+```
+
+**修复后应该几十 epoch 就能收敛到 loss < 1.5！**
+
