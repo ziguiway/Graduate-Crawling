@@ -30,9 +30,11 @@ Graduate-Crawling/
 │       ├── 2021 ML/             # 2021春季课程（15个作业）
 │       ├── 2022 ML/             # 2022春季课程
 │       └── 2023 ML/             # 2023春季课程
+├── notes/               # 课程问答笔记
+│   ├── Q&A.md               # 作业问答索引
+│   └── Q&A/                 # 按作业编号分
 ├── tools/               # 工具笔记
-│   ├── pytorch 怎么用.md        # PyTorch 使用指南
-│   └── Python Q&A.md            # Python 问题汇总
+│   └── pytorch 怎么用.md        # PyTorch 使用指南
 ├── reflections/         # 工作 vs 学术思考对比
 ├── struggles/           # 踩坑记录
 └── README.md            # 成长轨迹
@@ -87,7 +89,7 @@ obsidian search <query>            # 搜索笔记
 
 ## 知识库笔记约定
 
-当用户提问学习相关问题时，将问题和解答追加到 `tools/Python Q&A.md`。
+当用户提问学习相关问题时，将问题和解答追加到对应的 `notes/Q&A/HW*.md`。
 
 笔记格式参考现有文件，使用清晰的标题和代码示例。
 
