@@ -750,3 +750,40 @@ torch.cat([a,b], dim=1)  # ❌ 报错，dim=0 不相同（2 vs 3）
 
 **一句话总结：dim 指哪个维度，哪个维度就会变长，其他维度保持不变！**
 
+
+
+---
+
+## 常见错误
+
+### `TypeError: object of type  has no len()` 是什么原因？
+
+**原因：** 你的 `Dataset` 类没有实现 `__len__` 方法！
+
+**报错场景：**
+```python
+dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
+# 这时 DataLoader 要创建 RandomSampler，会调用 len(dataset)
+# 但你的 Dataset 没有 __len__ 方法，所以报错
+```
+
+**解决方案：**
+```python
+class COVID19Dataset(Dataset):
+    def __init__(self, ...):
+        self.data = ...
+    
+    def __getitem__(self, index):
+        ...
+    
+    # ✅ 必须加上这个方法！
+    def __len__(self):
+        return len(self.data)  # 返回数据集的总样本数
+```
+
+**Dataset 必须实现的两个方法：**
+- `__getitem__(index)` → 根据索引返回一个样本
+- `__len__()` → 返回数据集的总大小
+
+**少了任何一个，DataLoader 都会报错！**
+
