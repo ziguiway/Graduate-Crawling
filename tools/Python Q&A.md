@@ -631,3 +631,76 @@ PyTorch 默认会**累积梯度**，不清零的话，梯度会叠加：
 - **Optimizer**：拿着梯度去更新参数
 - **zero_grad**：清零上一轮的梯度，防止累积
 
+
+
+---
+
+## PyTorch 张量操作
+
+### `torch.cat(preds, dim=0).numpy()` 是什么意思？
+
+这是把多个 batch 的预测结果合并成一个大数组的标准写法！
+
+**第一步：理解 `preds` 是什么**
+
+```python
+preds = []
+for x in tt_set:              # 每次取一个 batch
+    pred = model(x)           # shape: (batch_size, )
+    preds.append(pred)        # 把这个 batch 的结果加到 list 里
+```
+
+所以 `preds` 是一个 list，里面装了很多小 tensor：
+```python
+preds = [
+    tensor([20.1, 21.3, 19.8...]),  # batch 0
+    tensor([18.5, 22.1, 20.4...]),  # batch 1
+    tensor([19.2, 20.8, 21.5...]),  # batch 2
+    ...
+]
+```
+
+**第二步：`torch.cat(preds, dim=0)` 做了什么？**
+
+**cat = concatenate（拼接）**，把 list 里的多个小 tensor 按第 0 维拼起来：
+
+```python
+# 拼接前：list of tensors，每个 shape 是 (batch_size,)
+# 拼接后：一个大 tensor，shape 是 (总样本数,)
+
+torch.cat(preds, dim=0)  # shape: (893,) → 所有测试样本的预测结果
+```
+
+**第三步：`.numpy()` 做了什么？**
+
+把 PyTorch tensor 转成 **numpy 数组**：
+```python
+torch.tensor([1., 2., 3.]).numpy()  # → array([1., 2., 3.])
+```
+
+**完整流程：**
+
+```
+每个 batch 预测 → 存到 list 里 → cat 拼接成一个大 tensor → 转成 numpy 数组
+    ↓                  ↓                   ↓                    ↓
+ model(x)        preds.append(...)    torch.cat(...)        .numpy()
+```
+
+这是测试阶段收集预测结果的标准写法！
+
+
+
+
+---
+
+## 笔记使用说明
+
+### 问的问题都会自动记录到笔记里吗？
+
+**是的！** 记住了这个规则：以后你问的关于这个 Graduate-Crawling 项目的任何问题，我都会：
+1. 先回答问题
+2. 自动把问答内容追加到 `tools/Python Q&A.md` 笔记里
+3. 不用你再提醒我
+
+记录的位置：`/Users/zhengshuang/Documents/code/Graduate-Crawling/tools/Python Q&A.md`
+
