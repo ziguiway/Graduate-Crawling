@@ -704,3 +704,49 @@ torch.tensor([1., 2., 3.]).numpy()  # → array([1., 2., 3.])
 
 记录的位置：`/Users/zhengshuang/Documents/code/Graduate-Crawling/tools/Python Q&A.md`
 
+
+
+---
+
+### `concatenate`（cat）的拼接逻辑是什么？
+
+**核心逻辑：沿着指定的维度，把多个张量拼起来**
+
+```python
+torch.cat([tensor1, tensor2, ...], dim=要拼接的维度)
+```
+
+**关键规则：**
+1. 除了 `dim` 指定的维度，其他维度的大小必须完全相同
+2. 拼接后，只有 `dim` 维度的大小会变大，其他维度不变
+
+**例子：dim=0（按行拼）**
+```python
+a = [[1,2,3], [4,5,6]]    # shape (2,3)
+b = [[7,8,9], [10,11,12]] # shape (2,3)
+torch.cat([a, b], dim=0)  # shape (4,3)
+# 结果：把 b 接在 a 的下面，行数变多
+```
+
+**例子：dim=1（按列拼）**
+```python
+torch.cat([a, b], dim=1)  # shape (2,6)
+# 结果：把 b 接在 a 的右边，列数变多
+```
+
+**图解：**
+```
+dim=0 拼接:   [a]      →    [a]
+              [b]           [b]   ← 往下接，行数变多
+
+dim=1 拼接:   [a][b]   →    [a b]  ← 往右接，列数变多
+```
+
+**常见错误：** 非拼接维度的大小不一样会报错！
+```python
+a = (2,3), b = (3,3)
+torch.cat([a,b], dim=1)  # ❌ 报错，dim=0 不相同（2 vs 3）
+```
+
+**一句话总结：dim 指哪个维度，哪个维度就会变长，其他维度保持不变！**
+
