@@ -302,6 +302,68 @@ class COVID19Dataset(Dataset):
 2. **Adam 学习率太大**：推荐 0.001，不是 0.01
 3. **early_stop 设置太大**：50 就够，不用 200
 
+---
+
+## 踩坑记录
+
+### 坑1：pandas 读 CSV 后又跳了一行
+
+**现象：** 提交报错 "Submission must have 893 rows"，实际只有 892 行。
+
+**原因：**
+```python
+data = pd.read_csv(file_path)
+data = np.array(data[1:])[:, 1:].astype(float)  # ❌ data[1:] 又跳了一行
+```
+
+`pd.read_csv()` 已经自动跳过表头，`data[1:]` 又跳了第一行数据。
+
+**修复：**
+```python
+data = pd.read_csv(file_path)
+data = data.values[:, 1:].astype(float)  # ✅ 直接用 .values
+```
+
+### 坑2：测试集没做归一化
+
+**现象：** 训练 loss 很好（1.2），但提交 score 炸了（156）。
+
+**原因：** 训练集做了归一化，测试集没做。
+
+```python
+if mode == 'test':
+    data = data[:, feats]
+    self.data = torch.FloatTensor(data)  # ❌ 直接用原始数据
+else:
+    # 训练集做了归一化
+    self.data[:, 40:] = (self.data[:, 40:] - mean) / std
+```
+
+模型训练时看的是归一化后的数据，预测时给的是原始数据，数值范围差了几十倍。
+
+**正确做法：** 测试集要用**训练集的 mean/std** 归一化，不能用自己的（测试时不知道真实分布）。
+
+```python
+# 训练时保存统计量
+mean = self.data[:, 40:].mean(dim=0)
+std = self.data[:, 40:].std(dim=0)
+torch.save({'mean': mean, 'std': std}, 'stats.pth')
+
+# 测试时加载训练集的统计量
+stats = torch.load('stats.pth')
+self.data[:, 40:] = (self.data[:, 40:] - stats['mean']) / stats['std']
+```
+
+### 坑3：早停设太小，训练没跑完
+
+**现象：** 13 轮就停了，感觉没训练够。
+
+**原因：** `early_stop = 2`，连续 2 轮没进步就停，太敏感了。
+
+**建议：**
+- 小数据集：`early_stop = 20~50`
+- 大数据集：`early_stop = 5~10`
+
 ### 常见 PyTorch 错误
 
 | 错误 | 原因 | 解决 |
