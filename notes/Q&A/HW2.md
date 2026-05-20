@@ -178,12 +178,12 @@ gradient norm: 0.072, minimum ratio: 0.465
 
 ## HW1 vs HW2 学到的新东西
 
-| 概念 | HW1 | HW2 |
-|------|-----|-----|
-| 问题类型 | 回归 | 分类 |
-| 损失函数 | MSELoss | CrossEntropyLoss |
-| 评价指标 | RMSE / R² | Accuracy |
-| 输出层 | 1 个节点 | C 个节点（C=类别数） |
-| 标签类型 | FloatTensor | LongTensor |
-| 数据量 | 2k | 122 万 |
-| 激活函数 | ReLU | Sigmoid |
+| 概念   | HW1         | HW2              |
+| ---- | ----------- | ---------------- |
+| 问题类型 | 回归          | 分类               |
+| 损失函数 | MSELoss     | CrossEntropyLoss |
+| 评价指标 | RMSE / R²   | Accuracy         |
+| 输出层  | 1 个节点       | C 个节点（C=类别数）     |
+| 标签类型 | FloatTensor | LongTensor       |
+| 数据量  | 2k          | 122 万            |
+| 激活函数 | ReLU        | Sigmoid          |
