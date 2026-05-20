@@ -302,6 +302,40 @@ class COVID19Dataset(Dataset):
 2. **Adam 学习率太大**：推荐 0.001，不是 0.01
 3. **early_stop 设置太大**：50 就够，不用 200
 
+### IndexError: only integers, slices, ellipsis... valid indices
+
+将外部 `feats` 列表传入 Dataset 时出错。
+
+**原生报错：**
+
+```
+IndexError: only integers, slices (`:`), ellipsis (`...`),
+numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+```
+
+**原因：** Dataset 类中对 feats 的处理分支写错了。
+
+```python
+# ❌ 错误写法
+if feats is None:
+    data = data[:, feats]  # ✅ feats 是 None，numpy OK
+else:
+    data = data[feats]     # ❌ 少了冒号！numpy 当成行索引
+```
+
+当 feats 是从外部传进来的 `[0, 1, 2, ...]` 时，`data[feats]` 没有冒号——numpy 把它解释成**行索引**。而且列表里的值是之前列名字符串的 index → 报错。
+
+**修复：** 两个分支做同一件事，只是 feats 的默认值不同：
+
+```python
+# ✅ 正确写法
+if feats is None:
+    feats = list(range(93))
+data = data[:, feats]  # 统一用冒号选列
+```
+
+**教训：** 不要写 `if/else` 做不同事情的分支，除非真的有必要。这里两组分支应该统一。
+
 ---
 
 ## 踩坑记录
