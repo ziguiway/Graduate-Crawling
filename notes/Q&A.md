@@ -15,7 +15,7 @@
 | 作业 | 主题 | 笔记 |
 |------|------|------|
 | HW1 | 回归（COVID-19 预测） | [[Q&A/HW1\|HW1.md]] |
-| HW2 | 分类 | — |
+| HW2 | 分类（音素分类 + Hessian） | [[Q&A/HW2\|HW2.md]] |
 | HW3 | CNN | — |
 | HW4 | Self-Attention | — |
 | HW5 | Transformer | — |
