@@ -414,3 +414,48 @@ self.data[:, 40:] = (self.data[:, 40:] - stats['mean']) / stats['std']
 已拆分为独立笔记：[[../Loss函数解读\|Loss函数解读]]
 
 涵盖 MSE、RMSE、MAE、R²、早停、学习曲线诊断、一键评估函数。
+
+---
+
+## HW1 总结
+
+### 这个作业教了你什么
+
+HW1 是一个**回归任务**：用 93 个特征预测 COVID-19 确诊数（`tested_positive.2`）。听起来简单，但踩的坑覆盖了深度学习的基本功：
+
+| 学到了什么               | 通过什么学到的                                      |
+| ------------------- | -------------------------------------------- |
+| Pandas/numpy 数据切片   | `iloc`、`[:, 1:-1]` 取数据时一直报错                  |
+| PyTorch Dataset 三件套 | `__init__` / `__getitem__` / `__len__` 缺一不可  |
+| 模型定义                | 继承 `nn.Module`，必须实现 `init` 和 `forward`       |
+| 张量形状对齐              | `squeeze` / `unsqueeze`，pred 和 target 形状必须一致 |
+| 训练流程                | `zero_grad → backward → step` 四步曲            |
+| 归一化                 | 量级不同的特征必须标准化，否则模型学废了                         |
+| Loss 解读             | MSE/RMSE/R²，学会对比 baseline 判断好不好              |
+| 特征分析                | 相关性分析、Permutation Importance、SHAP、消融实验       |
+|                     |                                              |
+|                     |                                              |
+
+### 踩过的坑（Top 3）
+
+1. **测试集没做归一化**（loss 1.2 → score 156）— 最贵的一课
+2. **pandas 读 CSV 后又跳了一行** — `data[1:]` 多跳了表头，提交行数不对
+3. **早停设太小**（`early_stop = 2`）— 13 轮就停了，模型没训够
+
+### 你的最终成绩（Kaggle 提交）
+
+| 指标 | 值 | 评价 |
+|------|-----|------|
+| MSE（本地 dev） | 1.20 | — |
+| RMSE（本地 dev） | 1.10 | target 范围 2.3~41，偏差约 3% |
+| R²（本地 dev） | 0.979 | 解释了 97.9% 的方差 |
+| **Kaggle Private Score** | **0.98259** | **最终成绩，解释了 98.3% 的方差** |
+| Kaggle Public Score | 0.94407 | Public LB 分数偏低，Private 才是最终成绩 |
+
+> **Public vs Private**：Kaggle 把测试集分成 Public 和 Private 两部分。比赛过程中只显示 Public 分数，最终排名看 Private 分数（防刷榜）。你的 Private（0.983）比 Public（0.944）高，说明你的模型泛化得很稳，没有过拟合特定测试样本。
+
+### 可以优化的方向
+
+- 用全部 93 个特征（目前只用 42 个），dev loss 可从 0.98 降到 0.88 左右
+- 特征选择：根据 Permutation Importance 保留关键特征，去掉噪声特征
+- 调学习率 / 加 Dropout / 换网络深度
