@@ -1,11 +1,11 @@
 {
   "id": "conv-1779084838599-43rcs33kh",
   "providerId": "claude",
-  "title": "总结一下这个 PDF",
+  "title": "能不能给我举个例子，让我直观的感受一下mse,rmse,### R²",
   "titleGenerationStatus": "failed",
   "createdAt": 1779084838600,
-  "updatedAt": 1779085345379,
-  "lastResponseAt": 1779085345379,
+  "updatedAt": 1779193937383,
+  "lastResponseAt": 1779193757180,
   "sessionId": "263547e4-7806-47de-af4b-ba12517f1c72",
   "providerState": {
     "providerSessionId": "263547e4-7806-47de-af4b-ba12517f1c72"
