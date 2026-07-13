@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-13T05:11:21.965Z",
+  "updatedAt": "2026-07-13T05:12:27.007Z",
   "vaultRoot": "E:/code/Graduate-Crawling",
   "workspaceFolders": [
     "E:/code/Graduate-Crawling"
@@ -10,7 +10,7 @@
     "filePath": "E:\\code\\Graduate-Crawling\\notes\\Loss函数解读.md",
     "vaultPath": "notes/Loss函数解读.md",
     "fileUrl": "file:///E:/code/Graduate-Crawling/notes/Loss%E5%87%BD%E6%95%B0%E8%A7%A3%E8%AF%BB.md",
-    "hasFocus": false
+    "hasFocus": true
   },
   "openFiles": [
     {
@@ -20,5 +20,18 @@
       "isActive": true
     }
   ],
-  "selection": null
+  "selection": {
+    "text": "",
+    "isEmpty": true,
+    "from": {
+      "line": 0,
+      "ch": 0,
+      "offset": 0
+    },
+    "to": {
+      "line": 0,
+      "ch": 0,
+      "offset": 0
+    }
+  }
 }
