@@ -22,27 +22,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 目录结构
 
 ```
-Graduate-Crawling/
+Graduate-Crawling/          # 同时是 Obsidian vault 根目录
 ├── papers/              # 论文阅读笔记
 │   └── 研0/             # 科研入门笔记
 ├── code/                # 实验代码
-│   └── Lhy_Machine_Learning/    # 李宏毅课程作业
-│       ├── 2021 ML/             # 2021春季课程（15个作业）
+│   └── Lhy_Machine_Learning/    # 李宏毅课程作业（uv 项目根，pyproject.toml 在此）
+│       ├── 2021 ML/             # 2021春季课程（按主题命名子目录，如 01 Introduction）
 │       ├── 2022 ML/             # 2022春季课程
 │       └── 2023 ML/             # 2023春季课程
 ├── notes/               # 课程问答笔记
 │   ├── Q&A.md               # 作业问答索引
-│   └── Q&A/                 # 按作业编号分
+│   └── Q&A/                 # 按作业编号分（HW1.md ...）
 ├── tools/               # 工具笔记
 │   └── pytorch 怎么用.md        # PyTorch 使用指南
 ├── reflections/         # 工作 vs 学术思考对比
 ├── struggles/           # 踩坑记录
+├── Excalidraw/          # 手绘图（obsidian-excalidraw-plugin）
+├── assets/              # Obsidian 附件默认存放处
 └── README.md            # 成长轨迹
 ```
 
+注意：课程作业子目录按**主题**命名（如 `01 Introduction`、`05 Transformer`），而非 `HW1`，与下表中的作业编号是映射关系。
+
 ## 常用命令
 
+uv 项目根在 `code/Lhy_Machine_Learning/`（`pyproject.toml` 所在处），下列 uv 命令需在该目录下执行：
+
 ```bash
+cd code/Lhy_Machine_Learning
+
 # 安装依赖（使用 uv）
 uv sync
 
@@ -50,20 +58,28 @@ uv sync
 uv run jupyter notebook
 
 # 运行 Python 脚本
-uv run python main.py
+uv run python <script.py>
 
-# Obsidian CLI 操作笔记
-obsidian --help                    # 查看帮助
-obsidian note create <title>       # 创建笔记
-obsidian note open <file>          # 打开笔记
-obsidian search <query>            # 搜索笔记
+# 运行单个 .ipynb（不启动交互界面）
+uv run jupyter nbconvert --to notebook --execute <notebook.ipynb>
 ```
+
+本仓库无测试框架与 lint 配置；课程作业多为 `.ipynb` / `.py`，验证方式是直接运行 notebook 或脚本。
 
 ## Python 环境
 
 - Python 版本：3.12
-- 包管理：uv
+- 包管理：uv（项目根在 `code/Lhy_Machine_Learning/`）
 - 主要依赖：PyTorch、transformers、datasets、scikit-learn、matplotlib、wandb
+
+## Obsidian Vault
+
+本仓库根目录即 Obsidian vault 根目录（`.obsidian/` 配置在此）。笔记均为 `.md` 文件，编辑时遵循 Obsidian 约定：
+
+- 附件（图片等）默认存入 `assets/`（由 obsidian-custom-attachment-location 插件配置）
+- 手绘示意图存入 `Excalidraw/`
+- 站内链接使用 `[[Wiki Link]]` 而非纯路径
+- 已安装 obsidian-git 插件，用户习惯每周至少一次 commit
 
 ## 课程作业结构
 
