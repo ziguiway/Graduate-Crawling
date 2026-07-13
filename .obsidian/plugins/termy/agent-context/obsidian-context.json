@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-13T05:35:14.008Z",
+  "updatedAt": "2026-07-13T05:37:45.020Z",
   "vaultRoot": "E:/code/Graduate-Crawling",
   "workspaceFolders": [
     "E:/code/Graduate-Crawling"
@@ -24,14 +24,14 @@
     "text": "",
     "isEmpty": true,
     "from": {
-      "line": 107,
-      "ch": 57,
-      "offset": 2511
+      "line": 116,
+      "ch": 0,
+      "offset": 2681
     },
     "to": {
-      "line": 107,
-      "ch": 57,
-      "offset": 2511
+      "line": 116,
+      "ch": 0,
+      "offset": 2681
     }
   }
 }
