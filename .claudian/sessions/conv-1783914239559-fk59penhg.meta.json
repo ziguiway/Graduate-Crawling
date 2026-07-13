@@ -1,0 +1,12 @@
+{
+  "id": "conv-1783914239559-fk59penhg",
+  "providerId": "claude",
+  "title": "你好",
+  "titleGenerationStatus": "failed",
+  "createdAt": 1783914239559,
+  "updatedAt": 1783914239590,
+  "lastResponseAt": 1783914239590,
+  "sessionId": null,
+  "selectedModel": "opus",
+  "currentNote": "CLAUDE.md"
+}
