@@ -1,24 +1,17 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-13T03:51:13.913Z",
+  "updatedAt": "2026-07-13T04:00:05.969Z",
   "vaultRoot": "E:/code/Graduate-Crawling",
   "workspaceFolders": [
     "E:/code/Graduate-Crawling"
   ],
   "activeFile": {
-    "filePath": "E:\\code\\Graduate-Crawling\\CLAUDE.md",
-    "vaultPath": "CLAUDE.md",
-    "fileUrl": "file:///E:/code/Graduate-Crawling/CLAUDE.md",
+    "filePath": "E:\\code\\Graduate-Crawling\\未命名.base",
+    "vaultPath": "未命名.base",
+    "fileUrl": "file:///E:/code/Graduate-Crawling/%E6%9C%AA%E5%91%BD%E5%90%8D.base",
     "hasFocus": false
   },
-  "openFiles": [
-    {
-      "filePath": "E:\\code\\Graduate-Crawling\\CLAUDE.md",
-      "vaultPath": "CLAUDE.md",
-      "fileUrl": "file:///E:/code/Graduate-Crawling/CLAUDE.md",
-      "isActive": true
-    }
-  ],
+  "openFiles": [],
   "selection": null
 }
