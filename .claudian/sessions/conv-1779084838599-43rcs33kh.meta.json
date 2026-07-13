@@ -1,16 +1,15 @@
 {
   "id": "conv-1779084838599-43rcs33kh",
   "providerId": "claude",
-  "title": "能不能给我举个例子，让我直观的感受一下mse,rmse,### R²",
+  "title": "你好",
   "titleGenerationStatus": "failed",
   "createdAt": 1779084838600,
-  "updatedAt": 1779193937383,
-  "lastResponseAt": 1779193757180,
+  "updatedAt": 1783913672499,
+  "lastResponseAt": 1783913648180,
   "sessionId": "263547e4-7806-47de-af4b-ba12517f1c72",
   "providerState": {
     "providerSessionId": "263547e4-7806-47de-af4b-ba12517f1c72"
   },
-  "currentNote": "code/Lhy_Machine_Learning/2022 ML/00 Colab&Pytorch/Pytorch_Tutorial_1.pdf",
   "usage": {
     "model": "opus",
     "inputTokens": 28141,
