@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-13T05:38:25.007Z",
+  "updatedAt": "2026-07-13T05:39:47.010Z",
   "vaultRoot": "E:/code/Graduate-Crawling",
   "workspaceFolders": [
     "E:/code/Graduate-Crawling"
@@ -10,7 +10,7 @@
     "filePath": "E:\\code\\Graduate-Crawling\\notes\\自注意力机制.md",
     "vaultPath": "notes/自注意力机制.md",
     "fileUrl": "file:///E:/code/Graduate-Crawling/notes/%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6.md",
-    "hasFocus": true
+    "hasFocus": false
   },
   "openFiles": [
     {
@@ -24,14 +24,14 @@
     "text": "",
     "isEmpty": true,
     "from": {
-      "line": 113,
-      "ch": 46,
-      "offset": 2588
+      "line": 129,
+      "ch": 10,
+      "offset": 3042
     },
     "to": {
-      "line": 113,
-      "ch": 46,
-      "offset": 2588
+      "line": 129,
+      "ch": 10,
+      "offset": 3042
     }
   }
 }
