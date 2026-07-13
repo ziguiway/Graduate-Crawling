@@ -1,6 +1,6 @@
 .DS_Store
 .obsidian/workspace.json
 
-*obsidian*
+.obsidian\plugins\termy
 # 大体积教程 PDF，超过 GitHub 100MB 限制，不纳入 git 跟踪（本地保留）
 books/*.pdf
