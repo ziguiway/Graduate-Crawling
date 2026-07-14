@@ -18,7 +18,7 @@
 | HW1 | 回归（COVID-19 预测） | [[Q&A/HW1\|HW1.md]] |
 | HW2 | 分类（音素分类 + Hessian） | [[Q&A/HW2\|HW2.md]] |
 | HW3 | CNN | — |
-| HW4 | Self-Attention | [[自注意力机制\|自注意力机制]] |
+| HW4 | Self-Attention | [[Q&A/HW4\|HW4.md]]（实现踩坑：softmax 轴 / numpy axis / keepdims） |
 | HW5 | Transformer | — |
 | HW6 | GAN / Diffusion | — |
 | HW7 | BERT | — |
