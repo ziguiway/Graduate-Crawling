@@ -1,24 +1,37 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-14T09:11:39.158Z",
+  "updatedAt": "2026-07-14T09:22:18.169Z",
   "vaultRoot": "Users/zhengshuang/Documents/code/Graduate-Crawling",
   "workspaceFolders": [
     "Users/zhengshuang/Documents/code/Graduate-Crawling"
   ],
   "activeFile": {
-    "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/深度学习/自注意力机制/自注意力机制.md",
-    "vaultPath": "notes/深度学习/自注意力机制/自注意力机制.md",
-    "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6.md",
-    "hasFocus": false
+    "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/深度学习/Transformer/Transformer.md",
+    "vaultPath": "notes/深度学习/Transformer/Transformer.md",
+    "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Transformer/Transformer.md",
+    "hasFocus": true
   },
   "openFiles": [
     {
-      "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/深度学习/自注意力机制/自注意力机制.md",
-      "vaultPath": "notes/深度学习/自注意力机制/自注意力机制.md",
-      "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6.md",
+      "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/深度学习/Transformer/Transformer.md",
+      "vaultPath": "notes/深度学习/Transformer/Transformer.md",
+      "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Transformer/Transformer.md",
       "isActive": true
     }
   ],
-  "selection": null
+  "selection": {
+    "text": "",
+    "isEmpty": true,
+    "from": {
+      "line": 1,
+      "ch": 0,
+      "offset": 37
+    },
+    "to": {
+      "line": 1,
+      "ch": 0,
+      "offset": 37
+    }
+  }
 }
