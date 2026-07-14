@@ -1,24 +1,37 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-14T08:54:07.808Z",
+  "updatedAt": "2026-07-14T08:59:55.157Z",
   "vaultRoot": "Users/zhengshuang/Documents/code/Graduate-Crawling",
   "workspaceFolders": [
     "Users/zhengshuang/Documents/code/Graduate-Crawling"
   ],
   "activeFile": {
-    "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/Loss函数解读.md",
-    "vaultPath": "notes/Loss函数解读.md",
-    "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/Loss%E5%87%BD%E6%95%B0%E8%A7%A3%E8%AF%BB.md",
+    "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/深度学习/Transformer/Transformer.md",
+    "vaultPath": "notes/深度学习/Transformer/Transformer.md",
+    "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Transformer/Transformer.md",
     "hasFocus": false
   },
   "openFiles": [
     {
-      "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/Loss函数解读.md",
-      "vaultPath": "notes/Loss函数解读.md",
-      "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/Loss%E5%87%BD%E6%95%B0%E8%A7%A3%E8%AF%BB.md",
+      "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/深度学习/Transformer/Transformer.md",
+      "vaultPath": "notes/深度学习/Transformer/Transformer.md",
+      "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Transformer/Transformer.md",
       "isActive": true
     }
   ],
-  "selection": null
+  "selection": {
+    "text": "",
+    "isEmpty": true,
+    "from": {
+      "line": 14,
+      "ch": 39,
+      "offset": 377
+    },
+    "to": {
+      "line": 14,
+      "ch": 39,
+      "offset": 377
+    }
+  }
 }
