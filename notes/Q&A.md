@@ -9,7 +9,7 @@
 | [[数据分析总览\|数据分析总览]] | 数据分析方法地图，快速定位到具体笔记 |
 | [[Loss函数解读\|Loss函数解读]] | MSE、RMSE、MAE、R²、学习曲线诊断 |
 | [[特征分析：如何找出关键特征\|特征分析]] | 相关性分析、Permutation Importance、SHAP、PDP、消融实验 |
-| [[自注意力机制\|自注意力机制]] | QKV 模式、点积注意力、矩阵乘法视角，三种输出类型 |
+| [[自注意力机制/自注意力机制\|自注意力机制]] | QKV 模式、点积注意力、矩阵乘法视角，三种输出类型 |
 
 ## 作业问答
 
@@ -18,7 +18,7 @@
 | HW1 | 回归（COVID-19 预测） | [[Q&A/HW1\|HW1.md]] |
 | HW2 | 分类（音素分类 + Hessian） | [[Q&A/HW2\|HW2.md]] |
 | HW3 | CNN | — |
-| HW4 | Self-Attention | [[Q&A/HW4\|HW4.md]]（实现踩坑 + numpy axis 体系：axis 含义/方向/keepdims） |
+| HW4 | Self-Attention | [[自注意力机制/Q&AHW4\|HW4.md]]（实现踩坑 + numpy axis 体系：axis 含义/方向/keepdims） |
 | HW5 | Transformer | — |
 | HW6 | GAN / Diffusion | — |
 | HW7 | BERT | — |
