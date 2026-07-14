@@ -140,6 +140,59 @@ A 形状 `(N, N)`，列 j = qʲ 对所有 key 的分数。要对每列归一化 
 
 ---
 
+## Q4：softmax 里的 keepdims 是干啥的？
+
+接 Q3 那个"吃掉第 k 轴"的比喻：
+
+> 默认 `np.sum(a, axis=0)` 会**吃掉**第 0 轴，二维 → 一维。
+> `keepdims=True` 是说："吃可以，但别把那根轴抹掉，**留一个长度为 1 的占位**。"
+
+### 例子对比
+
+```python
+a = np.array([[1, 2],
+              [3, 4]])            # shape (2, 2) → 行轴=0, 列轴=1
+
+np.sum(a, axis=0)                 # → array([4, 6])       shape (2,)   ← 行轴被吃掉，变成一维
+np.sum(a, axis=0, keepdims=True)  # → array([[4, 6]])     shape (1, 2) ← 行轴保留但变 1
+```
+
+注意第二个结果多了一层方括号——就是那根长度为 1 的轴被保住了。
+
+### 为什么 softmax 里非用不可？
+
+```python
+x_max = np.max(x, axis=axis, keepdims=True)         # (1, N)
+exp_x = np.exp(x - x_max)                           # (N,N) - (1,N) → 广播成 (N,N)
+return exp_x / np.sum(exp_x, axis=axis, keepdims=True)  # (N,N) / (1,N) → 广播成 (N,N)
+```
+
+**关键在广播（broadcasting）**：要"每列减去该列最大值" → 需要 max 的形状能跟 `(N, N)` 对齐做减法。
+
+- **不开 keepdims**：`np.max(x, axis=0)` 得 `(N,)` 一维，广播时从末尾对齐 → 视作 `(1, N)`，沿行方向广播 = 每列各减各的。**碰巧 `axis=0` 时是对的**。
+- **换 `axis=1` 时不开 keepdims**：`(N,)` 会沿**列方向**广播 → 错位。
+- **开 `keepdims=True`**：得 `(1, N)` 或 `(N, 1)`，形状明确，不靠广播规则脑补。
+
+开 keepdims 的好处：
+
+1. **意图明确**：`(1, N)` 直接告诉你"沿 axis=0 归一化"，不用脑补广播方向。
+2. **避免踩坑**：换轴时不会因为广播方向变了而出错。
+3. **跨轴一致**：不管 axis 是 0、1 还是 -1，结果形状都可预测。写通用函数（如 `softmax(x, axis=-1)`）时几乎必须用。
+
+### 记法
+
+```python
+a shape (2, 3)
+np.max(a, axis=0)                  # shape (3,)     ← 轴 0 没了
+np.max(a, axis=0, keepdims=True)   # shape (1, 3)   ← 轴 0 变成 1，没彻底没
+np.max(a, axis=1, keepdims=True)   # shape (2, 1)   ← 轴 1 变成 1
+```
+
+> **不开 keepdims：被吃的轴彻底消失，维度降一**
+> **开 keepdims=True：被吃的轴保留为 1，维度不变，便于广播对齐**
+
+---
+
 ## 附：最终实现
 
 ```python
