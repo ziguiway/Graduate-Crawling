@@ -1,12 +1,17 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-14T08:48:53.650Z",
+  "updatedAt": "2026-07-14T08:50:31.157Z",
   "vaultRoot": "Users/zhengshuang/Documents/code/Graduate-Crawling",
   "workspaceFolders": [
     "Users/zhengshuang/Documents/code/Graduate-Crawling"
   ],
-  "activeFile": null,
+  "activeFile": {
+    "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/CLAUDE.md",
+    "vaultPath": "CLAUDE.md",
+    "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/CLAUDE.md",
+    "hasFocus": false
+  },
   "openFiles": [
     {
       "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/Loss函数解读.md",
@@ -18,7 +23,7 @@
       "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/CLAUDE.md",
       "vaultPath": "CLAUDE.md",
       "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/CLAUDE.md",
-      "isActive": false
+      "isActive": true
     }
   ],
   "selection": null
