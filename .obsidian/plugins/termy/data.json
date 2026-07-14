@@ -15,7 +15,7 @@
   "createInstanceNearExistingOnes": true,
   "focusNewInstance": true,
   "lockNewInstance": false,
-  "fontSize": 14,
+  "fontSize": 15,
   "fontFamily": "Consolas, \"Courier New\", monospace",
   "cursorStyle": "block",
   "cursorBlink": true,
