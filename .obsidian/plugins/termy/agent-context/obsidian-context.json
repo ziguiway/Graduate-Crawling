@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-14T09:04:45.157Z",
+  "updatedAt": "2026-07-14T09:11:39.158Z",
   "vaultRoot": "Users/zhengshuang/Documents/code/Graduate-Crawling",
   "workspaceFolders": [
     "Users/zhengshuang/Documents/code/Graduate-Crawling"
@@ -20,18 +20,5 @@
       "isActive": true
     }
   ],
-  "selection": {
-    "text": "",
-    "isEmpty": true,
-    "from": {
-      "line": 0,
-      "ch": 0,
-      "offset": 0
-    },
-    "to": {
-      "line": 0,
-      "ch": 0,
-      "offset": 0
-    }
-  }
+  "selection": null
 }
