@@ -39,7 +39,6 @@ def softmax(x: np.ndarray, axis: int = -1) -> np.ndarray:
     exp_x = np.exp(x - max_val)
     return exp_x / np.sum(exp_x, axis=axis, keepdims=True)
 
-def relu(input: np.ndarry):
 def relu(input: np.ndarray) -> np.ndarray:
     """ReLU 激活函数：max(x, 0)。"""
     return np.maximum(input, 0)
@@ -233,7 +232,9 @@ def encoder_block(
 
     提示：两个子层，每个都是"子层输出 + 残差 → LN"。
     """
-    raise NotImplementedError
+    # 1. 多头自注意力 + 残差 + LN
+    O = multi_head_attention(X, W_Q, W_K, W_V, W_O, num_heads)
+    
 
 
 def encoder(
