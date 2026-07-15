@@ -117,7 +117,27 @@ def multi_head_attention(
 
     返回 O (d_model, N_q)。
     """
-    
+    # 1. 投影
+    Q = W_Q @ Q_in  # (h*d_k, N_q)
+    K = W_K @ K_in  # (h*d_k, N_kv)
+    V = W_V @ V_in  # (h*d_v, N_kv)
+
+    # 2. 拆头
+    h = num_heads
+    d_k = W_Q.shape[0] // h
+    d_v = W_V.shape[0] // h
+
+    N_q = Q_in.shape[1]
+    N_k = K_in.shape[1]
+    N_v = V_in.shape[1]
+
+    Q_heads = Q.reshape(h, d_k, N_q)
+    K_heads = K.reshape(h, d_k, N_k)   
+    V_heads = V.reshape(h, d_v, N_v)
+
+    # 3. 每头：
+    scale = 1.0 / np.sqrt(d_k)  # 缩放因子，防止内积过大导致 softmax 饱和
+    outputs = []  # 收集每个头的输出 (d_v, N_q)
 
 
 def make_causal_mask(seq_len: int) -> np.ndarray:
