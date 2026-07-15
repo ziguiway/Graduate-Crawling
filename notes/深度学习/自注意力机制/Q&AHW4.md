@@ -371,8 +371,231 @@ def self_attention(X, W_Q, W_K, W_V):
 
 ---
 
+## Q7：多头注意力怎么实现？比单头多了什么？
+
+### 多头的本质
+
+单头：一份 Q/K/V → 算分数 → 加权和。
+多头：**同一组输入映射成 h 份 Q/K/V，各算各的注意力，最后拼起来再过一层线性变换**。每个头可以关注不同方面（有的学语法、有的学语义、有的看长距离依赖）。
+
+### 五步拆解
+
+```
+1. 一次大投影：用一个大矩阵 W_Q (h*d_k, d_in) 一次算完所有头的 q
+   —— 用一个大矩阵代替 h 个小矩阵，一次矩阵乘法搞定（工程优化）
+2. reshape 拆头：(h*d_k, N) → (h, d_k, N)，不复制内存，只改 shape
+3. 每个头各自做 scaled dot-product attention
+4. 按 feature 维拼接 → (h*d_v, N)
+5. 输出投影 W_O 压回模型维度 (d_model, N)
+```
+
+### 和单头的两个本质区别
+
+1. **多了 W_O 输出投影** —— 多头各自学到的信息混合成最终输出
+2. **加了 1/√d_k 缩放** —— 多头堆叠后数值会膨胀，不缩放 softmax 会饱和、梯度消失（单头 d_k 小可以不加，多头必须加）
+
+### 为什么要"一次大投影"而不是循环 h 次
+
+数学上等价，但一次矩阵乘法比 h 次小矩阵乘法高效得多（CPU/GPU 对大矩阵并行优化更好）。PyTorch `nn.MultiheadAttention` 内部也是这么做的。
+
+### 维度约定（沿用列向量堆叠）
+
+| 张量 | 形状 | 含义 |
+|------|------|------|
+| X | (d_in, N) | 输入序列，N 个列向量 |
+| W_Q | (h*d_k, d_in) | 一次投影出所有头的 query |
+| W_K | (h*d_k, d_in) | 同上，对应 key |
+| W_V | (h*d_v, d_in) | 同上，对应 value |
+| W_O | (d_model, h*d_v) | 输出投影，拼接后压回模型维度 |
+
+### 关键易错点：reshape 的切分顺序
+
+`V_all.reshape(h, d_v, N)` 按 **C order（行优先）** 切分：
+
+```
+V_all 的 h*d_v 行按顺序排列：
+  行 0,1,...,d_v-1  → V_heads[0]   （第 0 个头）
+  行 d_v,...,2*d_v-1 → V_heads[1]  （第 1 个头）
+  ...
+```
+
+**约定**：W_V 大矩阵的前 d_v 行对应第 0 个头，后 d_v 行对应第 1 个头。PyTorch 也这么做。
+**踩坑**：如果切分顺序错了（比如你想按列切但用了行优先 reshape），结果会"数学上没错、语义上全错"——每个头拿到的不是自己该拿的特征。调试这种 bug 非常痛苦，养成习惯：reshape 后 print 一下中间形状，或用小例子验证切分对不对。
+
+### 与后续章节的衔接
+
+Transformer 7.4 解码器里的 **masked self-attention**（掩码注意力）就是在多头基础上加了因果掩码——生成第 t 个词时只能看到前 t 个词。掩码实现：把分数矩阵上三角设成 -∞，softmax 后这些位置权重自然变 0。
+
+---
+
+## 附：最终实现（单头 + 多头）
+
+```python
+import numpy as np
+
+
+def softmax(x: np.ndarray, axis: int = -1) -> np.ndarray:
+    """数值稳定的 softmax，沿指定轴归一化使该轴和为 1。"""
+    x_max = np.max(x, axis=axis, keepdims=True)
+    exp_x = np.exp(x - x_max)
+    return exp_x / np.sum(exp_x, axis=axis, keepdims=True)
+
+
+def self_attention(X, W_Q, W_K, W_V):
+    """单头自注意力（笔记 6.2 节矩阵乘法实现）。
+
+    X: (d_in, N)  列向量堆叠 I = [a¹ ... aᴺ]
+    W_Q/W_K: (d_k, d_in)，W_V: (d_v, d_in)
+    返回 O: (d_v, N)，每列是 bʲ
+    """
+    Q = W_Q @ X
+    K = W_K @ X
+    V = W_V @ X
+
+    attention_score = K.T @ Q              # (N, N)，列 j = qʲ 对所有 k 的分数
+    attention_weight = softmax(attention_score, axis=0)  # 每列归一化
+    output = (attention_weight @ V.T).T   # (d_v, N)
+    return output
+
+
+def multi_head_attention(X, W_Q, W_K, W_V, W_O, num_heads):
+    """多头注意力（笔记 6.4 节）。
+
+    X: (d_in, N)
+    W_Q: (h*d_k, d_in)，W_K: (h*d_k, d_in)，W_V: (h*d_v, d_in)
+    W_O: (d_model, h*d_v)
+    返回 O: (d_model, N)
+    """
+    _, N = X.shape
+    h = num_heads
+    d_k = W_Q.shape[0] // h
+    d_v = W_V.shape[0] // h
+
+    # 1. 一次性算出所有头的 Q/K/V
+    Q_all = W_Q @ X   # (h*d_k, N)
+    K_all = W_K @ X   # (h*d_k, N)
+    V_all = W_V @ X   # (h*d_v, N)
+
+    # 2. 按 head 拆开 → (h, d_k, N) / (h, d_v, N)
+    Q_heads = Q_all.reshape(h, d_k, N)
+    K_heads = K_all.reshape(h, d_k, N)
+    V_heads = V_all.reshape(h, d_v, N)
+
+    # 3. 每个头各自做 scaled dot-product attention
+    scale = 1.0 / np.sqrt(d_k)
+    outputs = []
+    for i in range(h):
+        Q_i, K_i, V_i = Q_heads[i], K_heads[i], V_heads[i]
+        scores = (K_i.T @ Q_i) * scale              # (N, N)
+        weights = softmax(scores, axis=0)           # 每列归一化
+        outputs.append((weights @ V_i.T).T)          # (d_v, N)
+
+    # 4. 按 feature 维拼接 → (h*d_v, N)
+    concat = np.concatenate(outputs, axis=0)
+
+    # 5. 输出投影压回模型维度
+    return W_O @ concat   # (d_model, N)
+```
+
+运行结果：单头输出 `(d_v, N)`、多头输出 `(d_model, N)`，每列注意力权重和均为 1。
+
+---
+
+## Q8：numpy 的 reshape 是什么 API？切分顺序怎么定？
+
+### 作用
+
+**改变数组形状，但不改变数据本身**——把元素"重新排座位"，每个人还是原来那个人。
+
+### 基本语法
+
+```python
+np.reshape(array, new_shape)   # 函数式
+array.reshape(new_shape)       # 方法式（更常用）
+```
+
+### 总数必须匹配
+
+6 个元素能 reshape 成 `(2,3)` / `(3,2)` / `(6,1)` / `(1,6)`，但不能 `(2,4)`（要 8 个元素）。
+
+### -1 的魔法：自动推断
+
+```python
+a = np.arange(6)          # [0,1,2,3,4,5]
+a.reshape(2, -1)         # 我只知道要 2 行，列数你算 → (2, 3)
+a.reshape(-1)            # 全展平成一维 → (6,)
+```
+
+### 内存顺序：C order（行优先）
+
+`reshape` 默认按 **C order**：**最右边的索引变化最快**。
+
+```python
+np.arange(6).reshape(2, 3)
+# [[0, 1, 2],     ← 先填第 0 行，再填第 1 行
+#  [3, 4, 5]]
+```
+
+### 回到多头里的 `V_all.reshape(h, d_v, N)`
+
+原始形状 `(h*d_v, N)`，即 `(8, 4)`（h=2, d_v=4, N=4 时）。reshape 成 `(2, 4, 4)`：
+
+```
+原来：(8, 4)  —— 8 行（h*d_v 个特征），每行对应一个时间步
+        ↓ reshape
+现在：(2, 4, 4) —— 第 0 维是头编号，第 1 维是该头内的特征，第 2 维是时间步
+
+V_heads[0]  → 第 0 个头的 V，形状 (4, 4)
+V_heads[1]  → 第 1 个头的 V，形状 (4, 4)
+```
+
+切分方式（行优先）：
+
+```
+V_all 的 8 行按顺序排列：
+  行 0,1,2,3  → V_heads[0]   （第 0 个头）
+  行 4,5,6,7  → V_heads[1]   （第 1 个头）
+```
+
+**含义**：W_V 大矩阵的前 d_v 行对应第 0 个头，后 d_v 行对应第 1 个头。
+
+### reshape vs transpose：常被混淆
+
+- **reshape**：改形状，**不改元素顺序**
+- **transpose**：改形状，**同时交换轴的顺序**
+
+```python
+a = np.arange(6).reshape(2, 3)
+# [[0, 1, 2],
+#  [3, 4, 5]]
+
+a.reshape(3, 2)   # 元素顺序没变，只是重新分组
+# [[0, 1],
+#  [2, 3],
+#  [4, 5]]
+
+a.T              # 转置，行列交换，元素位置变了
+# [[0, 3],
+#  [1, 4],
+#  [2, 5]]
+```
+
+多头里错用 transpose 会把头和时间步搞混，结果完全错。
+
+### 速查表
+
+| 用法 | 含义 |
+|------|------|
+| `a.reshape(m, n)` | 改成 (m, n)，总数必须对得上 |
+| `a.reshape(-1)` | 展平成一维 |
+| `a.reshape(m, -1)` | m 行，列数自动算 |
+| `a.reshape(h, d, N)` | 三维，按行优先填充 |
+
+> **一句话记忆**：reshape 是"换个角度看同一组数据"，不搬动元素，只重新分组。
+
+---
+
 ## 未实现（后续 HW5 再展开）
 
-- 多头注意力（[[自注意力机制]] 第 7 节）
 - 位置编码（第 8 节）
-- 缩放因子 `1/√d_k`（笔记未提，标准 Transformer 会加；本实现严格按笔记故省略，若要对齐 PyTorch `F.scaled_dot_product_attention` 再补）
+- 掩码注意力（masked self-attention，解码器用，见 [[Transformer]]）
