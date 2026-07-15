@@ -777,6 +777,68 @@ $$
 
 但这是**性价比很高**的 1/4：它带来的好处是 h 个头能学不同模式（语法、语义、长距离等），模型容量大幅增加。这也是 Transformer 论文做多头实验的原因——多花 1/4 参数换多视角能力。
 
+### 完整代码片段
+
+```python
+def multi_head_attention(
+    Q_in, K_in, V_in,           # (d_in, N_q) / (d_in, N_kv) / (d_in, N_kv)
+    W_Q, W_K, W_V,              # (h*d_k, d_in) / (h*d_k, d_in) / (h*d_v, d_in)
+    W_O,                        # (d_model, h*d_v)  ← 输出投影，单头没有
+    num_heads,
+    mask=None,                  # (N_q, N_kv)，0 表示屏蔽
+):
+    # 1. 投影：Q/K/V 各算一次（用大矩阵代替 h 个小矩阵）
+    Q = W_Q @ Q_in  # (h*d_k, N_q)
+    K = W_K @ K_in  # (h*d_k, N_kv)
+    V = W_V @ V_in  # (h*d_v, N_kv)
+
+    # 2. 拆头：(h*d_k, N) → (h, d_k, N)
+    h = num_heads
+    d_k = W_Q.shape[0] // h
+    d_v = W_V.shape[0] // h
+    N_q = Q_in.shape[1]
+    N_kv = K_in.shape[1]
+
+    Q_heads = Q.reshape(h, d_k, N_q)
+    K_heads = K.reshape(h, d_k, N_kv)
+    V_heads = V.reshape(h, d_v, N_kv)
+
+    # 3. 每个头各自做 scaled dot-product attention
+    scale = 1.0 / np.sqrt(d_k)
+    outputs = []
+    for i in range(h):
+        Q_i, K_i, V_i = Q_heads[i], K_heads[i], V_heads[i]
+        scores = (K_i.T @ Q_i) * scale  # (N_kv, N_q)
+        if mask is not None:
+            scores = np.where(mask == 0, -np.inf, scores)
+        weights = softmax(scores, axis=0)
+        out_i = (weights @ V_i.T).T  # (d_v, N_q)
+        outputs.append(out_i)
+
+    # 4. 拼接 → (h*d_v, N_q)
+    concat = np.concatenate(outputs, axis=0)
+
+    # 5. ★ 输出投影：把 h*d_v 压回 d_model，让多头能混合 ★
+    O = W_O @ concat  # (d_model, N_q)
+    return O
+```
+
+**关键定位**：第 5 步 `O = W_O @ concat` 就是 `W_O` 出现的地方。**前 4 步跟单头本质一样（投影 → 拆 → 算 → 拼），只是多了 `W_O` 这一下压回 d_model。**
+
+**调用时三种用法**（同一个函数复用）：
+
+```python
+# 1. 编码器自注意力：Q=K=V=X
+out = multi_head_attention(X, X, X, W_Q, W_K, W_V, W_O, h)
+
+# 2. 解码器掩码自注意力：Q=K=V=X，加因果掩码
+mask = make_causal_mask(N)  # 下三角 1、上三角 0
+out = multi_head_attention(X, X, X, W_Q, W_K, W_V, W_O, h, mask=mask)
+
+# 3. 解码器 cross-attention：Q 来自解码器，K/V 来自编码器
+out = multi_head_attention(dec_X, enc_out, enc_out, W_Q, W_K, W_V, W_O, h)
+```
+
 ### 一句话记忆
 
 > `W_O` 不是 Transformer 新引入的，是多头注意力本身的组件——**拼接 h 个头的输出 → 压回 d_model → 让模型学会混合多头的特征**。单头没有是因为只有一个头、维度天然对得上；多头有是因为拼接后维度对不上，被迫引入。参数量上 W_Q/W_K/W_V/W_O 四份等量。
