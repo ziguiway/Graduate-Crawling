@@ -98,8 +98,43 @@ Transformer 每个 SubLayer 都是 `LayerNorm(x + Sublayer(x))` 这种残差 + L
 
 ---
 
+## Q3：FFN 和 FC 是一回事吗？
+
+是同一个东西的不同叫法。Transformer 语境下，这几个名字常常指同一种结构：
+
+| 名字         | 全称                     | 出处                                  |
+| ---------- | ---------------------- | ----------------------------------- |
+| 前馈网络 / FFN | Feed-Forward Network   | 原论文 *Attention Is All You Need* 的叫法 |
+| 全连接网络 / FC | Fully Connected        | 李宏毅教程前面章节的习惯叫法                      |
+| MLP        | Multi-Layer Perceptron | 实现代码 / 后续论文里常见                      |
+
+对应到笔记里：
+- 3.3 节画的 `输入 → [自注意力] → [全连接网络] → 输出`（用 FC 引入最朴素版本）
+- 3.6 / 3.7 节写的"前馈网络（FFN）"（升级成完整块里的叫法）
+
+这两个是同一层，只是 3.3 用 FC 的名字、3.6 以后改用 FFN。
+
+### 一个小区别要记一下（避免看代码时懵）
+
+原论文里的 FFN 严格说**不是单层 FC**，而是**两层 FC 中间夹一个非线性激活**：
+
+$$\text{FFN}(x) = W_2 \cdot \text{ReLU}(W_1 x + b_1) + b_2$$
+
+- 第一层把维度从 `d_model`（比如 512）升到 `d_ff`（比如 2048）—— **升维**
+- ReLU / GELU 非线性
+- 第二层再降回 `d_model` —— **降维**
+
+所以严格讲：**FFN = 两层 FC + 非线性激活 = 一个小 MLP**。李宏毅 3.3 用"全连接"是从最朴素的单层 FC 引入，3.6 讲完整块时升级成了 FFN。这两个名字在不同语境混用很常见，看到时心里有个映射就行。
+
+### 一句话记忆
+
+> FC / FFN / MLP 在 Transformer 语境下基本同义；严格 FFN 是"两层 FC + 激活"，先升维到 `d_ff` 再降回 `d_model`。
+
+---
+
 ## 未实现（后续再展开）
 
 - Pre-LN vs Post-LN 的差异与训练稳定性
 - RMSNorm（LLaMA 等用 LN 的简化变体，去掉了均值减法）
 - `PyTorch nn.LayerNorm` 的 `normalized_shape` 参数怎么对应到 Transformer 的 `d_model`
+- FFN 升维比例 `d_ff / d_model = 4` 的经验值是怎么来的、能不能改
