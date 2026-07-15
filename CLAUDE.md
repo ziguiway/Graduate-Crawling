@@ -145,8 +145,8 @@ notes/深度学习/自注意力机制/
 |---|---|---|---|---|
 | 2026-07-14 | 第 1 章 | 机器学习基础（回归/分类/损失/梯度下降/神经网络） | `notes/深度学习/机器学习基础/机器学习基础.md` | ✅ 全章 |
 | 2026-07-14 | 第 6 章 | 自注意力机制（Seq 输入输出、注意力公式、多头、位置编码） | `notes/深度学习/自注意力机制/自注意力机制.md` | ✅ 全章 |
-| 2026-07-14 | 第 7 章 | Transformer（Seq2Seq 应用、编码器结构、残差+LN） | `notes/深度学习/Transformer/Transformer.md` | 🚧 已学到 7.3 编码器；解码器与训练技巧待续 |
+| 2026-07-14 | 第 7 章 | Transformer（Seq2Seq 应用、编码器结构、残差+LN） | `notes/深度学习/Transformer/Transformer.md` | ✅ 全章 |
+| 2026-07-15 | 第 7 章 | Transformer 解码器（自回归、掩码注意力、cross-attention） | `notes/深度学习/Transformer/Transformer.md` | 🚧 已学到 7.5 编码器-解码器注意力；训练技巧待续 |
 
 **续学线索**（下次接着学的起点）：
-- 第 7 章 Transformer：从 7.4 解码器开始（自回归生成、掩码注意力、编码器-解码器注意力、cross-attention）
-- 接着补 7.5+ 训练技巧：teacher forcing / schedule sampling / beam search / 位置编码公式
+- 第 7 章 Transformer：从 7.5+ 训练技巧开始（teacher forcing / schedule sampling / beam search / 位置编码公式）
