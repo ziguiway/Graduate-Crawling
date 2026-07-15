@@ -139,6 +139,32 @@ def multi_head_attention(
     scale = 1.0 / np.sqrt(d_k)  # 缩放因子，防止内积过大导致 softmax 饱和
     outputs = []  # 收集每个头的输出 (d_v, N_q)
 
+    for i in range(h):
+        Q_i = Q_heads[i]  # (d_k, N_q)
+        K_i = K_heads[i]  # (d_k, N_k)
+        V_i = V_heads[i]  # (d_v, N_v)
+
+        # 注意力分数 (N_k, N_q)，列 j 是 qʲ 对所有 k 的分数
+        scores = (K_i.T @ Q_i) * scale
+
+        # 掩码（如有）：被屏蔽位置分数设成 -inf，softmax 后权重为 0
+        if mask is not None:
+            scores = np.where(mask == 0, -np.inf, scores)
+
+        # 按列归一化（每列对应一个 query）
+        weights = softmax(scores, axis=0)
+        # 加权和 (d_v, N_q)
+        out_i = (weights @ V_i.T).T
+        outputs.append(out_i)
+    
+    # 4.拼接
+    concat = np.concatenate(outputs, axis=0)  # (h*d_v, N_q)
+
+    # 5. 输出投影压回模型维度
+    O = W_O @ concat  # (d_model, N_q)
+    
+    return O
+
 
 def make_causal_mask(seq_len: int) -> np.ndarray:
     """因果掩码（笔记 5.4 节）：下三角为 1（可见），上三角为 0（屏蔽）。
