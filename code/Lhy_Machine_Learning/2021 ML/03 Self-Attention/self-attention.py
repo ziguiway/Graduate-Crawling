@@ -71,7 +71,7 @@ def multi_head_attention(
 
     返回 O (d_model, N)。
     """
-    d_in, N = X.shape
+    _, N = X.shape
     h = num_heads
     # 从 W_Q 的行数推出每个头的维度
     d_k = W_Q.shape[0] // h
