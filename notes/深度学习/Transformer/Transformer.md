@@ -71,6 +71,8 @@
 ## 2. Transformer 整体结构
 
 一般的 Seq2Seq 模型分两半：
+![](assets/Transformer/file-20260715104800045.png)
+
 ![](assets/Transformer/file-20260715103339448.png)
 
 ```
