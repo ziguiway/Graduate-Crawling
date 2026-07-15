@@ -254,7 +254,10 @@ def encoder(
     blocks_params 是元组列表，每项是
         (W_Q, W_K, W_V, W_O, FFN_W1, FFN_b1, FFN_W2, FFN_b2)
     """
-    raise NotImplementedError
+    # 1. 编码器块堆叠
+    for W_Q, W_K, W_V, W_O, FFN_W1, FFN_b1, FFN_W2, FFN_b2 in blocks_params:
+        X = encoder_block(X, W_Q, W_K, W_V, W_O, FFN_W1, FFN_b1, FFN_W2, FFN_b2, num_heads)
+    return X
 
 
 # ============================================================
