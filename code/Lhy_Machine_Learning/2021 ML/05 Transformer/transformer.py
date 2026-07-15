@@ -39,6 +39,12 @@ def softmax(x: np.ndarray, axis: int = -1) -> np.ndarray:
     exp_x = np.exp(x - max_val)
     return exp_x / np.sum(exp_x, axis=axis, keepdims=True)
 
+def relu(input: np.ndarry):
+def relu(input: np.ndarray) -> np.ndarray:
+    """ReLU 激活函数：max(x, 0)。"""
+    return np.maximum(input, 0)
+
+
 
 def layer_norm(x: np.ndarray, eps: float = 1e-5) -> np.ndarray:
     """层归一化（笔记 3.5 节）：沿第 0 维（特征维）做。
@@ -198,7 +204,13 @@ def feed_forward(
 
     提示：bias 形状 (d_ff,) 要扩成 (d_ff, 1) 才能广播到 (d_ff, N) → b1[:, None]。
     """
-    raise NotImplementedError
+    # 1. 第一层全连接 + ReLU
+    H = relu(W1 @ X + b1[:, None])  # (d_ff, N)
+    
+    # 2. 第二层全连接
+    O = W2 @ H + b2[:, None]  # (d_model, N)
+    
+    return O
 
 
 # ============================================================
