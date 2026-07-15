@@ -216,11 +216,3 @@ np.triu(np.ones((4, 4)))
 
 > `np.tril(np.ones((N, N)))` = 下三角全 1、上三角全 0，正好表达"位置 i 只能看左边和自身"；配合 `np.where(mask==0, -inf, scores)` 就把未来位置的注意力分数压成 0，实现因果性。
 
----
-
-## 未实现（后续再展开）
-
-- Pre-LN vs Post-LN 的差异与训练稳定性
-- RMSNorm（LLaMA 等用 LN 的简化变体，去掉了均值减法）
-- `PyTorch nn.LayerNorm` 的 `normalized_shape` 参数怎么对应到 Transformer 的 `d_model`
-- FFN 升维比例 `d_ff / d_model = 4` 的经验值是怎么来的、能不能改

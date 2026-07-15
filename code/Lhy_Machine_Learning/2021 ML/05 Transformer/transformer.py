@@ -174,7 +174,7 @@ def make_causal_mask(seq_len: int) -> np.ndarray:
 
     提示：np.tril(np.ones(...))。
     """
-    raise NotImplementedError
+    return np.tril(np.ones((seq_len, seq_len)))
 
 
 # ============================================================
