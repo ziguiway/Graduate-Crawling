@@ -78,7 +78,7 @@ def multi_head_attention(
     d_v = W_V.shape[0] // h
 
     # 1. 一次性算出所有头的 Q/K/V
-    Q_all = W_Q @ X  # (h*d_k, N)
+    Q_all  = W_Q @ X  # (h*d_k, N)
     K_all = W_K @ X  # (h*d_k, N)
     V_all = W_V @ X  # (h*d_v, N)
 
