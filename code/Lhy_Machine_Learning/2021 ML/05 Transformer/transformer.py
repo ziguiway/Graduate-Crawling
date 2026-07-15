@@ -35,7 +35,9 @@ def softmax(x: np.ndarray, axis: int = -1) -> np.ndarray:
 
     提示：先减最大值（keepdims=True），再 exp、再除以和。
     """
-    raise NotImplementedError
+    max_val = np.max(x, axis=axis, keepdims=True)
+    exp_x = np.exp(x - max_val)
+    return exp_x / np.sum(exp_x, axis=axis, keepdims=True)
 
 
 def layer_norm(x: np.ndarray, eps: float = 1e-5) -> np.ndarray:
@@ -49,7 +51,7 @@ def layer_norm(x: np.ndarray, eps: float = 1e-5) -> np.ndarray:
 
     提示：mean 和 var 都沿 axis=0 算，keepdims=True 便于广播。
     """
-    raise NotImplementedError
+    
 
 
 def positional_encoding(seq_len: int, d_model: int) -> np.ndarray:
