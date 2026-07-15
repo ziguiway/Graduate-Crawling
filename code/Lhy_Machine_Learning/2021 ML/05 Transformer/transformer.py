@@ -117,7 +117,7 @@ def multi_head_attention(
 
     返回 O (d_model, N_q)。
     """
-    raise NotImplementedError
+    
 
 
 def make_causal_mask(seq_len: int) -> np.ndarray:
