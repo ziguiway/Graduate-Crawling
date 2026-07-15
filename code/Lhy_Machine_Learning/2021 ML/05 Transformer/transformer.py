@@ -51,7 +51,9 @@ def layer_norm(x: np.ndarray, eps: float = 1e-5) -> np.ndarray:
 
     提示：mean 和 var 都沿 axis=0 算，keepdims=True 便于广播。
     """
-    
+    mean = np.mean(x, axis=0, keepdims=True)
+    var = np.var(x, axis=0, keepdims=True)
+    return (x - mean) / np.sqrt(var + eps)
 
 
 def positional_encoding(seq_len: int, d_model: int) -> np.ndarray:
