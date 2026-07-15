@@ -71,7 +71,12 @@ def positional_encoding(seq_len: int, d_model: int) -> np.ndarray:
         pe[0::2, :] = sin(pos * div[:, None])
         pe[1::2, :] = cos(pos * div[:, None])
     """
-    raise NotImplementedError
+    pe = np.zeros((d_model, seq_len))
+    pos = np.arange(seq_len)[None, :]  # (1, seq_len)
+    div = np.exp(np.arange(0, d_model, 2) * -(np.log(10000.0) / d_model))  # (d_model//2,)
+    pe[0::2, :] = np.sin(pos * div[:, None])  # 偶数行
+    pe[1::2, :] = np.cos(pos * div[:, None])  # 奇数行
+    return pe
 
 
 # ============================================================
