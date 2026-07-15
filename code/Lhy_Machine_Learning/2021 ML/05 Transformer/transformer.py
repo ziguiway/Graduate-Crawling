@@ -132,7 +132,7 @@ def multi_head_attention(
     N_v = V_in.shape[1]
 
     Q_heads = Q.reshape(h, d_k, N_q)
-    K_heads = K.reshape(h, d_k, N_k)   
+    K_heads = K.reshape(h, d_k, N_k)
     V_heads = V.reshape(h, d_v, N_v)
 
     # 3. 每头：
