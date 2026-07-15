@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "source": "termy",
-  "updatedAt": "2026-07-14T09:39:00.173Z",
+  "updatedAt": "2026-07-15T02:05:07.654Z",
   "vaultRoot": "Users/zhengshuang/Documents/code/Graduate-Crawling",
   "workspaceFolders": [
     "Users/zhengshuang/Documents/code/Graduate-Crawling"
@@ -10,7 +10,7 @@
     "filePath": "/Users/zhengshuang/Documents/code/Graduate-Crawling/notes/深度学习/Transformer/Transformer.md",
     "vaultPath": "notes/深度学习/Transformer/Transformer.md",
     "fileUrl": "file:///Users/zhengshuang/Documents/code/Graduate-Crawling/notes/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Transformer/Transformer.md",
-    "hasFocus": false
+    "hasFocus": true
   },
   "openFiles": [
     {
@@ -24,14 +24,14 @@
     "text": "",
     "isEmpty": true,
     "from": {
-      "line": 119,
-      "ch": 79,
-      "offset": 3368
+      "line": 0,
+      "ch": 0,
+      "offset": 0
     },
     "to": {
-      "line": 119,
-      "ch": 79,
-      "offset": 3368
+      "line": 0,
+      "ch": 0,
+      "offset": 0
     }
   }
 }
