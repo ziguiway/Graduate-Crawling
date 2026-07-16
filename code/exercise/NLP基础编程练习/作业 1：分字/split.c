@@ -23,6 +23,8 @@ int scan(int bits[8]) {
 
 int main()
 {
+    printf("开始读取文件\n");
+    
     FILE *fp;
     fp = fopen("./data/Sentence.txt", "rb");
     if(fp == NULL)
@@ -32,21 +34,34 @@ int main()
     }
 
     int ch = fgetc(fp);
-    
+    int skip_count = 0;
     while(ch != EOF)
     {
+        printf("进 while了\n");
+        if(skip_count > 0)
+        {
+            printf("skip_count: %d\n", skip_count);
+            skip_count--;
+            continue;
+        }
+
         int bits[8];
         byte_to_bits(ch, bits);
         for(int i = 0; i < 8; i++)
         {
             printf("%d", bits[i]);
         }
+        printf("//");
         printf("\n");
+
+
+        skip_count = scan(bits);
+        printf("skip_count: %d\n", skip_count);
         ch = fgetc(fp);
     }
 
 
-    // fclose(fp);
+    fclose(fp);
 
-    // return 0;
+    return 0;
 }
