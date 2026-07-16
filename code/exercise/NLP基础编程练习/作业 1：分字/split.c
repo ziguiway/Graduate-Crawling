@@ -46,6 +46,7 @@ int main()
     int ch = fgetc(fp);
     int skip_count = 0;
 
+    
     while(ch != EOF)
     {
         if(skip_count > 0)
