@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1830" viewBox="0 0 1200 1830" role="img" aria-labelledby="title desc">
+  <title id="title">Transformer 编码器整体结构</title>
+  <desc id="desc">输入向量序列与位置编码相加后，依次通过重复 N 次的编码器块。每个编码器块包含多头自注意力、残差连接、层归一化、前馈网络、残差连接和层归一化。</desc>
+
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#f4f7fb"/>
+    </linearGradient>
+    <linearGradient id="stackBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f7f9fc"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1e293b" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <marker id="residualArrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+    <style>
+      .font { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; }
+      .main-arrow { fill: none; stroke: #334155; stroke-width: 5; stroke-linecap: round; marker-end: url(#arrow); }
+      .residual { fill: none; stroke: #d97706; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 12 10; marker-end: url(#residualArrow); }
+      .node-title { font-size: 30px; font-weight: 700; fill: #172033; text-anchor: middle; }
+      .node-subtitle { font-size: 21px; font-weight: 500; fill: #526174; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect x="15" y="15" width="1170" height="1800" rx="36" fill="url(#pageBg)" stroke="#dbe4ef" stroke-width="3"/>
+
+  <text class="font" x="600" y="72" font-size="42" font-weight="800" fill="#172033" text-anchor="middle">Transformer 编码器整体结构</text>
+
+  <!-- Input -->
+  <g filter="url(#shadow)">
+    <rect x="380" y="105" width="440" height="88" rx="24" fill="#e8f1ff" stroke="#4c78a8" stroke-width="4"/>
+  </g>
+  <text class="font node-title" x="600" y="160">输入向量序列</text>
+
+  <path class="main-arrow" d="M 600 193 L 600 237"/>
+
+  <!-- Positional encoding and input addition -->
+  <g filter="url(#shadow)">
+    <rect x="72" y="220" width="350" height="118" rx="22" fill="#fff4d6" stroke="#d69e2e" stroke-width="4"/>
+  </g>
+  <text class="font" x="247" y="268" font-size="27" font-weight="700" fill="#172033" text-anchor="middle">位置编码</text>
+  <text class="font" x="247" y="302" font-size="20" font-weight="500" fill="#72571b" text-anchor="middle">Positional Encoding</text>
+  <text class="font" x="247" y="329" font-size="17" fill="#856b2b" text-anchor="middle">补充序列位置信息</text>
+  <path class="main-arrow" d="M 422 279 L 543 279"/>
+
+  <g filter="url(#shadow)">
+    <circle cx="600" cy="279" r="43" fill="#ffffff" stroke="#475569" stroke-width="4"/>
+  </g>
+  <text class="font" x="600" y="293" font-size="46" font-weight="600" fill="#334155" text-anchor="middle">＋</text>
+  <path class="main-arrow" d="M 600 322 L 600 393"/>
+
+  <!-- Encoder stack -->
+  <g filter="url(#shadow)">
+    <rect x="140" y="405" width="920" height="1190" rx="34" fill="url(#stackBg)" stroke="#64748b" stroke-width="4"/>
+  </g>
+  <rect x="140" y="405" width="920" height="86" rx="34" fill="#edf2f7"/>
+  <path d="M 140 457 L 140 439 Q 140 405 174 405 L 1026 405 Q 1060 405 1060 439 L 1060 457 Z" fill="#edf2f7"/>
+  <line x1="140" y1="491" x2="1060" y2="491" stroke="#cbd5e1" stroke-width="3"/>
+  <text class="font" x="192" y="461" font-size="31" font-weight="800" fill="#23324a">Encoder Block</text>
+  <text class="font" x="451" y="461" font-size="23" font-weight="500" fill="#64748b">完整结构依次堆叠</text>
+  <g filter="url(#shadow)">
+    <rect x="864" y="424" width="150" height="50" rx="25" fill="#315a8c"/>
+  </g>
+  <text class="font" x="939" y="458" font-size="25" font-weight="800" fill="#ffffff" text-anchor="middle">× N 次</text>
+
+  <!-- Block input -->
+  <g filter="url(#shadow)">
+    <rect x="350" y="530" width="500" height="86" rx="22" fill="#e8f1ff" stroke="#4c78a8" stroke-width="4"/>
+  </g>
+  <text class="font node-title" x="600" y="584">Block 输入</text>
+  <path class="main-arrow" d="M 600 616 L 600 670"/>
+
+  <!-- Multi-head attention -->
+  <g filter="url(#shadow)">
+    <rect x="300" y="670" width="600" height="126" rx="24" fill="#e9f7ef" stroke="#2f855a" stroke-width="4"/>
+  </g>
+  <text class="font node-title" x="600" y="722">多头自注意力</text>
+  <text class="font node-subtitle" x="600" y="759">Multi-Head Self-Attention</text>
+  <text class="font" x="600" y="785" font-size="17" fill="#3d6f55" text-anchor="middle">聚合整个序列的信息</text>
+  <path class="main-arrow" d="M 600 796 L 600 842"/>
+
+  <!-- First residual addition -->
+  <path class="residual" d="M 350 573 L 236 573 Q 210 573 210 599 L 210 885 Q 210 902 227 902 L 550 902"/>
+  <rect x="162" y="690" width="96" height="154" rx="18" fill="#fff7e8" stroke="#f0b75f" stroke-width="2"/>
+  <text class="font" x="210" y="730" font-size="20" font-weight="700" fill="#a65f05" text-anchor="middle">残</text>
+  <text class="font" x="210" y="759" font-size="20" font-weight="700" fill="#a65f05" text-anchor="middle">差</text>
+  <text class="font" x="210" y="788" font-size="20" font-weight="700" fill="#a65f05" text-anchor="middle">连</text>
+  <text class="font" x="210" y="817" font-size="20" font-weight="700" fill="#a65f05" text-anchor="middle">接</text>
+  <g filter="url(#shadow)">
+    <circle cx="600" cy="902" r="43" fill="#fffaf0" stroke="#d97706" stroke-width="4"/>
+  </g>
+  <text class="font" x="600" y="916" font-size="46" font-weight="600" fill="#b45309" text-anchor="middle">＋</text>
+  <path class="main-arrow" d="M 600 945 L 600 988"/>
+
+  <!-- First LayerNorm -->
+  <g filter="url(#shadow)">
+    <rect x="350" y="988" width="500" height="94" rx="22" fill="#fff0f0" stroke="#c53030" stroke-width="4"/>
+  </g>
+  <text class="font" x="600" y="1028" font-size="28" font-weight="700" fill="#172033" text-anchor="middle">层归一化</text>
+  <text class="font" x="600" y="1060" font-size="20" font-weight="500" fill="#8a3c3c" text-anchor="middle">Layer Normalization</text>
+  <path class="main-arrow" d="M 600 1082 L 600 1132"/>
+
+  <!-- Feed-forward network -->
+  <g filter="url(#shadow)">
+    <rect x="300" y="1132" width="600" height="126" rx="24" fill="#f3e8ff" stroke="#805ad5" stroke-width="4"/>
+  </g>
+  <text class="font node-title" x="600" y="1185">前馈网络（FFN）</text>
+  <text class="font node-subtitle" x="600" y="1222">Feed-Forward Network</text>
+  <text class="font" x="600" y="1248" font-size="17" fill="#6c4aa1" text-anchor="middle">对每个位置独立进行非线性变换</text>
+  <path class="main-arrow" d="M 600 1258 L 600 1304"/>
+
+  <!-- Second residual addition -->
+  <path class="residual" d="M 350 1035 L 236 1035 Q 210 1035 210 1061 L 210 1347 Q 210 1364 227 1364 L 550 1364"/>
+  <rect x="162" y="1152" width="96" height="154" rx="18" fill="#fff7e8" stroke="#f0b75f" stroke-width="2"/>
+  <text class="font" x="210" y="1192" font-size="20" font-weight="700" fill="#a65f05" text-anchor="middle">残</text>
+  <text class="font" x="210" y="1221" font-size="20" font-weight="700" fill="#a65f05" text-anchor="middle">差</text>
+  <text class="font" x="210" y="1250" font-size="20" font-weight="700" fill="#a65f05" text-anchor="middle">连</text>
+  <text class="font" x="210" y="1279" font-size="20" font-weight="700" fill="#a65f05" text-anchor="middle">接</text>
+  <g filter="url(#shadow)">
+    <circle cx="600" cy="1364" r="43" fill="#fffaf0" stroke="#d97706" stroke-width="4"/>
+  </g>
+  <text class="font" x="600" y="1378" font-size="46" font-weight="600" fill="#b45309" text-anchor="middle">＋</text>
+  <path class="main-arrow" d="M 600 1407 L 600 1450"/>
+
+  <!-- Second LayerNorm -->
+  <g filter="url(#shadow)">
+    <rect x="350" y="1450" width="500" height="94" rx="22" fill="#fff0f0" stroke="#c53030" stroke-width="4"/>
+  </g>
+  <text class="font" x="600" y="1490" font-size="28" font-weight="700" fill="#172033" text-anchor="middle">层归一化</text>
+  <text class="font" x="600" y="1522" font-size="20" font-weight="500" fill="#8a3c3c" text-anchor="middle">Layer Normalization</text>
+
+  <!-- Output -->
+  <path class="main-arrow" d="M 600 1544 L 600 1657"/>
+  <g filter="url(#shadow)">
+    <rect x="380" y="1657" width="440" height="88" rx="24" fill="#e8f1ff" stroke="#4c78a8" stroke-width="4"/>
+  </g>
+  <text class="font node-title" x="600" y="1712">输出向量序列</text>
+  <text class="font" x="600" y="1784" font-size="21" font-weight="500" fill="#64748b" text-anchor="middle">虚线：残差连接　　圆形“＋”：逐元素相加　　结构：Post-LN</text>
+</svg>
