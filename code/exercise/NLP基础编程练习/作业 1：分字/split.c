@@ -65,6 +65,7 @@ int main()
         // 4. 跳过当前字符占的字节
         if(skip_count > 0)
         {
+            
             ch = fgetc(fp);
             skip_count--;
             continue;
