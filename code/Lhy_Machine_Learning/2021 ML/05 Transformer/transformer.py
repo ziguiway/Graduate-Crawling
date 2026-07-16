@@ -297,6 +297,13 @@ def decoder_block(
     cross_out = multi_head_attention(X, enc_out, enc_out, W_Q2, W_K2, W_V2, W_O2, num_heads)
     cross_out = cross_out + ffn_out  # (d_model, N)
     ffn_out = layer_norm(cross_out)
+    
+    # 3. FFN + 残差 + LN
+    ffn_out = feed_forward(ffn_out, FFN_W1, FFN_b1, FFN_W2, FFN_b2)
+    ffn_out = ffn_out + ffn_out  # (d_model, N)
+    ffn_out = layer_norm(ffn_out)
+
+    return ffn_out  # (d_model, N)
 
 
 
@@ -307,7 +314,18 @@ def decoder(
     num_heads: int,
 ) -> np.ndarray:
     """解码器：N 个 block 堆叠。"""
-    raise NotImplementedError
+    for params in blocks_params:
+        (W_Q1, W_K1, W_V1, W_O1,
+         W_Q2, W_K2, W_V2, W_O2,
+         FFN_W1, FFN_b1, FFN_W2, FFN_b2) = params
+        X = decoder_block(
+            X, enc_out,
+            W_Q1, W_K1, W_V1, W_O1,
+            W_Q2, W_K2, W_V2, W_O2,
+            FFN_W1, FFN_b1, FFN_W2, FFN_b2,
+            num_heads,
+        )
+    return X
 
 
 # ============================================================
@@ -333,7 +351,23 @@ def transformer(
 
     返回 logits (vocab_size, N_tgt)。
     """
-    raise NotImplementedError
+    N_src = src.shape[1]
+    N_tgt = tgt.shape[1]
+
+    # 1. 加位置编码（笔记 3.7 节，自注意力本身无序）
+    src = src + positional_encoding(N_src, d_model)  # (d_model, N_src)
+    tgt = tgt + positional_encoding(N_tgt, d_model)  # (d_model, N_tgt)
+
+    # 2. 编码器
+    enc_out = encoder(src, enc_blocks, num_heads)  # (d_model, N_src)
+
+    # 3. 解码器
+    dec_out = decoder(tgt, enc_out, dec_blocks, num_heads)  # (d_model, N_tgt)
+
+    # 4. 输出投影：把 d_model 维向量映射到 vocab_size 维（logits）
+    # output_proj (vocab_size, d_model) @ dec_out (d_model, N_tgt) → (vocab_size, N_tgt)
+    logits = output_proj @ dec_out
+    return logits
 
 
 # ============================================================
