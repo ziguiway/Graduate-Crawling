@@ -19,13 +19,19 @@ def split_word(word_list:list, text:str) -> list:
         if not text:
             break
         tmp = text[:max_len]
-
-
+        if tmp in word_list:
+            result.append(tmp)
+            text = text[max_len:]
+        
 
 
 
 def main():
-    word_list = lode_file("")
-    text = "我来到北京清华大学"
+    word_list = lode_file("作业 2：最大匹配分词/data/Dict.txt")
+    text = "".join(lode_file("作业 2：最大匹配分词/data/Sentence.txt"))
     result = split_word(word_list, text)
     print(result)
+
+
+if __name__ == "__main__":
+    main()
