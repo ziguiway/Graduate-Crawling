@@ -35,14 +35,18 @@ int main()
 
     int ch = fgetc(fp);
     int skip_count = 0;
+
     while(ch != EOF)
     {
-        printf("进 while了\n");
         if(skip_count > 0)
         {
-            printf("skip_count: %d\n", skip_count);
+            // printf("skip_count: %d\n", skip_count);
             skip_count--;
             continue;
+        }
+        
+        else{
+            printf("//");
         }
 
         int bits[8];
@@ -51,13 +55,13 @@ int main()
         {
             printf("%d", bits[i]);
         }
-        printf("//");
         printf("\n");
 
 
         skip_count = scan(bits);
         printf("skip_count: %d\n", skip_count);
         ch = fgetc(fp);
+        printf("====================================\n");
     }
 
 
