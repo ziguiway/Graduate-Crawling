@@ -151,6 +151,8 @@ notes/深度学习/自注意力机制/
 | 2026-07-14 | 第 6 章 | 自注意力机制（Seq 输入输出、注意力公式、多头、位置编码） | `notes/深度学习/自注意力机制/自注意力机制.md` | ✅ 全章 |
 | 2026-07-14 | 第 7 章 | Transformer（Seq2Seq 应用、编码器结构、残差+LN） | `notes/深度学习/Transformer/Transformer.md` | ✅ 全章 |
 | 2026-07-15 | 第 7 章 | Transformer 解码器（自回归、掩码注意力、NAR、cross-attention） | `notes/深度学习/Transformer/Transformer.md` | ✅ 7.4–7.5 完成；训练技巧待续 |
+| 2026-07-16 | — | NLP 基础编程练习（导师李正华布置，11 个核心作业 + 4 个扩展） | `notes/NLP基础编程练习/NLP基础编程练习.md` | ⬜ 作业 1–11 未开始 |
 
 **续学线索**（下次接着学的起点）：
 - 第 7 章 Transformer：训练技巧（teacher forcing / schedule sampling / beam search / 位置编码公式）
+- NLP 基础编程练习：从**作业 1 分字（GB/UTF8，C 语言）**开始，每天发日志记录进展和困难
