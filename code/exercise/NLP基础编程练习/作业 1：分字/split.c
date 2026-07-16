@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_binary(int ch) {
-    // 只处理 0~255 的有效字符
+void byte_to_bits(int ch, int bits[8]) {
     if (ch < 0 || ch > 255) return;
     
     for (int i = 7; i >= 0; i--) {
-        putchar((ch & (1 << i)) ? '1' : '0');
+        bits[7 - i] = (ch >> i) & 1;  // 或 (ch & (1 << i)) ? 1 : 0
     }
 }
 
@@ -24,7 +23,12 @@ int main()
     
     while(ch != EOF)
     {
-        print_binary(ch);
+        int bits[8];
+        byte_to_bits(ch, bits);
+        for(int i = 0; i < 8; i++)
+        {
+            printf("%d", bits[i]);
+        }
         printf("\n");
         ch = fgetc(fp);
     }
