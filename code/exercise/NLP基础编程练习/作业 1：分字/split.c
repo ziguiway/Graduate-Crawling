@@ -12,7 +12,12 @@ int main()
     }
 
     int ch = fgetc(fp);
-    printf("%c", ch);
+    
+    while(ch != EOF)
+    {
+        printf("%c", ch);
+        ch = fgetc(fp);
+    }
 
 
     fclose(fp);
