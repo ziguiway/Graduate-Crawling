@@ -15,14 +15,21 @@ def split_word(word_list:list, text:str) -> list:
     result = []
     max_len = get_dic_max_len(word_list)
     
-    while True:
-        if not text:
-            break
+    for i ,ch in enumerate(text):
+        start = i
+        end = i + max_len
+
+        if text[start:end] in word_list:
+            result.append(text[start:end])
+            continue
+
+        i = end - 1
+        end = i + max_len
         
-        tmp = text[:max_len]
-        if tmp in word_list:
-            result.append(tmp)
-            text = text[max_len:]
+       
+
+
+        
         
 
 
