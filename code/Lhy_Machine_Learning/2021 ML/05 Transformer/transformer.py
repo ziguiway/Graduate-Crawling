@@ -287,8 +287,17 @@ def decoder_block(
 
     提示：子层 1 的 mask 用 make_causal_mask(N_tgt) 生成。
     """
-    
-    pass
+    # 1. 掩码多头自注意力 + 残差 + LN
+    mask = make_causal_mask(X.shape[1])
+    self_attention_out = multi_head_attention(X, X, X, W_Q1, W_K1, W_V1, W_O1, num_heads, mask=mask)
+    self_attention_out = self_attention_out + X  # (d_model, N)
+    ffn_out = layer_norm(self_attention_out)
+
+    # 2. cross-attention + 残差 + LN
+    cross_out = multi_head_attention(X, enc_out, enc_out, W_Q2, W_K2, W_V2, W_O2, num_heads)
+    cross_out = cross_out + ffn_out  # (d_model, N)
+    ffn_out = layer_norm(cross_out)
+
 
 
 def decoder(
