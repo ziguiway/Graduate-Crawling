@@ -14,7 +14,9 @@ def get_dic_max_len(word_list:list) -> int:
 def split_word(word_list:list, text:str) -> list:
     result = []
     max_len = get_dic_max_len(word_list)
-    while text_len = len(text) > 0:
+    
+    
+
 
 
 
