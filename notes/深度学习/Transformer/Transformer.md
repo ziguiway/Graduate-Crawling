@@ -181,20 +181,42 @@ $$
 
 ### 3.7 编码器整体结构（重复 N 次）
 
+```mermaid
+flowchart TB
+    INPUT["输入向量序列"] --> ADD(("＋"))
+    PE["位置编码<br/>Positional Encoding"] --> ADD
+    ADD --> BLOCK_IN
+
+    subgraph ENCODER["编码器堆叠：Encoder Block × N"]
+        direction TB
+        BLOCK_IN["Block 输入"] --> MHA["多头自注意力<br/>Multi-Head Self-Attention"]
+        MHA --> RES1(("＋"))
+        BLOCK_IN -. "残差连接" .-> RES1
+        RES1 --> LN1["层归一化<br/>LayerNorm"]
+        LN1 --> FFN["前馈网络<br/>Feed-Forward Network"]
+        FFN --> RES2(("＋"))
+        LN1 -. "残差连接" .-> RES2
+        RES2 --> LN2["层归一化<br/>LayerNorm"]
+    end
+
+    LN2 --> OUTPUT["输出向量序列"]
+
+    classDef io fill:#e8f1ff,stroke:#4c78a8,stroke-width:2px,color:#1f2937;
+    classDef position fill:#fff4d6,stroke:#d69e2e,stroke-width:2px,color:#1f2937;
+    classDef attention fill:#e9f7ef,stroke:#2f855a,stroke-width:2px,color:#1f2937;
+    classDef ffn fill:#f3e8ff,stroke:#805ad5,stroke-width:2px,color:#1f2937;
+    classDef norm fill:#fff0f0,stroke:#c53030,stroke-width:2px,color:#1f2937;
+    classDef add fill:#ffffff,stroke:#4a5568,stroke-width:2px,color:#1f2937;
+
+    class INPUT,OUTPUT,BLOCK_IN io;
+    class PE position;
+    class MHA attention;
+    class FFN ffn;
+    class LN1,LN2 norm;
+    class ADD,RES1,RES2 add;
 ```
-输入向量序列
-   ↓
-+ 位置编码（Positional Encoding）     ← 自注意力没有位置信息，要补
-   ↓
-┌─────────────────────────────────┐
-│  多头自注意力                        │
-│  + 残差连接 → 层归一化               │  ← 这个 block 重复 N 次
-│  + 前馈网络（FFN）                  │
-│  + 残差连接 → 层归一化               │
-└─────────────────────────────────┘
-   ↓
-输出向量序列
-```
+
+> 位置编码只在进入编码器堆叠前加入一次；虚线表示残差连接，框内结构整体依次堆叠 **N 次**。
 
 ### 3.8 关键设计点回顾
 
