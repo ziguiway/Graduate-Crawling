@@ -11,11 +11,19 @@ void byte_to_bits(int ch, int bits[8]) {
 
 int scan(int bits[8]) {
     int count = 1;
+    int is_continuously= 1;
     for(int i = 0; i < 7; i++)
     {
+        if(is_continuously)
+        {
+            break;
+        }
         if(bits[i] == 1 && bits[i+1] == 1)
         {
             count++;
+        }
+        else{
+            is_continuously = 0;
         }
     }
     return count;
@@ -44,7 +52,7 @@ int main()
             skip_count--;
             continue;
         }
-        
+
         else{
             printf("//");
         }
