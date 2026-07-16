@@ -59,18 +59,27 @@ int main()
         int char_len = scan(bits);
 
         // 3. 输出当前字符
-        printf("%d ", ch);
+        // printf("%d ", ch);
         skip_count = char_len - 1;
 
         // 4. 跳过当前字符占的字节
         if(skip_count > 0)
         {
             char_bytes[char_len++] = ch;
-            
+
             ch = fgetc(fp);
             skip_count--;
             continue;
         }
+        char_len = 0;
+
+        ch = fgetc(fp);
+
+        for(int i = 0; i < char_len; i++)
+        {
+            printf("%d \n", char_bytes[i]);
+        }
+        putchar(' ');  // 字符间用空格隔开
 
     }
 
