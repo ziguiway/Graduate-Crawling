@@ -233,7 +233,7 @@ def encoder_block(
     提示：两个子层，每个都是"子层输出 + 残差 → LN"。
     """
     # 1. 多头自注意力 + 残差 + LN
-    O = multi_head_attention(X, X, X, W_Q,W_K,W_V,W_O, num_heads, mask=make_causal_mask(X.shape[1]))
+    O = multi_head_attention(X, X, X, W_Q,W_K,W_V,W_O, num_heads, mask=None)
     O = O + X  # (d_model, N)
     O = layer_norm(O)
     
@@ -242,8 +242,6 @@ def encoder_block(
     O = O + X  # (d_model, N)
     O = layer_norm(O)
 
-    
-    
     return O  # (d_model, N)
     
 
