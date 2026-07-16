@@ -14,13 +14,14 @@ int scan(int bits[8]) {
     int is_continuously= 1;
     for(int i = 0; i < 7; i++)
     {
-        if(is_continuously)
+        // printf("bit %d,%bit %d: %d,%d\n", i, i+1, bits[i], bits[i+1]);
+        if(is_continuously == 0)
         {
             break;
         }
         if(bits[i] == 1 && bits[i+1] == 1)
         {
-            printf("%d,%d\n", bits[i], bits[i+1]);
+            printf("bit %d,%bit %d: %d,%d\n", i, i+1, bits[i], bits[i+1]);
             count++;
         }
         else{
@@ -49,11 +50,9 @@ int main()
     {
         if(skip_count > 0)
         {
-            // printf("skip_count: %d\n", skip_count);
             skip_count--;
             continue;
         }
-
         else{
             printf("//");
         }
