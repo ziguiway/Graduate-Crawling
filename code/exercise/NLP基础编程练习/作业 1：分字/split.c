@@ -63,11 +63,14 @@ int main()
         skip_count = char_len - 1;
 
         // 4. 跳过当前字符占的字节
-        for(int i = 0; i < char_len; i++)
+        if(skip_count > 0)
         {
-            
             ch = fgetc(fp);
+            skip_count--;
+            continue;
         }
+
+        
 
 
 
