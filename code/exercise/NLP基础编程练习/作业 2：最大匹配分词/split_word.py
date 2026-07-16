@@ -16,17 +16,19 @@ def split_word(word_list:list, text:str) -> list:
     max_len = get_dic_max_len(word_list)
     
     for i ,ch in enumerate(text):
-        start = i
-        end = i + max_len
+        j = max_len
+        while j > 0:
+            word = text[i:i+j]
+            if word in word_list:
+                result.append(word)
+                break
+            j -= 1
+        if j == 0:
+            result.append(word)
+        i = i + j - 1
 
-        if text[start:end] in word_list:
-            result.append(text[start:end])
-            continue
-
-        i = end - 1
-        end = i + max_len
-        
-       
+    return result
+              
 
 
         
@@ -38,7 +40,10 @@ def main():
     word_list = lode_file("作业 2：最大匹配分词/data/Dict.txt")
     text = "".join(lode_file("作业 2：最大匹配分词/data/Sentence.txt"))
     result = split_word(word_list, text)
-    print(result)
+    print(" ".join(result))
+
+    print(len(result))
+
 
 
 if __name__ == "__main__":
