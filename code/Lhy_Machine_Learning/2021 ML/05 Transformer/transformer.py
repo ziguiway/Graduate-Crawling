@@ -287,7 +287,7 @@ def decoder_block(
 
     提示：子层 1 的 mask 用 make_causal_mask(N_tgt) 生成。
     """
-    pass
+    
 
 
 def decoder(
