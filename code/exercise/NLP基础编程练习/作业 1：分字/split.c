@@ -79,6 +79,12 @@ int main()
             putchar(char_bytes[i]);
         }
         putchar('*');
+
+        // 6.写入到文件
+        FILE *fp_out;
+        fp_out = fopen("./data/Sentence_split.txt", "ab");
+        fwrite(char_bytes, sizeof(unsigned char), char_len, fp_out);
+        fclose(fp_out);
     }
 
     putchar('\n');
