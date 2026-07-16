@@ -91,13 +91,6 @@ int main()
 
         int bits[8];
         byte_to_bits(ch, bits);
-        // 调试信息走 stderr，不污染 stdout 的切分结果
-        fprintf(stderr, "*");
-        for(int i = 0; i < 8; i++)
-        {
-            fprintf(stderr, "%d", bits[i]);
-        }
-        fprintf(stderr, "\n");
 
         skip_count = scan(bits) - 1;  // ★ 修复 1：首字节已读，还要跳过 total-1 个
         fprintf(stderr, "skip_count: %d\n", skip_count);
