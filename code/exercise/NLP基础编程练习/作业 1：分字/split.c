@@ -20,6 +20,7 @@ int scan(int bits[8]) {
         }
         if(bits[i] == 1 && bits[i+1] == 1)
         {
+            printf("%d,%d\n", bits[i], bits[i+1]);
             count++;
         }
         else{
