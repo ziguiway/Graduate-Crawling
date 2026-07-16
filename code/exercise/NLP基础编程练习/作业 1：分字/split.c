@@ -43,47 +43,45 @@ int main()
         return 1;
     }
 
-    int ch = fgetc(fp);
-    int skip_count = 0;
+    // 处理 UTF-8 BOM（EF BB BF）：存在则跳过 3 字节，不存在则退回
+    int b1 = fgetc(fp), b2 = fgetc(fp), b3 = fgetc(fp);
+    if (!(b1 == 0xEF && b2 == 0xBB && b3 == 0xBF)) {
+        ungetc(b3, fp);
+        ungetc(b2, fp);
+        ungetc(b1, fp);
+    }
 
-    int char_bytes[4];           // 缓存当前字符的所有字节（UTF-8 最多 4 字节）
-    int char_len = 0;
+    int ch;
+    unsigned char char_bytes[4];   // 缓存当前字符的所有字节（UTF-8 最多 4 字节）
+    int char_len;
 
-    while(ch != EOF)
+    while((ch = fgetc(fp)) != EOF)
     {
-        // 1. 把读到的转成 2 位二进制
+        // 1. 把首字节转成 2 进制
         int bits[8];
         byte_to_bits(ch, bits);
 
         // 2. 计算当前字符占几个字节
-        int char_len = scan(bits);
+        char_len = scan(bits);
 
-        // 3. 输出当前字符
-        // printf("%d ", ch);
-        skip_count = char_len - 1;
+        // 3. 首字节先存起来
+        char_bytes[0] = (unsigned char)ch;
 
-        // 4. 跳过当前字符占的字节
-        if(skip_count > 0)
-        {
-            char_bytes[char_len++] = ch;
-
-            ch = fgetc(fp);
-            skip_count--;
-            continue;
+        // 4. 主动读完剩下的 char_len - 1 个 continuation byte
+        for (int i = 1; i < char_len; i++) {
+            int cb = fgetc(fp);
+            if (cb == EOF) break;       // 文件中途结束，保护一下
+            char_bytes[i] = (unsigned char)cb;
         }
-        char_len = 0;
 
-        ch = fgetc(fp);
-
-        for(int i = 0; i < char_len; i++)
-        {
-            printf("%d \n", char_bytes[i]);
+        // 5. 输出完整字符（原始字节，不是数字），后跟空格
+        for (int i = 0; i < char_len; i++) {
+            putchar(char_bytes[i]);
         }
-        putchar(' ');  // 字符间用空格隔开
-
+        putchar('*');
     }
 
-
+    putchar('\n');
     fclose(fp);
 
     return 0;
