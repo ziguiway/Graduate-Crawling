@@ -238,8 +238,8 @@ def encoder_block(
     O = layer_norm(O)
     
     # 2. FFN + 残差 + LN
-    O = feed_forward(O, FFN_W1, FFN_b1, FFN_W2, FFN_b2)
-    O = O + X  # (d_model, N)
+    ffn_out = feed_forward(O, FFN_W1, FFN_b1, FFN_W2, FFN_b2)
+    O = ffn_out + O  # (d_model, N)
     O = layer_norm(O)
 
     return O  # (d_model, N)
@@ -287,7 +287,7 @@ def decoder_block(
 
     提示：子层 1 的 mask 用 make_causal_mask(N_tgt) 生成。
     """
-    raise NotImplementedError
+    pass
 
 
 def decoder(
