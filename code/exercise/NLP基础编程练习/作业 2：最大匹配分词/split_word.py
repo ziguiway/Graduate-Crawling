@@ -18,6 +18,7 @@ def split_word(word_list:list, text:str) -> list:
     while True:
         if not text:
             break
+        
         tmp = text[:max_len]
         if tmp in word_list:
             result.append(tmp)
