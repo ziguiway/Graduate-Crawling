@@ -15,7 +15,8 @@ int main()
     
     while(ch != EOF)
     {
-        printf("%c", ch);
+        printf("%d", ch);
+        printf("\n");
         ch = fgetc(fp);
     }
 
