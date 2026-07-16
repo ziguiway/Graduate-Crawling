@@ -20,7 +20,7 @@ int main()
         ch = fgetc(fp);
     }
 
-
+    
     fclose(fp);
     return 0;
 }
