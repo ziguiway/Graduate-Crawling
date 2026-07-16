@@ -21,7 +21,7 @@ int scan(int bits[8]) {
         }
         if(bits[i] == 1 && bits[i+1] == 1)
         {
-            printf("bit %d,%bit %d: %d,%d\n", i, i+1, bits[i], bits[i+1]);
+            // printf("bit %d,%bit %d: %d,%d\n", i, i+1, bits[i], bits[i+1]);
             count++;
         }
         else{
@@ -54,9 +54,8 @@ int main()
             continue;
         }
         else{
-            printf("//");
+            printf("*");
         }
-
         int bits[8];
         byte_to_bits(ch, bits);
         for(int i = 0; i < 8; i++)
