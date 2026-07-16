@@ -46,30 +46,31 @@ int main()
     int ch = fgetc(fp);
     int skip_count = 0;
 
-    
+    int char_bytes[4];           // 缓存当前字符的所有字节（UTF-8 最多 4 字节）
+    int char_len = 0;
+
     while(ch != EOF)
     {
-        if(skip_count > 0)
-        {
-            skip_count--;
-            continue;
-        }
-        else{
-            printf("*");
-        }
+        // 1. 把读到的转成 2 位二进制
         int bits[8];
         byte_to_bits(ch, bits);
-        for(int i = 0; i < 8; i++)
+
+        // 2. 计算当前字符占几个字节
+        int char_len = scan(bits);
+
+        // 3. 输出当前字符
+        printf("%d ", ch);
+        skip_count = char_len - 1;
+
+        // 4. 跳过当前字符占的字节
+        for(int i = 0; i < char_len; i++)
         {
-            printf("%d", bits[i]);
+            
+            ch = fgetc(fp);
         }
-        printf("\n");
 
 
-        skip_count = scan(bits);
-        printf("skip_count: %d\n", skip_count);
-        ch = fgetc(fp);
-        printf("====================================\n");
+
     }
 
 
