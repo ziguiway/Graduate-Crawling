@@ -55,6 +55,14 @@ int main()
     unsigned char char_bytes[4];   // 缓存当前字符的所有字节（UTF-8 最多 4 字节）
     int char_len;
 
+    // 输出文件：循环外打开一次，"wb" 覆盖写（每次跑都是干净结果）
+    FILE *fp_out = fopen("./data/Sentence_split.txt", "wb");
+    if (fp_out == NULL) {
+        fprintf(stderr, "Error: cannot open output file.\n");
+        fclose(fp);
+        return 1;
+    }
+
     while((ch = fgetc(fp)) != EOF)
     {
         // 1. 把首字节转成 2 进制
@@ -74,21 +82,20 @@ int main()
             char_bytes[i] = (unsigned char)cb;
         }
 
-        // 5. 输出完整字符（原始字节，不是数字），后跟空格
+        // 5. 输出到 stdout（屏幕上看结果）
         for (int i = 0; i < char_len; i++) {
             putchar(char_bytes[i]);
         }
         putchar('*');
 
-        // 6.写入到文件
-        FILE *fp_out;
-        fp_out = fopen("./data/Sentence_split.txt", "ab");
+        // 6. 写入到文件：字符字节 + 分隔符
         fwrite(char_bytes, sizeof(unsigned char), char_len, fp_out);
-        fclose(fp_out);
+        fputc('*', fp_out);
     }
 
     putchar('\n');
     fclose(fp);
+    fclose(fp_out);
 
     return 0;
 }
