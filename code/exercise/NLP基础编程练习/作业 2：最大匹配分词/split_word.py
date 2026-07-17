@@ -30,7 +30,16 @@ def split_word(word_list:list, text:str) -> list:
             j -= 1
     return result
               
-def 
+def identify_word(text:str, answer:str) -> str:
+    identify_count = 0
+    split_text = text.split(" ")
+    split_answer = answer.split(" ")
+    for i in range(len(split_text)):
+        if split_text[i] == split_answer[i]:
+            identify_count += 1
+    
+    return identify_count
+    
 
 def main():
     word_list = lode_file("作业 2：最大匹配分词/data/Dict.txt")
