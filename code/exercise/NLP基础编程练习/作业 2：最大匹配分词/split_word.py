@@ -30,10 +30,7 @@ def split_word(word_list:list, text:str) -> list:
             j -= 1
     return result
               
-
-
-        
-    
+def 
 
 def main():
     word_list = lode_file("作业 2：最大匹配分词/data/Dict.txt")
