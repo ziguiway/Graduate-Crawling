@@ -58,8 +58,9 @@ def main():
     with open("作业 2：最大匹配分词/data/MyOut.txt",'w') as fp:
         fp.write(out)
 
-    print(len(result))
-
+    answer_text = "\n".join(lode_file("作业 2：最大匹配分词/data/Answer.txt"))
+    identify_count = identify_word(out, answer_text)
+    
     
 
 if __name__ == "__main__":
