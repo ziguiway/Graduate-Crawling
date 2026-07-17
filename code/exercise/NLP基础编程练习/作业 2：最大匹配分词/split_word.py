@@ -21,21 +21,19 @@ def split_word(word_list:list, text:str) -> list:
             word = text[i:i+j]
             if word in word_list:
                 result.append(word)
-                i += j
+                i = i + j
+                break
+            if j == 1:
+                result.append(text[i])
+                i += 1
                 break
             j -= 1
-        if j == 0:
-            result.append(word)
-        i = i + j - 1
-
     return result
               
 
 
         
-        
-
-
+    
 
 def main():
     word_list = lode_file("作业 2：最大匹配分词/data/Dict.txt")
