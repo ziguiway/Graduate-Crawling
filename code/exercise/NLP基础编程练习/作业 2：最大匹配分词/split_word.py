@@ -46,45 +46,31 @@ def identify_word(text: str, answer: str) -> int:
     return count
 
 
-def evaluate(my_word: list, answer: str) -> tuple:
-    """字符边界对齐版（NLP 分词评价的标准做法）：
-    把切分结果还原成"每个切分边界位置"的集合，
-    你的边界集合 ∩ 答案的边界集合 的大小 = 正确切分数。
+def boundaries(words: list) -> set:
+    """把词列表转成切分边界位置集合。
+    例：['中国','人民'] → 累积字符位置 {2, 4}
+    """
+    pos = 0
+    b = set()
+    for w in words:
+        pos += len(w)
+        b.add(pos)
+    return b
+
+
+def evaluate(my_words_per_line: list, answer_words_per_line: list) -> tuple:
+    """字符边界对齐版：对比切分边界位置，重合的边界数 = 正确切分数。
+    输入是按行切好的词列表：[[w1,w2,...], [w1,w2,...], ...]
     返回 (correct, total_my, total_ans)。
     """
-    answer_lines = answer.split("\n")
-    # my_word 是所有词的扁平列表，split_word 里 '\n' 被当成普通词 append 进了 result，
-    # 用它可以分行
-    my_lines = []
-    cur = []
-    for w in my_word:
-        if w == "\n":
-            my_lines.append(cur)
-            cur = []
-        else:
-            cur.append(w)
-    my_lines.append(cur)   # 最后一行
-
     correct = 0
     total_my = 0
     total_ans = 0
-    for my_line, ans_line in zip(my_lines, answer_lines):
-        ans_words = ans_line.split()
-
-        def boundaries(words):
-            b = set()
-            pos = 0
-            for w in words:
-                pos += len(w)
-                b.add(pos)
-            return b
-
-        b_my = boundaries(my_line)
-        b_ans = boundaries(ans_words)
+    for my_line, ans_line in zip(my_words_per_line, answer_words_per_line):
         # 边界重合 = 正确切分
-        correct += len(b_my & b_ans)
+        correct += len(boundaries(my_line) & boundaries(ans_line))
         total_my += len(my_line)
-        total_ans += len(ans_words)
+        total_ans += len(ans_line)
     return correct, total_my, total_ans
 
 
@@ -104,10 +90,23 @@ def main():
 
     print("切出的总词数:", len([w for w in result if w != '\n']))
 
-    answer_text = "\n".join(lode_file("作业 2：最大匹配分词/data/Answer.txt"))
+    # 把 result（扁平词列表）按 '\n' 分行
+    my_words_per_line = []
+    cur = []
+    for w in result:
+        if w == '\n':
+            my_words_per_line.append(cur)
+            cur = []
+        else:
+            cur.append(w)
+    my_words_per_line.append(cur)   # 最后一行
+
+    # 答案按行加载并切词
+    answer_lines = lode_file("作业 2：最大匹配分词/data/Answer.txt")
+    answer_words_per_line = [line.split() for line in answer_lines]
 
     # 评价
-    correct, total_my, total_ans = evaluate(result, answer_text)
+    correct, total_my, total_ans = evaluate(my_words_per_line, answer_words_per_line)
     p = correct / total_my if total_my else 0
     r = correct / total_ans if total_ans else 0
     f = 2 * p * r / (p + r) if (p + r) else 0
