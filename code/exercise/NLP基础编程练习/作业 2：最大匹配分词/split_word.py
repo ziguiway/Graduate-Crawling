@@ -37,18 +37,24 @@ def split_word(word_list:list, text:str) -> list:
 
 def main():
     word_list = lode_file("作业 2：最大匹配分词/data/Dict.txt")
-    text = "/n".join(lode_file("作业 2：最大匹配分词/data/Sentence.txt"))
-    print(text)
+    text = "\n".join(lode_file("作业 2：最大匹配分词/data/Sentence.txt"))
+    # print(text)
+    # print("======================================")
     result = split_word(word_list, text)
-    print(" ".join(result).strip())
+    out = ""
+    for word in result:
+        if word == '\n':
+            out += word
+            continue
+        out += word + " "
+
+    print(out)
     with open("作业 2：最大匹配分词/data/MyOut.txt",'w') as fp:
-        fp.write(" ".join(result).strip())
+        fp.write(out)
 
     print(len(result))
 
     
-
-
 
 if __name__ == "__main__":
     main()
