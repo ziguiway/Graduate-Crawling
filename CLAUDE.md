@@ -38,21 +38,29 @@ Graduate-Crawling/          # 同时是 Obsidian vault 根目录
 │   │       ├── <主题>.md            # 主题主笔记
 │   │       ├── Q&AHW*.md            # 该主题相关的作业问答（如 Q&AHW4.md）
 │   │       └── assets/             # 该主题笔记的附件（图片等）
-│   └── NLP基础编程练习/    # 导师布置的 NLP 编程练习（11 个作业 + 扩展）
-│       ├── NLP基础编程练习.md   # 任务总览 + 逐个任务详情 + 进度跟踪
-│       └── assets/                # 任务相关附件
+│   ├── NLP基础编程练习/    # 导师布置的 NLP 编程练习（11 个作业 + 扩展）
+│   │   ├── NLP基础编程练习.md   # 任务总览 + 逐个任务详情 + 进度跟踪
+│   │   └── assets/                # 任务相关附件
+│   ├── 科研入门/           # 科研入门相关笔记
+│   ├── Loss函数解读.md     # 损失函数专题
+│   ├── 数据分析总览.md     # 数据分析专题
+│   └── 特征分析：如何找出关键特征.md  # 特征工程专题
+├── books/               # PDF 教材（李宏毅 LeeDL 教程 part1/part2、Happy-LLM）
 ├── tools/               # 工具笔记
 │   └── pytorch 怎么用.md        # PyTorch 使用指南
 ├── reflections/         # 工作 vs 学术思考对比
 ├── struggles/           # 踩坑记录
 ├── Excalidraw/          # 手绘图（obsidian-excalidraw-plugin）
 ├── assets/              # Obsidian 附件默认存放处
+├── pyproject.toml       # 根 uv 项目（极简，仅 numpy；非课程作业用）
 └── README.md            # 成长轨迹
 ```
 
 注意：课程作业子目录按**主题**命名（如 `01 Introduction`、`05 Transformer`），而非 `HW1`，与下表中的作业编号是映射关系。
 
 ## 常用命令
+
+> 本仓库有**两个** `pyproject.toml`：仓库根的（极简，仅 numpy，供非课程脚本用）和 `code/Lhy_Machine_Learning/` 下的（课程作业的真实依赖）。**课程作业相关命令必须在 `code/Lhy_Machine_Learning/` 下执行**，否则会用到错误的依赖集。
 
 uv 项目根在 `code/Lhy_Machine_Learning/`（`pyproject.toml` 所在处），下列 uv 命令需在该目录下执行：
 
