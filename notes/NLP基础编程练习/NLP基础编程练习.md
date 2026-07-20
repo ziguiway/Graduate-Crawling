@@ -9,21 +9,7 @@ status: 进行中
 source: https://mp.weixin.qq.com/s/H2BTy2cKBzjHjKLXzJKbWQ
 teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 ---
-def identify_word(text:str, answer:str) -> str:
 
-identify_count = 0
-
-split_text = text.split(" ")
-
-split_answer = answer.split(" ")
-
-for i in range(len(split_text)):
-
-if split_text[i] == split_answer[i]:
-
-identify_count += 1
-
-return identify_count
 # NLP 基础编程练习
 
 > [!info] 来源
