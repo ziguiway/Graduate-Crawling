@@ -119,42 +119,18 @@ $$
 
 同时用 `backpointer[i][t]` 保存取得最大值的前驱词性 `p`。
 
-**3. 连接 STOP 并选出最后一个词性**
+**3. 暂时不考虑 STOP，直接选出最后一个词性**
 
 $$
-y_{n-1}^*=\arg\max_t\left(dp[n-1][t]+\log P(STOP\mid t)\right)
+y_{n-1}^*=\arg\max_t dp[n-1][t]
 $$
 
 **4. 沿 backpointer 从右向左回溯，再把结果反转**。
 
-老师板书中的 `y_{n+1}=stop` 不能直接忽略。训练时需要统计句末词性：
+> [!note] 关于 STOP
+> 老师板书里的 `STOP` 是完整 HMM 解码的一部分，但当前可以先不补它。先把 Viterbi 的动态规划和回溯跑通，后面再把 `P(STOP | tag)` 接到终止步骤里。
 
-```python
-def train_hmm(train_data: dict, alpha=1.0):
-    # ...原有计数器...
-    end_count = Counter()
-
-    for sentence in train_data["sentences"]:
-        words = sentence["words"]
-        tags = sentence["tags"]
-        if not words:
-            continue
-
-        # ...原有统计代码...
-        end_count[tags[-1]] += 1  # ★ 当前词性转移到 STOP
-
-    return {
-        # ...原有字段...
-        "end_count": end_count,  # ★ 保存句末计数
-    }
-
-
-def get_end_prob(tag: str, model: dict) -> float:
-    """P(STOP | tag)."""
-    return model["end_count"][tag] / model["tag_counts"][tag]
-```
-
-Viterbi 主体可以写成：
+不带 STOP 的 Viterbi 主体可以写成：
 
 ```python
 import math
@@ -199,11 +175,8 @@ def viterbi(words: list[str], model: dict) -> list[str]:
             )
             backpointer[i][tag] = best_prev_tag  # ★ 保存最佳前驱
 
-    # ★ 3. 终止：最后一个 tag 还要转移到 STOP
-    best_last_tag = max(
-        tags,
-        key=lambda tag: dp[-1][tag] + safe_log(get_end_prob(tag, model)),
-    )
+    # ★ 3. 终止：暂时不考虑 STOP，直接选最后位置分数最高的 tag
+    best_last_tag = max(tags, key=lambda tag: dp[-1][tag])
 
     # ★ 4. 回溯：从最佳句末词性一路向左找前驱
     best_tags = [best_last_tag]
