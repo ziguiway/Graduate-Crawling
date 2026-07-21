@@ -118,7 +118,8 @@ def get_emission_prob(tag: str, word: str, model: dict) -> float:
         model["tag_counts"][tag] + alpha * vocab_size
     )
 
-
+def viterbi():
+    
 
 if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
