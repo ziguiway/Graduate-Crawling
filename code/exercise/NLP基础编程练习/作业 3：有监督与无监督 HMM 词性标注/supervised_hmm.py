@@ -56,7 +56,7 @@ def train_hmm(train_data: dict):
     # 初始化模型参数
     start_count = Counter()
     tag_counts = Counter()
-    tag_transitions = defaultdict(Counter)
+    transition_count = defaultdict(Counter)
     tag_emissions = defaultdict(Counter)
 
     vocab = set()
@@ -68,6 +68,17 @@ def train_hmm(train_data: dict):
         if not words:
             continue
         
+        start_count[tags[0]] += 1
+        
+        for i in range(len(words)):
+            word = words[i]
+            tag = tags[i]
+            
+            vocab.add(word)
+            tag_set.add(tag)
+            tag_counts[tag] += 1
+
+            em
         
 
 if __name__ == "__main__":
