@@ -1,1 +1,1 @@
-def load_
+def load_conll(file_)
