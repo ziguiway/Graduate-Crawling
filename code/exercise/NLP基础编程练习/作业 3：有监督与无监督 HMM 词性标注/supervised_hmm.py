@@ -131,8 +131,11 @@ def viterbi(words: list[str], model: dict) -> list[str]:
     
     tags = sorted(model.get("tag_set"))
 
+    dp = [{} for _ in words]
+    path = [{} for _ in words]
+
     
-    dp = [{}]
+
 
 
 if __name__ == "__main__":
