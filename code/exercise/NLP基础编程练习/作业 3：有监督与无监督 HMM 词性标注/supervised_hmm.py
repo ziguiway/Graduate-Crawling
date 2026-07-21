@@ -85,8 +85,15 @@ def train_hmm(train_data: dict):
         
     return start_count, tag_counts, transition_count, emission_count, vocab, tag_set
 
-def get_probability(start_count, tag_counts, transition_count, emission_count, vocab, tag_set, word, tag):
+def get_probability(start_count, tag_counts, transition_count, emission_count, vocab, tag_set, word, tag, sentence):
     """Calculate the probability of a word given a tag."""
+    # 初始概率
+    pi = {}
+    sentence_count = len(sentence)
+    for tag in tag_set:
+        pi[tag] = start_count[tag] / sentence_count
+    
+    # 状态转移概率
     
 
 if __name__ == "__main__":
