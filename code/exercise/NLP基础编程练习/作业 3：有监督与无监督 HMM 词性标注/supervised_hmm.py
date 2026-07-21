@@ -1,3 +1,6 @@
+from collections import defaultdict, Counter
+
+
 def load_conll(file_path: str) -> dict:
     """Load a CoNLL file for HMM POS tagging."""
     tokens = []
