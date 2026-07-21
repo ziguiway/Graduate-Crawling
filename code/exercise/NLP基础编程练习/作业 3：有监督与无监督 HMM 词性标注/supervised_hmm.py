@@ -86,7 +86,6 @@ def train_hmm(train_data: dict):
     return start_count, tag_counts, transition_count, emission_count, vocab, tag_set
 
 
-def 
 
 if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
