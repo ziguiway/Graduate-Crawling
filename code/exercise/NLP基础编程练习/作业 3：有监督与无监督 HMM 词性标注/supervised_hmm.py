@@ -51,6 +51,24 @@ def load_conll(file_path: str) -> dict:
         "tokens": tokens,
     }
 
+def train_hmm(train_data: dict):
+    """Train HMM model."""
+    # 初始化模型参数
+    start_count = Counter()
+    tag_counts = Counter()
+    tag_transitions = defaultdict(Counter)
+    tag_emissions = defaultdict(Counter)
+
+    vocab = set()
+    tag_set = set()
+    for sentence in train_data["sentences"]:
+        words = sentence["words"]
+        tags = sentence["tags"]
+        
+        if not words:
+            continue
+        
+        
 
 if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
