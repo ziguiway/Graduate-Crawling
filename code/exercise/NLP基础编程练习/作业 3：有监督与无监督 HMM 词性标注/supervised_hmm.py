@@ -134,7 +134,10 @@ def viterbi(words: list[str], model: dict) -> list[str]:
     dp = [{} for _ in words]
     path = [{} for _ in words]
 
-    
+    # 初始概率
+    for tag in tags:
+        dp[0][tag] = get_start_prob(tag, model) + safe_log(get_emission_prob(tag, words[0], model))
+
 
 
 
