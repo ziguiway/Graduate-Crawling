@@ -53,3 +53,4 @@ if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
     print(train_data["sentences"][0]["words"])
     print(train_data["sentences"][0]["tags"])
+    print(train_data)
