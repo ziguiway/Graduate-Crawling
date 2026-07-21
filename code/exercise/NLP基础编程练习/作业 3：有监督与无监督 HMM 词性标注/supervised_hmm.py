@@ -57,7 +57,7 @@ def train_hmm(train_data: dict):
     start_count = Counter()
     tag_counts = Counter()
     transition_count = defaultdict(Counter)
-    tag_emissions = defaultdict(Counter)
+    emission_count = defaultdict(Counter)
 
     vocab = set()
     tag_set = set()
@@ -78,8 +78,15 @@ def train_hmm(train_data: dict):
             tag_set.add(tag)
             tag_counts[tag] += 1
 
-            em
+            emission_count[tag][word] += 1
+
+            if i > 0:
+                transition_count[tags[i-1]][tag] += 1
         
+    return start_count, tag_counts, transition_count, emission_count, vocab, tag_set
+
+
+def 
 
 if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
