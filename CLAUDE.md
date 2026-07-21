@@ -163,8 +163,8 @@ notes/深度学习/自注意力机制/
 | 2026-07-14 | 第 7 章 | Transformer（Seq2Seq 应用、编码器结构、残差+LN） | `notes/深度学习/Transformer/Transformer.md` | ✅ 全章 |
 | 2026-07-15 | 第 7 章 | Transformer 解码器（自回归、掩码注意力、NAR、cross-attention） | `notes/深度学习/Transformer/Transformer.md` | ✅ 7.4–7.5 完成；训练技巧待续 |
 | 2026-07-17 | 第 7 章 | Transformer 训练过程与技巧（teacher forcing、复制、引导注意力、束搜索、加噪声、RL、计划采样） | `notes/深度学习/Transformer/Transformer.md` | ✅ 7.6–7.7 完成；位置编码公式/BLEU 待补 |
-| 2026-07-16 | — | NLP 基础编程练习（导师李正华布置，11 个核心作业 + 4 个扩展） | `notes/NLP基础编程练习/NLP基础编程练习.md` | ⬜ 作业 1–11 未开始 |
+| 2026-07-16 | — | NLP 基础编程练习（导师李正华布置，11 个核心作业 + 4 个扩展） | `notes/NLP基础编程练习/NLP基础编程练习.md` | 🔄 作业 1–2 完成；作业 3 题目已记录，待开始 |
 
 **续学线索**（下次接着学的起点）：
 - 第 7 章 Transformer：位置编码公式（正余弦）的数学推导、BLEU 的具体计算公式（细节待补）
-- NLP 基础编程练习：从**作业 1 分字（GB/UTF8，C 语言）**开始，每天发日志记录进展和困难
+- NLP 基础编程练习：从**作业 3 HMM 词性标注**开始（作业 1–2 已完成），有监督版（极大似然 + 加 α 平滑 + Viterbi）+ 无监督版（Hard/Soft EM，5 个种子），等老师出 EM pdf 讲义再补推导
