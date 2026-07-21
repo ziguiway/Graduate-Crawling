@@ -85,7 +85,7 @@ def train_hmm(train_data: dict):
         
     return start_count, tag_counts, transition_count, emission_count, vocab, tag_set
 
-def get_probability(start_count, tag_counts, transition_count, emission_count, vocab, tag_set, word, tag, sentence):
+def get_probability(start_count, tag_counts, transition_count, emission_count, vocab, tag_set, word, tag, sentence, alpha):
     """Calculate the probability of a word given a tag."""
     # 初始概率
     pi = {}
@@ -104,7 +104,9 @@ def get_probability(start_count, tag_counts, transition_count, emission_count, v
 
     # 发射概率
     emission_porb = defaultdict(dict)
-    
+    for tag in tag_set:
+        for word in vocab:
+            emission_porb[tag][word] = (emission_count[tag][word] + alpha)/(tag_counts[tag] + alpha*len(vocab))
     
 if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
