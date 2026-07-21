@@ -51,9 +51,8 @@ def load_conll(file_path: str) -> dict:
         "tokens": tokens,
     }
 
-def train_hmm(train_data: dict):
+def train_hmm(train_data: dict, alpha=1.0):
     """Train HMM model."""
-    # 初始化模型参数
     start_count = Counter()
     tag_counts = Counter()
     transition_count = defaultdict(Counter)
@@ -82,34 +81,52 @@ def train_hmm(train_data: dict):
 
             if i > 0:
                 transition_count[tags[i-1]][tag] += 1
-        
-    return start_count, tag_counts, transition_count, emission_count, vocab, tag_set
 
-def get_probability(start_count, tag_counts, transition_count, emission_count, vocab, tag_set, word, tag, sentence, alpha):
-    """Calculate the probability of a word given a tag."""
-    # 初始概率
-    pi = {}
-    sentence_count = len(sentence)
-    for tag in tag_set:
-        pi[tag] = start_count[tag] / sentence_count
-    
-    # 状态转移概率
-    transition_porb = defaultdict(dict)
-    for pre_tag in tag_set:
-        for tag in tag_set:
-            if tag_counts[pre_tag] == 0:
-                transition_porb[pre_tag][tag] = 0
-            else:
-                transition_porb[pre_tag][tag] = transition_count[pre_tag][tag] / tag_counts[pre_tag]
+    return {
+        "start_count": start_count,
+        "tag_counts": tag_counts,
+        "transition_count": transition_count,
+        "emission_count": emission_count,
+        "vocab": vocab,
+        "tag_set": tag_set,
+        "sentence_count": len(train_data["sentences"]),
+        "alpha": alpha,
+    }
 
-    # 发射概率
-    emission_porb = defaultdict(dict)
-    for tag in tag_set:
-        for word in vocab:
-            emission_porb[tag][word] = (emission_count[tag][word] + alpha)/(tag_counts[tag] + alpha*len(vocab))
+
+def get_start_prob(tag: str, model: dict) -> float:
+    """P(tag appears at the beginning of a sentence)."""
+    return model["start_count"][tag] / model["sentence_count"]
+
+
+def get_transition_prob(prev_tag: str, tag: str, model: dict) -> float:
+    """P(tag | prev_tag)."""
+    if model["tag_counts"][prev_tag] == 0:
+        return 0.0
+
+    return model["transition_count"][prev_tag][tag] / model["tag_counts"][prev_tag]
+
+
+def get_emission_prob(tag: str, word: str, model: dict) -> float:
+    """P(word | tag), estimated with add-alpha smoothing."""
+    alpha = model["alpha"]
+    vocab_size = len(model["vocab"])
+
+    return (
+        model["emission_count"][tag][word] + alpha
+    ) / (
+        model["tag_counts"][tag] + alpha * vocab_size
+    )
     
 if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
-    print(train_data["sentences"][0]["words"])
-    print(train_data["sentences"][0]["tags"])
-    print(train_data)
+    model = train_hmm(train_data)
+
+    print("第一句话 words:", train_data["sentences"][0]["words"])
+    print("第一句话 tags:", train_data["sentences"][0]["tags"])
+    print("词表大小:", len(model["vocab"]))
+    print("词性数量:", len(model["tag_set"]))
+    print("P(NR at start) =", get_start_prob("NR", model))
+    print("P(VV | NR) =", get_transition_prob("NR", "VV", model))
+    print("P(中国 | NR) =", get_emission_prob("NR", "中国", model))
+    print("P(不存在的词 | NR) =", get_emission_prob("NR", "不存在的词", model))
