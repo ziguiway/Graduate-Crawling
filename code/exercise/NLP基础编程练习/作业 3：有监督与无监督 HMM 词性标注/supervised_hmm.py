@@ -137,7 +137,15 @@ def viterbi(words: list[str], model: dict) -> list[str]:
     # 初始概率
     for tag in tags:
         dp[0][tag] = get_start_prob(tag, model) + safe_log(get_emission_prob(tag, words[0], model))
-
+        path[0][tag] = "START"
+    
+    # 递归计算
+    for i in range(1, len(words)):
+        for tag in tags:
+            dp[i][tag] = -math.inf
+            for prev_tag in tags:
+                dp[i][tag] = max(dp[i][tag], dp[i-1][prev_tag] + safe_log(get_transition_prob(prev_tag, tag, model)) + safe_log(get_emission_prob(tag, words[i], model)))
+            path[i][tag] = prev_tag
 
 
 
