@@ -1,3 +1,4 @@
+import math
 from collections import defaultdict, Counter
 
 
@@ -118,8 +119,60 @@ def get_emission_prob(tag: str, word: str, model: dict) -> float:
         model["tag_counts"][tag] + alpha * vocab_size
     )
 
-def viterbi():
-    
+def safe_log(prob: float) -> float:
+    """Return log(prob), using -inf for impossible paths."""
+    return math.log(prob) if prob > 0.0 else -math.inf
+
+
+def viterbi(words: list[str], model: dict) -> list[str]:
+    """Find the best POS tag sequence for one sentence with Viterbi."""
+    if not words:
+        return []
+
+    tags = sorted(model["tag_set"])
+    dp = [{} for _ in words]
+    backpointer = [{} for _ in words]
+
+    # 1. Initialization: START -> tag, then tag emits the first word.
+    for tag in tags:
+        dp[0][tag] = (
+            safe_log(get_start_prob(tag, model))
+            + safe_log(get_emission_prob(tag, words[0], model))
+        )
+        backpointer[0][tag] = None
+
+    # 2. Recursion: for each current tag, choose the best previous tag.
+    for i in range(1, len(words)):
+        word = words[i]
+
+        for tag in tags:
+            best_prev_tag = None
+            best_score = -math.inf
+
+            for prev_tag in tags:
+                score = (
+                    dp[i - 1][prev_tag]
+                    + safe_log(get_transition_prob(prev_tag, tag, model))
+                    + safe_log(get_emission_prob(tag, word, model))
+                )
+
+                if score > best_score:
+                    best_score = score
+                    best_prev_tag = prev_tag
+
+            dp[i][tag] = best_score
+            backpointer[i][tag] = best_prev_tag
+
+    # 3. Termination without STOP: choose the best tag at the last word.
+    best_last_tag = max(tags, key=lambda tag: dp[-1][tag])
+
+    # 4. Backtracking: recover the best path from right to left.
+    best_tags = [best_last_tag]
+    for i in range(len(words) - 1, 0, -1):
+        best_tags.append(backpointer[i][best_tags[-1]])
+
+    best_tags.reverse()
+    return best_tags
 
 if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
@@ -133,3 +186,6 @@ if __name__ == "__main__":
     print("P(VV | NR) =", get_transition_prob("NR", "VV", model))
     print("P(中国 | NR) =", get_emission_prob("NR", "中国", model))
     print("P(不存在的词 | NR) =", get_emission_prob("NR", "不存在的词", model))
+
+    words = train_data["sentences"][0]["words"]
+    print("第一句话 Viterbi 预测 tags:", viterbi(words, model))
