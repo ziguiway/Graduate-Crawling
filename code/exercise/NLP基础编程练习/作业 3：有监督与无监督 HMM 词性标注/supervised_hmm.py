@@ -126,8 +126,7 @@ def safe_log(prob: float) -> float:
 
 def viterbi(words: list[str], model: dict) -> list[str]:
     """Find the best POS tag sequence for one sentence with Viterbi."""
-    if not words:
-        return []
+    pass
     
 
     
