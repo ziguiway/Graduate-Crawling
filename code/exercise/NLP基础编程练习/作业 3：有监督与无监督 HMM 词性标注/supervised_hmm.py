@@ -94,8 +94,18 @@ def get_probability(start_count, tag_counts, transition_count, emission_count, v
         pi[tag] = start_count[tag] / sentence_count
     
     # 状态转移概率
-    
+    transition_porb = defaultdict(dict)
+    for pre_tag in tag_set:
+        for tag in tag_set:
+            if tag_counts[pre_tag] == 0:
+                transition_porb[pre_tag][tag] = 0
+            else:
+                transition_porb[pre_tag][tag] = transition_count[pre_tag][tag] / tag_counts[pre_tag]
 
+    # 发射概率
+    emission_porb = defaultdict(dict)
+    
+    
 if __name__ == "__main__":
     train_data = load_conll("data/train.conll")
     print(train_data["sentences"][0]["words"])
