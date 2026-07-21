@@ -85,12 +85,149 @@ $$
 
 ---
 
+## 学习问答
+
+### Viterbi 如何从整句所有词性组合中找到概率最大的序列？
+
+#### 问题描述
+
+看到老师板书中的
+
+$$
+C(i,t)=\max_{p}\left[C(i-1,p)P(t\mid p)\right]P(x_i\mid t)
+$$
+
+时，不清楚 `C(i, t)` 在代码里应该存什么、为什么只保留一个最大值，以及算到最后一个词后怎样恢复完整的词性序列。当前 `supervised_hmm.py` 已经实现了句首概率、转移概率和发射概率，但还缺少 Viterbi 的动态规划表和回溯表。
+
+#### 回答
+
+`dp[i][tag]` 表示：处理完第 `0..i` 个词，并且第 `i` 个词固定标为 `tag` 时，所有可能前缀路径中的==最大对数概率==。不同前缀只要到达相同的 `(i, tag)`，后续面对的选择就完全相同，所以较差的前缀永远不可能反超，只需留下最好的一个。
+
+为避免很多小概率连续相乘后浮点下溢，实际代码使用对数：乘法变加法，`max` 的位置不变。
+
+**1. 初始化第一个词**
+
+$$
+dp[0][t]=\log P(t\mid START)+\log P(x_0\mid t)
+$$
+
+**2. 从左到右递推**
+
+$$
+dp[i][t]=\max_p\left(dp[i-1][p]+\log P(t\mid p)\right)+\log P(x_i\mid t)
+$$
+
+同时用 `backpointer[i][t]` 保存取得最大值的前驱词性 `p`。
+
+**3. 连接 STOP 并选出最后一个词性**
+
+$$
+y_{n-1}^*=\arg\max_t\left(dp[n-1][t]+\log P(STOP\mid t)\right)
+$$
+
+**4. 沿 backpointer 从右向左回溯，再把结果反转**。
+
+老师板书中的 `y_{n+1}=stop` 不能直接忽略。训练时需要统计句末词性：
+
+```python
+def train_hmm(train_data: dict, alpha=1.0):
+    # ...原有计数器...
+    end_count = Counter()
+
+    for sentence in train_data["sentences"]:
+        words = sentence["words"]
+        tags = sentence["tags"]
+        if not words:
+            continue
+
+        # ...原有统计代码...
+        end_count[tags[-1]] += 1  # ★ 当前词性转移到 STOP
+
+    return {
+        # ...原有字段...
+        "end_count": end_count,  # ★ 保存句末计数
+    }
+
+
+def get_end_prob(tag: str, model: dict) -> float:
+    """P(STOP | tag)."""
+    return model["end_count"][tag] / model["tag_counts"][tag]
+```
+
+Viterbi 主体可以写成：
+
+```python
+import math
+
+
+def safe_log(prob: float) -> float:
+    """把零概率变成负无穷，使不可能的路径不会胜出。"""
+    return math.log(prob) if prob > 0.0 else -math.inf
+
+
+def viterbi(words: list[str], model: dict) -> list[str]:
+    """Return the highest-probability POS tag sequence."""
+    if not words:
+        return []
+
+    tags = sorted(model["tag_set"])
+    dp = [{} for _ in words]
+    backpointer = [{} for _ in words]
+
+    # ★ 1. 初始化：START -> tag，并生成第一个词
+    for tag in tags:
+        dp[0][tag] = (
+            safe_log(get_start_prob(tag, model))
+            + safe_log(get_emission_prob(tag, words[0], model))
+        )
+        backpointer[0][tag] = None
+
+    # ★ 2. 递推：对当前位置的每个 tag，枚举所有 prev_tag
+    for i in range(1, len(words)):
+        for tag in tags:
+            best_prev_tag = max(
+                tags,
+                key=lambda prev_tag: (
+                    dp[i - 1][prev_tag]
+                    + safe_log(get_transition_prob(prev_tag, tag, model))
+                ),
+            )
+            dp[i][tag] = (
+                dp[i - 1][best_prev_tag]
+                + safe_log(get_transition_prob(best_prev_tag, tag, model))
+                + safe_log(get_emission_prob(tag, words[i], model))
+            )
+            backpointer[i][tag] = best_prev_tag  # ★ 保存最佳前驱
+
+    # ★ 3. 终止：最后一个 tag 还要转移到 STOP
+    best_last_tag = max(
+        tags,
+        key=lambda tag: dp[-1][tag] + safe_log(get_end_prob(tag, model)),
+    )
+
+    # ★ 4. 回溯：从最佳句末词性一路向左找前驱
+    best_tags = [best_last_tag]
+    for i in range(len(words) - 1, 0, -1):
+        best_tags.append(backpointer[i][best_tags[-1]])
+
+    best_tags.reverse()
+    return best_tags
+```
+
+这个实现的时间复杂度为 $O(n|T|^2)$：句长为 $n$，每个位置枚举当前词性和前一个词性；空间复杂度为 $O(n|T|)$，用于保存分数和回溯指针。
+
+#### 一句话记忆
+
+> Viterbi 就是“每个位置、每个当前词性只保留分数最高的前驱”，向前算最优分数，向后沿指针恢复整条最优词性序列。
+
+---
+
 ## 待补充
 
 - [ ] HMM 的定义（状态空间、观测空间、转移概率、发射概率、初始概率）
 - [ ] 极大似然估计的公式推导（参考老师 MLE pdf）
 - [ ] 加 α 平滑的具体公式
-- [ ] Viterbi 算法的递推式和回溯
+- [x] Viterbi 算法的递推式和回溯
 - [ ] Hard EM 和 Soft EM 的区别（前向后向算法）
 - [ ] 我的实现代码
 - [ ] 在 dev.conll 上的准确率结果
