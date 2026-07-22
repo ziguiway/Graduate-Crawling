@@ -128,32 +128,51 @@ def viterbi(words: list[str], model: dict) -> list[str]:
     """Find the best POS tag sequence for one sentence with Viterbi."""
     if not words:
         return []
-    
-    tags = sorted(model.get("tag_set"))
+
+    all_tags = sorted(model["tag_set"])
 
     dp = [{} for _ in words]
     path = [{} for _ in words]
 
-    # 初始概率
-    for tag in tags:
-        dp[0][tag] = get_start_prob(tag, model) + safe_log(get_emission_prob(tag, words[0], model))
-        path[0][tag] = "START"
-    
-    # 递归计算
+    # 1. 初始化：第 0 个词
+    for tag in all_tags:
+        dp[0][tag] = (
+            safe_log(get_start_prob(tag, model))
+            + safe_log(get_emission_prob(tag, words[0], model))
+        )
+        path[0][tag] = None
+
+    # 2. 递推：从第 1 个词开始
     for i in range(1, len(words)):
-        for tag in tags:
-            dp[i][tag] = -math.inf
-            for prev_tag in tags:
-                dp[i][tag] = max(dp[i][tag], dp[i-1][prev_tag] + safe_log(get_transition_prob(prev_tag, tag, model)) + safe_log(get_emission_prob(tag, words[i], model)))
-            path[i][tag] = prev_tag
-    
-    # 回溯路径
-    tags = []
-    current_tag = "END"
-    while current_tag != "START":
-        tags.append(current_tag)
-        current_tag = path[i][current_tag]
-    return tags[::-1]
+        for tag in all_tags:
+            best_score = -math.inf
+            best_prev_tag = None
+
+            for prev_tag in all_tags:
+                score = (
+                    dp[i - 1][prev_tag]
+                    + safe_log(get_transition_prob(prev_tag, tag, model))
+                    + safe_log(get_emission_prob(tag, words[i], model))
+                )
+
+                if score > best_score:
+                    best_score = score
+                    best_prev_tag = prev_tag
+
+            dp[i][tag] = best_score
+            path[i][tag] = best_prev_tag
+
+    # 3. 不考虑 STOP：最后一个位置直接选分数最高的 tag
+    best_last_tag = max(all_tags, key=lambda tag: dp[-1][tag])
+
+    # 4. 回溯
+    best_tags = [best_last_tag]
+
+    for i in range(len(words) - 1, 0, -1):
+        best_tags.append(path[i][best_tags[-1]])
+
+    best_tags.reverse()
+    return best_tags
 
 
 
