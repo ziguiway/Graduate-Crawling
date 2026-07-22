@@ -146,6 +146,16 @@ def viterbi(words: list[str], model: dict) -> list[str]:
             for prev_tag in tags:
                 dp[i][tag] = max(dp[i][tag], dp[i-1][prev_tag] + safe_log(get_transition_prob(prev_tag, tag, model)) + safe_log(get_emission_prob(tag, words[i], model)))
             path[i][tag] = prev_tag
+    
+    # 回溯路径
+    tags = []
+    current_tag = "END"
+    while current_tag != "START":
+        tags.append(current_tag)
+        current_tag = path[i][current_tag]
+    return tags[::-1]
+
+
 
 
 
