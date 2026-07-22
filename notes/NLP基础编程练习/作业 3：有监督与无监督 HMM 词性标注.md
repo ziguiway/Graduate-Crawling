@@ -97,7 +97,7 @@ $$
 C(i,t)=\max_{p}\left[C(i-1,p)P(t\mid p)\right]P(x_i\mid t)
 $$
 
-时，不清楚 `C(i, t)` 在代码里应该存什么、为什么只保留一个最大值，以及算到最后一个词后怎样恢复完整的词性序列。当前 `supervised_hmm.py` 已经实现了句首概率、转移概率和发射概率，但还缺少 Viterbi 的动态规划表和回溯表。
+时，不清楚 `C(i, t)` 在代码里应该存什么、为什么只保留一个最大值，以及算到最后一个词后怎样恢复完整的词性序列。当前 `supervised_hmm.py` 已经实现了句首概率、转移概率、发射概率，并补上了不带 `STOP` 的 Viterbi 解码。
 
 #### 回答
 
@@ -130,7 +130,7 @@ $$
 > [!note] 关于 STOP
 > 老师板书里的 `STOP` 是完整 HMM 解码的一部分，但当前可以先不补它。先把 Viterbi 的动态规划和回溯跑通，后面再把 `P(STOP | tag)` 接到终止步骤里。
 
-不带 STOP 的 Viterbi 主体可以写成：
+当前实现中，不带 STOP 的 Viterbi 主体写成：
 
 ```python
 import math
@@ -142,56 +142,125 @@ def safe_log(prob: float) -> float:
 
 
 def viterbi(words: list[str], model: dict) -> list[str]:
-    """Return the highest-probability POS tag sequence."""
+    """Find the best POS tag sequence for one sentence with Viterbi."""
     if not words:
         return []
 
-    tags = sorted(model["tag_set"])
-    dp = [{} for _ in words]
-    backpointer = [{} for _ in words]
+    all_tags = sorted(model["tag_set"])
 
-    # ★ 1. 初始化：START -> tag，并生成第一个词
-    for tag in tags:
+    dp = [{} for _ in words]
+    path = [{} for _ in words]
+
+    # ★ 1. 初始化：第 0 个词
+    for tag in all_tags:
         dp[0][tag] = (
             safe_log(get_start_prob(tag, model))
             + safe_log(get_emission_prob(tag, words[0], model))
         )
-        backpointer[0][tag] = None
+        path[0][tag] = None
 
-    # ★ 2. 递推：对当前位置的每个 tag，枚举所有 prev_tag
+    # ★ 2. 递推：从第 1 个词开始
     for i in range(1, len(words)):
-        for tag in tags:
-            best_prev_tag = max(
-                tags,
-                key=lambda prev_tag: (
+        for tag in all_tags:
+            best_score = -math.inf
+            best_prev_tag = None
+
+            for prev_tag in all_tags:
+                score = (
                     dp[i - 1][prev_tag]
                     + safe_log(get_transition_prob(prev_tag, tag, model))
-                ),
-            )
-            dp[i][tag] = (
-                dp[i - 1][best_prev_tag]
-                + safe_log(get_transition_prob(best_prev_tag, tag, model))
-                + safe_log(get_emission_prob(tag, words[i], model))
-            )
-            backpointer[i][tag] = best_prev_tag  # ★ 保存最佳前驱
+                    + safe_log(get_emission_prob(tag, words[i], model))
+                )
+
+                if score > best_score:
+                    best_score = score
+                    best_prev_tag = prev_tag
+
+            dp[i][tag] = best_score
+            path[i][tag] = best_prev_tag  # ★ 保存最佳前驱
 
     # ★ 3. 终止：暂时不考虑 STOP，直接选最后位置分数最高的 tag
-    best_last_tag = max(tags, key=lambda tag: dp[-1][tag])
+    best_last_tag = max(all_tags, key=lambda tag: dp[-1][tag])
 
     # ★ 4. 回溯：从最佳句末词性一路向左找前驱
     best_tags = [best_last_tag]
     for i in range(len(words) - 1, 0, -1):
-        best_tags.append(backpointer[i][best_tags[-1]])
+        best_tags.append(path[i][best_tags[-1]])
 
     best_tags.reverse()
     return best_tags
 ```
+
+这里最容易写错的是 `path[i][tag]`。它不能随便记录循环结束时的最后一个 `prev_tag`，必须记录==让当前 `score` 最大的那个 `prev_tag`==，所以代码里同时维护了 `best_score` 和 `best_prev_tag`。
 
 这个实现的时间复杂度为 $O(n|T|^2)$：句长为 $n$，每个位置枚举当前词性和前一个词性；空间复杂度为 $O(n|T|)$，用于保存分数和回溯指针。
 
 #### 一句话记忆
 
 > Viterbi 就是“每个位置、每个当前词性只保留分数最高的前驱”，向前算最优分数，向后沿指针恢复整条最优词性序列。
+
+### `dp` 和 `path` 两张表分别在记录什么？
+
+#### 问题描述
+
+实现代码中有两行：
+
+```python
+dp = [{} for _ in words]
+path = [{} for _ in words]
+```
+
+刚开始不清楚为什么要为每个词都创建一个字典，也不清楚 `dp[i][tag]` 和 `path[i][tag]` 分别保存什么。
+
+#### 回答
+
+如果一句话有 3 个词，`[{} for _ in words]` 会创建 3 个空字典：
+
+```python
+[
+    {},
+    {},
+    {},
+]
+```
+
+后续每个位置的字典里，以词性作为 key：
+
+```python
+dp[1]["VV"]
+path[1]["VV"]
+```
+
+其中：
+
+- `dp[i][tag]`：第 `i` 个词标成 `tag` 时，到当前位置为止的最大 log 概率。
+- `path[i][tag]`：为了得到 `dp[i][tag]` 这个最大分数，第 `i-1` 个词应该是什么词性。
+
+例如：
+
+```python
+dp[2]["NN"] = -12.8
+path[2]["NN"] = "VV"
+```
+
+可以读成：
+
+> 第 2 个词标成 `NN` 时，目前最好的路径分数是 `-12.8`；这条最好路径是从上一个词的 `VV` 接过来的。
+
+最后回溯时，就是从最后一个最佳词性开始，不断查：
+
+```python
+path[i][current_tag]
+```
+
+把每一步的最佳前驱找回来。
+
+> [!warning] Python 小坑
+> 这里要写 `dp = [{} for _ in words]`，不要写 `dp = [{}] * len(words)`。后者会让所有位置共享同一个字典，修改一个位置时，其他位置也会一起变。
+
+#### 一句话记忆
+
+> `dp` 记“分数是多少”，`path` 记“这个最好分数从哪来”。
 
 ---
 
@@ -202,7 +271,7 @@ def viterbi(words: list[str], model: dict) -> list[str]:
 - [ ] 加 α 平滑的具体公式
 - [x] Viterbi 算法的递推式和回溯
 - [ ] Hard EM 和 Soft EM 的区别（前向后向算法）
-- [ ] 我的实现代码
+- [x] 我的实现代码
 - [ ] 在 dev.conll 上的准确率结果
 - [ ] 5 个种子的无监督实验结果对比
 
@@ -213,10 +282,10 @@ def viterbi(words: list[str], model: dict) -> list[str]:
 > [!tip] 日志约定
 > 记录每天的进展和困难，呼应李老师"发日志讲进展和困难"的要求。
 
-（待开始）
+- 2026-07-22：完成有监督 HMM 的不带 `STOP` 版本 Viterbi 解码。关键点是使用 `dp[i][tag]` 保存最大 log 概率，用 `path[i][tag]` 保存最佳前驱词性；回溯时从最后一个位置分数最高的词性开始往前找。
 
 ---
 
 ## 我的理解
 
-（待完成后补充）
+Viterbi 不是把所有词性组合都列出来，而是每走到一个位置，只保留“到这个位置且当前词性固定时”的最好前缀。`dp` 像成绩表，`path` 像路线记录：前者告诉我当前最优分数，后者告诉我这条最优路线是怎么走来的。先不补 `STOP` 可以降低实现难度，等整体 pipeline 跑通后，再把句末转移概率接到终止步骤里。
