@@ -7,7 +7,6 @@ tags:
   - 词性标注
   - EM
   - Viterbi
-  - 作业3
 status: 🔄 进行中
 parent: "[[NLP基础编程练习]]"
 ---
