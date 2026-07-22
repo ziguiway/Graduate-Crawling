@@ -85,6 +85,286 @@ $$
 
 ---
 
+## 核心知识点 1：HMM 如何建模词性标注
+
+### 问题形式
+
+词性标注的输入是一句话的词序列：
+
+$$
+x = x_1, x_2, \dots, x_n
+$$
+
+输出是每个词对应的词性序列：
+
+$$
+y = y_1, y_2, \dots, y_n
+$$
+
+例如：
+
+```text
+输入：戴相龙 说 中国 经济 发展
+输出：NR   VV NR   NN   NN
+```
+
+### HMM 的两个序列
+
+HMM 里有两个序列：
+
+| 序列 | 在词性标注里的含义 | 是否可见 |
+|---|---|---|
+| 观测序列 $x$ | 词序列，例如 `中国`、`经济` | 可见 |
+| 隐状态序列 $y$ | 词性序列，例如 `NR`、`NN`、`VV` | 预测时不可见 |
+
+词性之所以叫“隐状态”，是因为预测时只看到词，不知道词性；训练时因为 `train.conll` 里有人工标注，所以可以直接统计。
+
+### 一阶 HMM 的核心假设
+
+一阶 HMM 有两个重要假设：
+
+- **转移假设**：当前词性只依赖上一个词性。
+- **发射假设**：当前词只依赖当前词性。
+
+用公式写就是：
+
+$$
+P(x,y)=\prod_{i=1}^{n}P(x_i\mid y_i)P(y_i\mid y_{i-1})
+$$
+
+其中：
+
+- $P(y_i\mid y_{i-1})$：转移概率，表示“上一个词性到当前词性”的概率。
+- $P(x_i\mid y_i)$：发射概率，表示“当前词性生成当前词”的概率。
+
+> [!note] 当前实现暂时不考虑 STOP
+> 老师板书里完整写法会把句末 `STOP` 也作为一个特殊状态。本阶段先不补 `P(STOP | tag)`，Viterbi 终止时直接从最后一个位置选择分数最高的词性。
+
+---
+
+## 核心知识点 2：有监督 HMM 的参数估计
+
+有监督训练的意思是：训练数据里已经给好了每个词的正确词性，所以可以直接数频率，用极大似然估计得到概率。
+
+### 句首概率
+
+句首概率表示某个词性出现在句子开头的概率：
+
+$$
+P(t\mid START)=\frac{count(t\text{ appears at sentence start})}{count(\text{sentences})}
+$$
+
+对应代码：
+
+```python
+start_count[tags[0]] += 1
+```
+
+```python
+def get_start_prob(tag: str, model: dict) -> float:
+    return model["start_count"][tag] / model["sentence_count"]
+```
+
+### 转移概率
+
+转移概率表示上一个词性是 `prev_tag` 时，当前词性是 `tag` 的概率：
+
+$$
+P(tag\mid prev\_tag)=\frac{count(prev\_tag, tag)}{count(prev\_tag)}
+$$
+
+对应代码：
+
+```python
+transition_count[tags[i-1]][tag] += 1
+```
+
+```python
+def get_transition_prob(prev_tag: str, tag: str, model: dict) -> float:
+    if model["tag_counts"][prev_tag] == 0:
+        return 0.0
+
+    return model["transition_count"][prev_tag][tag] / model["tag_counts"][prev_tag]
+```
+
+当前版本没有给转移概率做平滑。如果某个转移从没见过，它的概率就是 `0`，在 Viterbi 中会被 `safe_log(0)` 变成 `-inf`。
+
+### 发射概率
+
+发射概率表示某个词性 `tag` 生成某个词 `word` 的概率：
+
+$$
+P(word\mid tag)=\frac{count(tag, word)}{count(tag)}
+$$
+
+为了处理训练集中没见过的词，当前代码使用加 $\alpha$ 平滑：
+
+$$
+P(word\mid tag)=\frac{count(tag, word)+\alpha}{count(tag)+\alpha |V|}
+$$
+
+其中 $|V|$ 是词表大小。
+
+对应代码：
+
+```python
+def get_emission_prob(tag: str, word: str, model: dict) -> float:
+    alpha = model["alpha"]
+    vocab_size = len(model["vocab"])
+
+    return (
+        model["emission_count"][tag][word] + alpha
+    ) / (
+        model["tag_counts"][tag] + alpha * vocab_size
+    )
+```
+
+> [!tip] 三个概率的直觉
+> - 句首概率：一句话通常从什么词性开始？
+> - 转移概率：某个词性后面通常接什么词性？
+> - 发射概率：某个词性通常会生成哪些词？
+
+---
+
+## 核心知识点 3：Viterbi 动态规划解码
+
+### 为什么需要 Viterbi
+
+如果一句话有 $n$ 个词，词性集合大小是 $|T|$，暴力枚举所有词性序列需要：
+
+$$
+|T|^n
+$$
+
+这会爆炸。例如 10 个词、31 个词性，就已经是 $31^{10}$ 种组合。
+
+Viterbi 的想法是：不用保存所有路径。对于每个位置 `i`、每个当前词性 `tag`，只保存到这里为止分数最高的那条路径。
+
+### `dp` 表
+
+```python
+dp[i][tag]
+```
+
+表示：
+
+> 处理到第 `i` 个词，并且第 `i` 个词固定标成 `tag` 时，当前最好的 log 概率分数。
+
+初始化：
+
+$$
+dp[0][t]=\log P(t\mid START)+\log P(x_0\mid t)
+$$
+
+递推：
+
+$$
+dp[i][t]=\max_p\left(dp[i-1][p]+\log P(t\mid p)+\log P(x_i\mid t)\right)
+$$
+
+### `path` 表
+
+```python
+path[i][tag]
+```
+
+表示：
+
+> 为了得到 `dp[i][tag]` 这个最高分，第 `i-1` 个词应该是什么词性。
+
+也就是说，`dp` 负责保存分数，`path` 负责保存路线。
+
+### 递推代码的关键
+
+```python
+best_score = -math.inf
+best_prev_tag = None
+
+for prev_tag in all_tags:
+    score = (
+        dp[i - 1][prev_tag]
+        + safe_log(get_transition_prob(prev_tag, tag, model))
+        + safe_log(get_emission_prob(tag, words[i], model))
+    )
+
+    if score > best_score:
+        best_score = score
+        best_prev_tag = prev_tag
+
+dp[i][tag] = best_score
+path[i][tag] = best_prev_tag
+```
+
+这里最关键的一点：`path[i][tag]` 必须保存“让 `score` 最大的那个 `prev_tag`”，不能保存循环结束时最后一个 `prev_tag`。
+
+### 回溯
+
+当前不考虑 `STOP`，所以先找最后一个位置分数最高的词性：
+
+```python
+best_last_tag = max(all_tags, key=lambda tag: dp[-1][tag])
+```
+
+然后从右往左查 `path`：
+
+```python
+best_tags = [best_last_tag]
+
+for i in range(len(words) - 1, 0, -1):
+    best_tags.append(path[i][best_tags[-1]])
+
+best_tags.reverse()
+```
+
+> [!summary] Viterbi 一句话
+> 从左到右填 `dp` 和 `path`：`dp` 记最好分数，`path` 记最好前驱；最后从句尾最佳词性开始一路倒着找回来。
+
+---
+
+## 核心知识点 4：评价指标 Tagging Accuracy
+
+词性标注评价比较直接：逐词比较预测词性和标准词性是否一致。
+
+$$
+\text{Accuracy}=\frac{\#\text{预测正确的词}}{\#\text{所有词}}
+$$
+
+例如：
+
+```text
+gold: NR VV NR NN
+pred: NR VV NN NN
+```
+
+共有 4 个词，其中 3 个预测正确：
+
+$$
+Accuracy=\frac{3}{4}=0.75
+$$
+
+后续实现 `evaluate` 时，可以遍历 `dev.conll` 的每个句子：
+
+```python
+correct = 0
+total = 0
+
+for sentence in dev_data["sentences"]:
+    words = sentence["words"]
+    gold_tags = sentence["tags"]
+    pred_tags = viterbi(words, model)
+
+    for gold_tag, pred_tag in zip(gold_tags, pred_tags):
+        if gold_tag == pred_tag:
+            correct += 1
+        total += 1
+
+accuracy = correct / total
+```
+
+评价函数是有监督 HMM Part 1 的最后一步：训练参数、Viterbi 解码之后，用它在 `dev.conll` 上报准确率。
+
+---
+
 ## 学习问答
 
 ### Viterbi 如何从整句所有词性组合中找到概率最大的序列？
@@ -266,9 +546,9 @@ path[i][current_tag]
 
 ## 待补充
 
-- [ ] HMM 的定义（状态空间、观测空间、转移概率、发射概率、初始概率）
+- [x] HMM 的定义（状态空间、观测空间、转移概率、发射概率、初始概率）
 - [ ] 极大似然估计的公式推导（参考老师 MLE pdf）
-- [ ] 加 α 平滑的具体公式
+- [x] 加 α 平滑的具体公式
 - [x] Viterbi 算法的递推式和回溯
 - [ ] Hard EM 和 Soft EM 的区别（前向后向算法）
 - [x] 我的实现代码
