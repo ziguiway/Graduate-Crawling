@@ -40,8 +40,8 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 | --- | --------------- | ------------------------ | ----- | ----------------------------------------------------- | ----- |
 | 1   | 分字（GB / UTF8）   | —                        | —     | 汉字编码、BOM、大小字节序                                        | ✅ 完成  |
 | 2   | 最大匹配分词          | 贪心                       | —     | 词典分词、P/R/F 评价                                         | ✅ 完成  |
-| 3   | 有监督 HMM 词性标注    | 生成式                      | —     | 贝叶斯、概率平滑、Viterbi 解码（DP）                               | ⬜ 未开始 |
-| 4   | 线性模型词性标注        | 判别式（Averaged Perceptron） | 局部    | 稀疏特征向量、特征模板、延迟更新 v、partial feature                    | ⬜ 未开始 |
+| 3   | 有监督 + 无监督 HMM 词性标注 | 生成式                      | —     | 贝叶斯、概率平滑、Viterbi 解码（DP）、EM（Hard/Soft）、前向后向算法                               | 🔄 进行中 |
+| 4   | 线性模型词性标注        | 判别式（Averaged Perceptron） | 局部    | 稀疏特征向量、特征模板、延迟更新 v、partial feature                    | ✅ 完成  |
 | 5   | 最大熵词性标注         | 对数线性（局部）                 | 局部    | 梯度推导、模拟退火步长调整                                         | ⬜ 未开始 |
 | 6   | 全局线性模型（GLM）词性标注 | 判别式                      | 全局    | POS tag bigram、动态规划解码（同 Viterbi）                      | ⬜ 未开始 |
 | 7   | CRF 词性标注        | 对数线性（全局）                 | 全局    | Viterbi、forward-backward、logsumexp、梯度推导               | ⬜ 未开始 |
@@ -134,14 +134,17 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
   - 正向最大匹配的预测结果（程序写对应该和这个一模一样）：[文件:Out.txt](http://hlt.suda.edu.cn/index.php/%E6%96%87%E4%BB%B6:Out.txt)
 - 参考课件：[最大匹配（ppt）](http://hlt.suda.edu.cn/~zhli/teach/cip-2015-fall/5-chinese-word-segmentation/max-match.ppt)
 
-### 作业 3：有监督 HMM 词性标注
+### 作业 3：有监督 + 无监督 HMM 词性标注
 
 - **模型**：隐马尔可夫模型（HMM），经典、简单、有效。深度学习前主流 ASR 都基于 HMM。
-- **只做有监督版**（含少量公式推导，贝叶斯公式的典型应用）。
+- **分两部分**：
+  - Part 1：==有监督版==（15 分）—— 极大似然估计 + 加 α 平滑 + Viterbi 解码。详见 [[作业 3：有监督与无监督 HMM 词性标注]]。
+  - Part 2：==无监督版==（15 分）—— Hard EM（4 分）/ Soft EM（8 分），5 个种子汇报准确率，迭代 100 次报 log-likelihood。
 - **关键点**：
   - 概率平滑（好玩且有用）
   - ==Viterbi 解码==：核心，典型动态规划算法，找概率最高的词性序列
-- **延伸**：无监督 HMM 是无监督学习的经典例子（EM 算法），等以后有需要再学，学习曲线很好。
+  - ==前向后向算法==：Soft EM 求 hidden state 期望的动态规划
+- **延伸**：无监督 HMM 是无监督学习的经典例子（EM 算法）。
 - **为什么要学经典知识**（李老师的理由）：
   1. 有些论文基于经典知识，不学读不懂。
   2. 学完可模仿借鉴其做法设计自己的方法。
@@ -162,7 +165,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
 ### 作业 4：基于线性模型的词性标注
 
-- **模型**：Averaged Perceptron（平均感知器）。Perceptron 本质是没有非线性变换的一层神经网络 —— 所以线性模型和深度学习有联系。
+- **模型**：Averaged Perceptron（平均感知器）。Perceptron 本质是没有非线性变换的一层 神经网络 —— 所以线性模型和深度学习有联系。
 - **要点**（页面标注）：判别模型、partial feature。
 - **核心概念**：
   - 稀疏特征向量 `f(x)`：人觉得对决策有帮助的信息，NLP 里是拼凑的字符串
@@ -180,6 +183,10 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
   - [第1部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-1.mp4) ｜ [第2部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-2.mp4) ｜ [第3部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-3.mp4) ｜ [第4部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-4.mp4) ｜ [第5部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-5.mp4)
 - 图片：[第1部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-1.jpg) ｜ [第2部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-2.jpg) ｜ [第3部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-3.jpg) ｜ [第4部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-4.jpg) ｜ [第5部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-5.jpg)
 - 数据：见 [[#词性标注数据（共用）]]
+
+**日志**
+
+- 2026-07-23：✅ 完成 [[作业 4：基于线性模型的词性标注]]。先完成不考虑性能优化的普通 Perceptron 基线，随后按课件流程重构，显式建立特征空间 `E`（81,113 维），用激活的特征编号表示稀疏向量 `f(S, i, t)`，用列表表示权重向量 `w`，通过稀疏点乘计算分数。完整训练集训练 5 轮后，开发集逐词准确率依次为 81.13%、82.55%、83.60%、83.46%、83.00%。本次完成核心模型与完整训练评价流程；partial feature、Averaged Perceptron 和延迟更新作为后续性能优化保留。
 
 ### 作业 5：基于最大熵模型的词性标注
 
