@@ -165,7 +165,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
  ### 作业 4：基于线性模型的词性标注
 
-- **模型**：Averaged Perceptron（平均感知器）。Perceptron 本质是没有非线性变换的一层神经网络 —— 所以线性模型和深度学习有联系。
+- **模型**：Averaged Perceptron（平均感知器）。Perceptron 本质是没有非线性变换的一层 神经网络 —— 所以线性模型和深度学习有联系。
 - **要点**（页面标注）：判别模型、partial feature。
 - **核心概念**：
   - 稀疏特征向量 `f(x)`：人觉得对决策有帮助的信息，NLP 里是拼凑的字符串
