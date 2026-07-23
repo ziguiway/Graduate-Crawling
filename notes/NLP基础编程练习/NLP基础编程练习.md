@@ -41,7 +41,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 | 1   | 分字（GB / UTF8）   | —                        | —     | 汉字编码、BOM、大小字节序                                        | ✅ 完成  |
 | 2   | 最大匹配分词          | 贪心                       | —     | 词典分词、P/R/F 评价                                         | ✅ 完成  |
 | 3   | 有监督 + 无监督 HMM 词性标注 | 生成式                      | —     | 贝叶斯、概率平滑、Viterbi 解码（DP）、EM（Hard/Soft）、前向后向算法                               | 🔄 进行中 |
-| 4   | 线性模型词性标注        | 判别式（Averaged Perceptron） | 局部    | 稀疏特征向量、特征模板、延迟更新 v、partial feature                    | 🔄 进行中 |
+| 4   | 线性模型词性标注        | 判别式（Averaged Perceptron） | 局部    | 稀疏特征向量、特征模板、延迟更新 v、partial feature                    | ✅ 完成  |
 | 5   | 最大熵词性标注         | 对数线性（局部）                 | 局部    | 梯度推导、模拟退火步长调整                                         | ⬜ 未开始 |
 | 6   | 全局线性模型（GLM）词性标注 | 判别式                      | 全局    | POS tag bigram、动态规划解码（同 Viterbi）                      | ⬜ 未开始 |
 | 7   | CRF 词性标注        | 对数线性（全局）                 | 全局    | Viterbi、forward-backward、logsumexp、梯度推导               | ⬜ 未开始 |
@@ -186,7 +186,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
 **日志**
 
-- 2026-07-23：开始实现 [[作业 4：基于线性模型的词性标注]]。先完成不考虑性能优化的普通 Perceptron 基线：直接构造包含候选词性的完整字符串特征，逐一尝试所有词性，不使用 partial feature、Averaged Perceptron 和延迟更新。随后按课件流程重构，显式建立特征空间 `E`（81,113 维），用激活的特征编号表示稀疏向量 `f(S, i, t)`，用列表表示权重向量 `w`，通过稀疏点乘计算分数。完整训练集训练 5 轮后，开发集逐词准确率依次为 81.13%、82.55%、83.60%、83.46%、83.00%；后两轮的波动体现了后续引入 Averaged Perceptron 的必要性。
+- 2026-07-23：✅ 完成 [[作业 4：基于线性模型的词性标注]]。先完成不考虑性能优化的普通 Perceptron 基线，随后按课件流程重构，显式建立特征空间 `E`（81,113 维），用激活的特征编号表示稀疏向量 `f(S, i, t)`，用列表表示权重向量 `w`，通过稀疏点乘计算分数。完整训练集训练 5 轮后，开发集逐词准确率依次为 81.13%、82.55%、83.60%、83.46%、83.00%。本次完成核心模型与完整训练评价流程；partial feature、Averaged Perceptron 和延迟更新作为后续性能优化保留。
 
 ### 作业 5：基于最大熵模型的词性标注
 
