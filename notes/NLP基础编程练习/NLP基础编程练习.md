@@ -163,7 +163,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
   - [HMM 模型中极大似然估计的由来（公式推导，pdf）](http://hlt.suda.edu.cn/~zhli/teach/cip-2015-fall/7-hmm-tagging-MLE/main.pdf)
 - 数据：见上方 [[#词性标注数据（共用）]]
 
- ### 作业 4：基于线性模型的词性标注
+### 作业 4：基于线性模型的词性标注
 
 - **模型**：Averaged Perceptron（平均感知器）。Perceptron 本质是没有非线性变换的一层 神经网络 —— 所以线性模型和深度学习有联系。
 - **要点**（页面标注）：判别模型、partial feature。
