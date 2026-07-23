@@ -1,23 +1,24 @@
-"""使用普通 Perceptron 实现局部线性模型词性标注。
+"""按照课件流程，使用普通 Perceptron 实现局部线性模型词性标注。
 
-这是一个优先展示模型原理的朴素版本，暂时不实现：
+代码明确实现课件中的：
 
-1. partial feature + offset；
-2. Averaged Perceptron；
-3. 累积权重 v 的延迟更新；
-4. 特征字符串到整数编号的映射。
+1. 收集训练集中的完整特征，建立特征空间 E；
+2. 将特征字符串映射为整数编号；
+3. 用激活的特征编号表示稀疏特征向量 f(S, i, t)；
+4. 用列表表示权重向量 w；
+5. 通过 w 与 f(S, i, t) 的稀疏点乘计算分数；
+6. 使用普通 Perceptron 更新权重。
 
-因此，代码会为每个候选词性重新构造完整的字符串特征。这样做不快，但
-“抽取特征 -> 计算分数 -> 选择词性 -> 预测错误后更新权重”的流程最直观。
+暂时不实现 partial feature、Averaged Perceptron 和累积权重 v 的延迟更新。
 """
 
 import argparse
-from collections import defaultdict
 from pathlib import Path
 
 
 Sentence = dict[str, list[str]]
-Weights = defaultdict[str, float]
+FeatureSpace = dict[str, int]
+Weights = list[float]
 
 
 def load_conll(file_path: Path) -> list[Sentence]:
@@ -50,7 +51,11 @@ def load_conll(file_path: Path) -> list[Sentence]:
     return sentences
 
 
-def extract_features(words: list[str], index: int, tag: str) -> list[str]:
+def extract_feature_strings(
+    words: list[str],
+    index: int,
+    tag: str,
+) -> list[str]:
     """按照课件表 1，为位置 index 和候选词性 tag 构造完整字符串特征。
 
     这里故意把 tag 拼进每一个特征。以后实现 partial feature 时，才会把
@@ -120,54 +125,110 @@ def extract_features(words: list[str], index: int, tag: str) -> list[str]:
             f"15|tag={tag}|length={length}|suffix={word[-length:]}"
         )
 
-    return features
+    # 课件中的特征向量是 0/1 向量。同一个特征即使由多个位置重复触发，
+    # 在向量中也只能取值 1，所以这里按出现顺序去重。
+    return list(dict.fromkeys(features))
 
 
-def score_features(features: list[str], weights: Weights) -> float:
-    """将所有被触发特征的权重相加，得到当前候选词性的分数。"""
-    return sum(weights.get(feature, 0.0) for feature in features)
+def build_feature_space(sentences: list[Sentence]) -> FeatureSpace:
+    """扫描训练集，建立课件中的特征空间 E。
+
+    每个训练实例都带有人工标注的正确词性，因此使用 gold tag 实例化
+    特征模板。每个不同的完整特征字符串对应特征空间中的唯一整数下标。
+    """
+    feature_to_id: FeatureSpace = {}
+
+    for sentence in sentences:
+        words = sentence["words"]
+        gold_tags = sentence["tags"]
+
+        for index, gold_tag in enumerate(gold_tags):
+            feature_strings = extract_feature_strings(
+                words, index, gold_tag
+            )
+
+            for feature in feature_strings:
+                if feature not in feature_to_id:
+                    feature_to_id[feature] = len(feature_to_id)
+
+    return feature_to_id
+
+
+def vectorize_features(
+    words: list[str],
+    index: int,
+    tag: str,
+    feature_to_id: FeatureSpace,
+) -> list[int]:
+    """用激活特征的编号表示稀疏特征向量 f(S, i, t)。
+
+    完整向量的维度是 |E|，但绝大多数位置都是 0。这里不保存所有的 0，
+    只返回值为 1 的位置，也就是被激活的特征编号。
+    """
+    feature_strings = extract_feature_strings(words, index, tag)
+
+    return [
+        feature_to_id[feature]
+        for feature in feature_strings
+        if feature in feature_to_id
+    ]
+
+
+def dot_product(feature_ids: list[int], weights: Weights) -> float:
+    """计算 w 与稀疏特征向量 f(S, i, t) 的点积。
+
+    feature_ids 中的每个位置在 f 中都取值 1，未出现的位置都取值 0，
+    因此点积等价于把所有激活位置对应的 w 值相加。
+    """
+    return sum(weights[feature_id] for feature_id in feature_ids)
 
 
 def predict_tag(
     words: list[str],
     index: int,
     tag_set: list[str],
+    feature_to_id: FeatureSpace,
     weights: Weights,
-) -> tuple[str, list[str]]:
-    """尝试所有词性，返回分数最高的词性及其完整特征。"""
+) -> tuple[str, list[int]]:
+    """根据 argmax_t w · f(S, i, t) 返回分数最高的词性。"""
     best_tag = tag_set[0]
-    best_features = extract_features(words, index, best_tag)
-    best_score = score_features(best_features, weights)
+    best_feature_ids = vectorize_features(
+        words, index, best_tag, feature_to_id
+    )
+    best_score = dot_product(best_feature_ids, weights)
 
     for tag in tag_set[1:]:
-        # 朴素版本：每换一个候选词性，就重新构造一次完整字符串特征。
-        features = extract_features(words, index, tag)
-        score = score_features(features, weights)
+        # 暂未实现 partial feature：每换一个候选词性，都重新抽取完整特征。
+        feature_ids = vectorize_features(
+            words, index, tag, feature_to_id
+        )
+        score = dot_product(feature_ids, weights)
 
         if score > best_score:
             best_tag = tag
-            best_features = features
+            best_feature_ids = feature_ids
             best_score = score
 
-    return best_tag, best_features
+    return best_tag, best_feature_ids
 
 
-def update_weights(
-    gold_features: list[str],
-    predicted_features: list[str],
+def perceptron_update(
+    gold_feature_ids: list[int],
+    predicted_feature_ids: list[int],
     weights: Weights,
 ) -> None:
-    """奖励正确词性的特征，惩罚错误词性的特征。"""
-    for feature in gold_features:
-        weights[feature] += 1.0
+    """执行 w = w + f(S, i, gold) - f(S, i, predicted)。"""
+    for feature_id in gold_feature_ids:
+        weights[feature_id] += 1.0
 
-    for feature in predicted_features:
-        weights[feature] -= 1.0
+    for feature_id in predicted_feature_ids:
+        weights[feature_id] -= 1.0
 
 
 def train_one_epoch(
     sentences: list[Sentence],
     tag_set: list[str],
+    feature_to_id: FeatureSpace,
     weights: Weights,
 ) -> tuple[int, int]:
     """顺序遍历一次训练集，并返回预测错误数和总词数。"""
@@ -179,8 +240,8 @@ def train_one_epoch(
         gold_tags = sentence["tags"]
 
         for index, gold_tag in enumerate(gold_tags):
-            predicted_tag, predicted_features = predict_tag(
-                words, index, tag_set, weights
+            predicted_tag, predicted_feature_ids = predict_tag(
+                words, index, tag_set, feature_to_id, weights
             )
             total += 1
 
@@ -188,8 +249,14 @@ def train_one_epoch(
                 continue
 
             mistakes += 1
-            gold_features = extract_features(words, index, gold_tag)
-            update_weights(gold_features, predicted_features, weights)
+            gold_feature_ids = vectorize_features(
+                words, index, gold_tag, feature_to_id
+            )
+            perceptron_update(
+                gold_feature_ids,
+                predicted_feature_ids,
+                weights,
+            )
 
     return mistakes, total
 
@@ -197,6 +264,7 @@ def train_one_epoch(
 def evaluate(
     sentences: list[Sentence],
     tag_set: list[str],
+    feature_to_id: FeatureSpace,
     weights: Weights,
 ) -> tuple[int, int, float]:
     """计算逐词词性标注准确率。"""
@@ -208,7 +276,13 @@ def evaluate(
         gold_tags = sentence["tags"]
 
         for index, gold_tag in enumerate(gold_tags):
-            predicted_tag, _ = predict_tag(words, index, tag_set, weights)
+            predicted_tag, _ = predict_tag(
+                words,
+                index,
+                tag_set,
+                feature_to_id,
+                weights,
+            )
             correct += int(predicted_tag == gold_tag)
             total += 1
 
@@ -277,34 +351,42 @@ def main() -> None:
     if not tag_set:
         raise ValueError("训练集中没有词性。")
 
-    weights: Weights = defaultdict(float)
+    feature_to_id = build_feature_space(train_sentences)
+    weights: Weights = [0.0] * len(feature_to_id)
 
     print(f"训练句子数：{len(train_sentences)}")
     print(f"开发句子数：{len(dev_sentences)}")
     print(f"词性数量：{len(tag_set)}")
+    print(f"特征空间维度 |E|：{len(feature_to_id)}")
     print(f"词性集合：{tag_set}")
 
     first_words = train_sentences[0]["words"]
     first_tag = train_sentences[0]["tags"][0]
     print("\n第一个词：", first_words[0])
     print("正确词性：", first_tag)
-    print("它触发的完整特征：")
-    for feature in extract_features(first_words, 0, first_tag):
-        print("  ", feature)
+    print("它触发的完整特征及其在 E 中的编号：")
+    for feature in extract_feature_strings(first_words, 0, first_tag):
+        print(f"  {feature_to_id[feature]:>6}  {feature}")
 
     for epoch in range(1, args.epochs + 1):
         mistakes, train_total = train_one_epoch(
-            train_sentences, tag_set, weights
+            train_sentences,
+            tag_set,
+            feature_to_id,
+            weights,
         )
         correct, dev_total, dev_accuracy = evaluate(
-            dev_sentences, tag_set, weights
+            dev_sentences,
+            tag_set,
+            feature_to_id,
+            weights,
         )
 
         print(
             f"\nEpoch {epoch}: "
             f"训练错误 {mistakes}/{train_total}，"
             f"开发集准确率 {correct}/{dev_total} = {dev_accuracy:.4%}，"
-            f"非零权重数 {sum(weight != 0 for weight in weights.values())}"
+            f"非零权重数 {sum(weight != 0 for weight in weights)}"
         )
 
 
