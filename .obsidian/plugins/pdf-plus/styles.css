@@ -16,9 +16,47 @@
 .pdf-plus-translation-mode span { color: var(--text-muted); font-size: var(--font-ui-smaller); margin-top: 3px; }
 .pdf-plus-translation-file,
 .pdf-plus-translation-detail { color: var(--text-muted); overflow-wrap: anywhere; }
+.pdf-plus-translation-background-hint {
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+    margin-top: 4px;
+}
 .pdf-plus-translation-stage { font-weight: var(--font-semibold); margin-top: 18px; }
 .pdf-plus-translation-progress { align-items: center; display: flex; gap: 10px; margin: 10px 0; }
 .pdf-plus-translation-progress progress { width: 100%; }
+.pdf-plus-translation-actions {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+.pdf-plus-translation-status {
+    align-items: center;
+    cursor: pointer;
+    display: inline-flex;
+    gap: var(--size-2-2);
+    max-width: min(360px, 40vw);
+}
+.pdf-plus-translation-status:hover {
+    color: var(--text-accent);
+}
+.pdf-plus-translation-status:focus-visible {
+    outline: 2px solid var(--background-modifier-border-focus);
+    outline-offset: 2px;
+}
+.pdf-plus-translation-status.is-cancelling {
+    color: var(--text-warning);
+}
+.pdf-plus-translation-status-icon {
+    align-items: center;
+    display: inline-flex;
+}
+.pdf-plus-translation-status-icon svg {
+    height: var(--icon-xs);
+    width: var(--icon-xs);
+}
+.pdf-plus-translation-notice-action {
+    margin-inline-start: var(--size-4-2);
+}
 
 /* @settings
 

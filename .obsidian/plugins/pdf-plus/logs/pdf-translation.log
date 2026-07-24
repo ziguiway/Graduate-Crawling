@@ -1,0 +1,375 @@
+[2026-07-24T03:17:48.507Z]
+Error: API key is required. For local Ollama, any non-empty value can be used.
+    at HC (plugin:pdf-plus:563:1625)
+    at e1 (plugin:pdf-plus:561:344)
+    at Ku.run (plugin:pdf-plus:565:3080)
+
+[2026-07-24T03:19:52.753Z]
+Error: PDFMathTranslate exited with code 1
+or_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+[07/24/26 11:19:52] INFO     openai translate call count:  base_translator.py:57
+                             1                                                  
+                    INFO     openai translate cache call   base_translator.py:60
+                             count: 0                                           
+Translation error: Translation subprocess initialization error: 'str' object has no attribute 'choices'
+Traceback: Traceback (most recent call last):
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 156, in _translate_wrapper
+    config = create_babeldoc_config(settings, file)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 534, in create_babeldoc_config
+    translator = get_translator(settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 84, in get_translator
+    _create_translator_instance(
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 73, in _create_translator_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+Subprocess traceback: Traceback (most recent call last):
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 156, in _translate_wrapper
+    config = create_babeldoc_config(settings, file)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 534, in create_babeldoc_config
+    translator = get_translator(settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 84, in get_translator
+    _create_translator_instance(
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 73, in _create_translator_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+{"type": "error", "error": "Translation subprocess initialization error: 'str' object has no attribute 'choices'", "error_type": "SubprocessError", "details": "Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n"}
+{"type": "bridge_error", "error": "Translation subprocess initialization error: 'str' object has no attribute 'choices'\nTraceback: Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n", "error_type": "SubprocessError", "details": "Traceback (most recent call last):\n  File \"/var/folders/yv/dsm_x7x549z53v6rbx7cn5fh0000gp/T/pdf-plus-translate-nnJ54k/pdf-plus-translation-bridge.py\", line 467, in main\n    asyncio.run(translate())\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py\", line 195, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/base_events.py\", line 691, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/var/folders/yv/dsm_x7x549z53v6rbx7cn5fh0000gp/T/pdf-plus-translate-nnJ54k/pdf-plus-translation-bridge.py\", line 448, in translate\n    async for event in do_translate_async_stream(settings, files[0]):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 662, in do_translate_async_stream\n    async for event in translate_func():\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 517, in _translate_in_subprocess\n    raise cb.error\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 428, in _translate_in_subprocess\n    async for event in cb:\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/utils/asynchronize/__init__.py\", line 91, in __anext__\n    raise self.error\npdf2zh_next.high_level.SubprocessError: Translation subprocess initialization error: 'str' object has no attribute 'choices'\nTraceback: Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n\n"}
+    at ChildProcess.eval (plugin:pdf-plus:568:1929)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:519:28)
+    at maybeClose (node:internal/child_process:1101:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:304:5)
+
+[2026-07-24T03:20:09.661Z]
+Error: PDFMathTranslate exited with code 1
+or_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+[07/24/26 11:20:09] INFO     openai translate call count:  base_translator.py:57
+                             1                                                  
+                    INFO     openai translate cache call   base_translator.py:60
+                             count: 0                                           
+Translation error: Translation subprocess initialization error: 'str' object has no attribute 'choices'
+Traceback: Traceback (most recent call last):
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 156, in _translate_wrapper
+    config = create_babeldoc_config(settings, file)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 534, in create_babeldoc_config
+    translator = get_translator(settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 84, in get_translator
+    _create_translator_instance(
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 73, in _create_translator_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+Subprocess traceback: Traceback (most recent call last):
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 156, in _translate_wrapper
+    config = create_babeldoc_config(settings, file)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 534, in create_babeldoc_config
+    translator = get_translator(settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 84, in get_translator
+    _create_translator_instance(
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 73, in _create_translator_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+{"type": "error", "error": "Translation subprocess initialization error: 'str' object has no attribute 'choices'", "error_type": "SubprocessError", "details": "Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n"}
+{"type": "bridge_error", "error": "Translation subprocess initialization error: 'str' object has no attribute 'choices'\nTraceback: Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n", "error_type": "SubprocessError", "details": "Traceback (most recent call last):\n  File \"/var/folders/yv/dsm_x7x549z53v6rbx7cn5fh0000gp/T/pdf-plus-translate-nSyvJn/pdf-plus-translation-bridge.py\", line 467, in main\n    asyncio.run(translate())\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py\", line 195, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/base_events.py\", line 691, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/var/folders/yv/dsm_x7x549z53v6rbx7cn5fh0000gp/T/pdf-plus-translate-nSyvJn/pdf-plus-translation-bridge.py\", line 448, in translate\n    async for event in do_translate_async_stream(settings, files[0]):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 662, in do_translate_async_stream\n    async for event in translate_func():\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 517, in _translate_in_subprocess\n    raise cb.error\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 428, in _translate_in_subprocess\n    async for event in cb:\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/utils/asynchronize/__init__.py\", line 91, in __anext__\n    raise self.error\npdf2zh_next.high_level.SubprocessError: Translation subprocess initialization error: 'str' object has no attribute 'choices'\nTraceback: Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n\n"}
+    at ChildProcess.eval (plugin:pdf-plus:568:1929)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:519:28)
+    at maybeClose (node:internal/child_process:1101:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:304:5)
+
+[2026-07-24T03:21:14.877Z]
+Error: PDFMathTranslate exited with code 1
+or_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+[07/24/26 11:21:14] INFO     openai translate call count:  base_translator.py:57
+                             1                                                  
+                    INFO     openai translate cache call   base_translator.py:60
+                             count: 0                                           
+Translation error: Translation subprocess initialization error: 'str' object has no attribute 'choices'
+Traceback: Traceback (most recent call last):
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 156, in _translate_wrapper
+    config = create_babeldoc_config(settings, file)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 534, in create_babeldoc_config
+    translator = get_translator(settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 84, in get_translator
+    _create_translator_instance(
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 73, in _create_translator_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+Subprocess traceback: Traceback (most recent call last):
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 156, in _translate_wrapper
+    config = create_babeldoc_config(settings, file)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py", line 534, in create_babeldoc_config
+    translator = get_translator(settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 84, in get_translator
+    _create_translator_instance(
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py", line 73, in _create_translator_instance
+    translator.translate("Hello", ignore_cache=True)
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py", line 88, in translate
+    translation = self.do_translate(text, rate_limit_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py", line 117, in do_translate
+    message = response.choices[0].message.content.strip()
+              ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'choices'
+
+{"type": "error", "error": "Translation subprocess initialization error: 'str' object has no attribute 'choices'", "error_type": "SubprocessError", "details": "Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n"}
+{"type": "bridge_error", "error": "Translation subprocess initialization error: 'str' object has no attribute 'choices'\nTraceback: Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n", "error_type": "SubprocessError", "details": "Traceback (most recent call last):\n  File \"/var/folders/yv/dsm_x7x549z53v6rbx7cn5fh0000gp/T/pdf-plus-translate-Y3uHnx/pdf-plus-translation-bridge.py\", line 467, in main\n    asyncio.run(translate())\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py\", line 195, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/base_events.py\", line 691, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/var/folders/yv/dsm_x7x549z53v6rbx7cn5fh0000gp/T/pdf-plus-translate-Y3uHnx/pdf-plus-translation-bridge.py\", line 448, in translate\n    async for event in do_translate_async_stream(settings, files[0]):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 662, in do_translate_async_stream\n    async for event in translate_func():\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 517, in _translate_in_subprocess\n    raise cb.error\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 428, in _translate_in_subprocess\n    async for event in cb:\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/utils/asynchronize/__init__.py\", line 91, in __anext__\n    raise self.error\npdf2zh_next.high_level.SubprocessError: Translation subprocess initialization error: 'str' object has no attribute 'choices'\nTraceback: Traceback (most recent call last):\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 156, in _translate_wrapper\n    config = create_babeldoc_config(settings, file)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/high_level.py\", line 534, in create_babeldoc_config\n    translator = get_translator(settings)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 84, in get_translator\n    _create_translator_instance(\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/utils.py\", line 73, in _create_translator_instance\n    translator.translate(\"Hello\", ignore_cache=True)\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/base_translator.py\", line 88, in translate\n    translation = self.do_translate(text, rate_limit_params)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 331, in wrapped_f\n    return copy(f, *args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 470, in __call__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 371, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/tenacity/__init__.py\", line 473, in __call__\n    result = fn(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/zhengshuang/.local/share/uv/tools/pdf2zh-next/lib/python3.12/site-packages/pdf2zh_next/translator/translator_impl/openai.py\", line 117, in do_translate\n    message = response.choices[0].message.content.strip()\n              ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'choices'\n\n"}
+    at ChildProcess.eval (plugin:pdf-plus:568:1929)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:519:28)
+    at maybeClose (node:internal/child_process:1101:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:304:5)
+

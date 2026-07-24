@@ -326,9 +326,9 @@
   "pdfTranslator": {
     "executable": "",
     "pythonExecutable": "",
-    "apiBaseUrl": "https://api.openai.com/v1",
-    "apiKey": "",
-    "model": "gpt-4o-mini",
+    "apiBaseUrl": "https://ai2.18.show/v1",
+    "apiKey": "sk-7e0b8ce5e3adfcb9b6d9b4ff9ded5583e325110033f2583245b9e1fcc553550e",
+    "model": "glm-5.1",
     "sourceLanguage": "en",
     "targetLanguage": "zh",
     "concurrency": 4,
