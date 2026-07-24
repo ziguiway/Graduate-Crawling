@@ -1,3 +1,25 @@
+.pdf-plus-translation-mode {
+    align-items: center;
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    display: flex;
+    gap: 12px;
+    margin: 8px 0;
+    padding: 14px;
+    text-align: left;
+    width: 100%;
+}
+.pdf-plus-translation-mode:hover,
+.pdf-plus-translation-mode.is-default { border-color: var(--interactive-accent); }
+.pdf-plus-translation-mode strong,
+.pdf-plus-translation-mode span { display: block; }
+.pdf-plus-translation-mode span { color: var(--text-muted); font-size: var(--font-ui-smaller); margin-top: 3px; }
+.pdf-plus-translation-file,
+.pdf-plus-translation-detail { color: var(--text-muted); overflow-wrap: anywhere; }
+.pdf-plus-translation-stage { font-weight: var(--font-semibold); margin-top: 18px; }
+.pdf-plus-translation-progress { align-items: center; display: flex; gap: 10px; margin: 10px 0; }
+.pdf-plus-translation-progress progress { width: 100%; }
+
 /* @settings
 
 name: PDF++

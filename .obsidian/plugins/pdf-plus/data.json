@@ -322,5 +322,24 @@
   "vimHintArgs": "all",
   "PATH": "",
   "autoCheckForUpdates": true,
-  "fixObsidianTextSelectionBug": true
+  "fixObsidianTextSelectionBug": true,
+  "pdfTranslator": {
+    "executable": "",
+    "pythonExecutable": "",
+    "apiBaseUrl": "https://api.openai.com/v1",
+    "apiKey": "",
+    "model": "gpt-4o-mini",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh",
+    "concurrency": 4,
+    "qps": 4,
+    "customPrompt": "",
+    "glossaryPath": "",
+    "outputDirectory": "",
+    "defaultOutputMode": "both",
+    "dualLayout": "side-by-side",
+    "maxPagesPerPart": 0,
+    "autoOpen": true,
+    "writeWikiLinks": false
+  }
 }
