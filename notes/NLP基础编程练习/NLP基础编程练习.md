@@ -9,7 +9,7 @@ status: 进行中
 source: https://mp.weixin.qq.com/s/H2BTy2cKBzjHjKLXzJKbWQ
 teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 ---
-
+  
 # NLP 基础编程练习
 
 > [!info] 来源
