@@ -7,17 +7,18 @@ tags:
 
 # BCMF
 
-- 作者 / 年份 / 会议：
-- PDF：[[文件名.pdf]]
+- 标题：BCMF: A Bidirectional Cross-Modal Fusion Model for Fake News Detection
+- 作者 / 年份 / 期刊：Chuanming Yu, Yinxue Ma, Lu An, Gang Li / 2022 / Information Processing and Management (IP&M, Elsevier)
+- PDF：[[BCMF A bidirectional cross-modal fusion model for fake news detection.pdf]]
 - 代码：
 
 ## 一句话概括
 
-> 用 ______ 方法解决了 ______ 问题，结果表明 ______。
+> 用 Bidirectional Cross-Modal Fusion (BCMF) 方法提高了谣言检测的准确率，相比其他的方法有提升
 
 ## 摘要四要素
 
-- **What（什么问题）**：
+- **What（什么问题）**：假新闻检测
 - **Why（为什么重要）**：
 - **How（怎么做）**：
 - **So What（效果如何）**：
