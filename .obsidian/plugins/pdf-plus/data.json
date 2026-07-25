@@ -322,24 +322,5 @@
   "vimHintArgs": "all",
   "PATH": "",
   "autoCheckForUpdates": true,
-  "fixObsidianTextSelectionBug": true,
-  "pdfTranslator": {
-    "executable": "",
-    "pythonExecutable": "",
-    "apiBaseUrl": "https://ai2.18.show/v1",
-    "apiKey": "sk-7e0b8ce5e3adfcb9b6d9b4ff9ded5583e325110033f2583245b9e1fcc553550e",
-    "model": "glm-5.1",
-    "sourceLanguage": "en",
-    "targetLanguage": "zh",
-    "concurrency": 4,
-    "qps": 4,
-    "customPrompt": "",
-    "glossaryPath": "",
-    "outputDirectory": "",
-    "defaultOutputMode": "both",
-    "dualLayout": "side-by-side",
-    "maxPagesPerPart": 0,
-    "autoOpen": true,
-    "writeWikiLinks": false
-  }
+  "fixObsidianTextSelectionBug": true
 }
