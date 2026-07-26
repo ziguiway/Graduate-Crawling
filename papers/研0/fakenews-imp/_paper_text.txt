@@ -1,0 +1,1096 @@
+===== PAGE 1 =====
+Contents lists available at ScienceDirect
+Information Processing and Management
+journal homepage: www.elsevier.com/locate/ipm
+LLM-assisted fake news detection with adaptive boosting 
+framework incorporating contrastive learning
+Shu Yin a,b, Yuchen Wang
+ b, Dongpeng Hou
+ c, Wenxin An c, Chao Gao b, 
+Xianghua Li b, Zhen Wang d,∗
+a School of Computer Science, Northwestern Polytechnical University, Xi’an, 710072, Shaanxi, China
+b School of Artiﬁcial Intelligence, OPtics and ElectroNics (iOPEN), Northwestern Polytechnical University, Xi’an, 710072, Shaanxi, China
+c School of Mechanical Engineering, Northwestern Polytechnical University, Xi’an, 710072, Shaanxi, China
+d School of Cybersecurity, Northwestern Polytechnical University, Xi’an, 710072, Shaanxi, China
+a r t i c l e  i n f o
+Keywords:
+Fake news detection
+Social network
+Large language model
+Text analysis
+ a b s t r a c t
+With the rapid development of digital technologies, the widespread spread of fake news on so-
+cial media platforms may threaten social stability. Existing methods often use small models as 
+feature extractors for news content, relying on the inherent pattern diﬀerences between true and 
+false news as the basis for fake news detection. However, smaller models cannot perceive latent 
+background information in news content. Additionally, fake news is much less prevalent than 
+true news on real social platforms, which may lead to issues with data collection imbalance of 
+true and false labels. These challenges may limit the eﬀectiveness of existing detection meth-
+ods. Therefore, we propose a Large Language Model-assisted Fake News Detection method with 
+Adaptive Boosting, denoted as LFND-AB. Speciﬁcally, we ﬁrst employ the large language model 
+to generate analyses of the truthfulness and falseness of news text, which contains background 
+information about the news. We then design an explainable base learner for fake news detection 
+that utilizes contrastive learning to align the similarity between the news text and the correspond-
+ing generated analyses to obtain higher-quality fused representations. Furthermore, we design an 
+adaptive ensemble boosting framework based on the base learner. This framework adjusts the 
+weights of misclassiﬁed samples to improve the detection performance in the next base learner, 
+thereby optimizing the model’s ability to handle label imbalance. The comprehensive experi-
+ments conducted on benchmark datasets demonstrate that both the proposed base learner and 
+LFND-AB outperform State-Of-The-Art (SOTA) methods. The implementation code is available at 
+https://github.com/cgao-comp/FEND.
+1.  Introduction
+Social media is the product of the deep integration of the Internet and traditional social pathways (Hou et al., 2024). As digitization 
+continues to develop, the various social platforms have revolutionized the way of communication and information acquisition. These 
+digital changes have not only brought convenience to our daily lives but also caused an increase of fake news on social platforms (Dou 
+et al., 2021). In the real world, the growing scale of fake news poses severe challenges to individual decision-making and public trust, 
+∗ Corresponding author.
+ E-mail addresses: yinshu@mail.nwpu.edu.cn (S. Yin), wany810@mail.nwpu.edu.cn (Y. Wang), hdp0918@mail.nwpu.edu.cn (D. Hou), 
+wenxinan@mail.nwpu.edu.cn (W. An), cgao@nwpu.edu.cn (C. Gao), li_xianghua@nwpu.edu.cn (X. Li), w-zhen@nwpu.edu.cn (Z. Wang).
+https://doi.org/10.1016/j.ipm.2026.104789
+Received 22 September 2025; Received in revised form 31 January 2026; Accepted 30 March 2026
+Information Processing and Management 63 (2026) 104789 
+Available online 15 April 2026 
+0306-4573/© 2026 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies. 
+===== PAGE 2 =====
+S. Yin et al.
+Fig. 1. The illustration of the potential of Large Language Models (LLMs) for fake news detection task. LLMs could capture external knowledge, 
+such as historical facts, that Small Language Model (SLM) based methods fail to learn from training datasets. Moreover, LLM’s expert-level inference 
+capability can signiﬁcantly assist in fake news detection.
+with the potential to inﬂuence public opinion and exacerbate social instability (Wu et al., 2021a). Moreover, existing studies show 
+that fake news spreads faster and more widely than real news (Vosoughi et al., 2018). Without timely detection and clariﬁcation, 
+fake news may result in long-term public misperception. Therefore, investigating how to eﬃciently and accurately verify large-scale 
+online misinformation not only holds academic value but also has signiﬁcant practical implications (Hu et al., 2023). Such research 
+can inform the development of deployable tools for integration into social media platforms, news organizations, and governmental 
+monitoring systems, playing a crucial role in preserving information authenticity in online environments.
+Some studies leverage social context signals (e.g., user comments, publisher proﬁles, and interaction patterns) during news prop-
+agation to assist in detecting fake news (Cui & Jia, 2024). Graphs are widely used in modeling the news dissemination process, 
+where nodes represent news articles or comments, and edges represent relationships through comments or shares (Wu & Hooi, 2023). 
+This method helps in analyzing the spread patterns and interactions within the network, eﬀectively highlighting the characteristic 
+patterns of fake news. For example, Bian et al. (2020) construct a bidirectional graph for the news propagation graph to capture 
+the characteristics of rumor propagation and diﬀusion. Hyper-ISDR uses random hypergraph theory to more reasonably model the 
+spread of Internet rumors and deeply explores the impact of group interaction on the dynamics of rumor propagation (Xia et al., 
+2025). However, these methods typically rely on information that is costly to obtain (e.g., via large-scale web crawling) and often 
+require time to accumulate (Wu et al., 2023b), which may be limited in certain scenarios (such as when comment data is sparse or 
+during the early stages of news propagation). As a result, some research focuses solely on the news content for reality veriﬁcation, 
+referred to as content-based fake news detection. Speciﬁcally, considering that fake news is often deliberately crafted to attract public 
+attention, content-based methods detect fake news by extracting semantic and emotional features from the textual content (Zhang 
+et al., 2021). However, news articles often contain latent background knowledge and cues that are diﬃcult for conventional Small 
+Language Models (SLMs) to capture eﬀectively, limiting the depth of understanding these models can provide.
+As a powerful tool, Large Language Models (LLMs) can capture and analyze ﬁne-grained segments (such as historical factual 
+contexts) based on extensive knowledge bases and inference capabilities (Chen & Shu, 2023; Wang et al., 2024b). Although LLMs can 
+mine the content within news articles, current studies indicate that directly using them as fake news classiﬁers is suboptimal (Hu et al., 
+2024). Therefore, how to eﬀectively use LLMs to enhance the understanding of news content poses a signiﬁcant issue. Furthermore, 
+the proportion of veriﬁable fake news is small compared to the real news on the Internet (Lu et al., 2024; Sheng et al., 2022), and the 
+acquisition and cleaning of data require a lot of human resources. Therefore, designing a robust model to detect fake news eﬀectively 
+under label imbalance conditions is crucial.
+To address these issues, we propose an LLM-assisted Fake News Detection method with Adaptive Boosting (LFND-AB) using 
+only textual content from the news, which includes textual content analysis, fake news base learner design, and ensemble boosting 
+strategy. In the textual analysis phase, leveraging the extensive knowledge base and expert-level inference capabilities of LLMs, we 
+generate reasons for each piece of news to analyze and support its truthfulness and falseness as Fig. 1. In the model design phase, an 
+explainable base learner is designed to eﬃciently utilize these reasons and the original text to identify the veracity of the news. More 
+speciﬁcally, after obtaining the embeddings of the textual content and its associated reasons using the Pre-trained BERT, we then 
+propose a content-reason interaction attention module, which aggregates and reweights the textual content and each reason. Then, 
+a sampling-based contrastive learning module is developed to improve the embedding quality of original textual content. Finally, 
+a composite loss function is designed to diﬀerentiate the embedding of reasons supporting truthfulness or falseness, and guide the 
+model for training. While the above LLM-assisted base learner can already perform well on its own, it may still be susceptible to 
+label imbalance. In the ensemble boosting strategy, to further enhance robustness, we design an adaptive boosting framework to 
+dynamically adjust each sample weight in the next base learner. Speciﬁcally, we reduce the weights of the samples that are correctly 
+classiﬁed in the previous round and increase the weights of the samples that are misclassiﬁed. This ensemble mechanism allows the 
+model to focus on harder cases in subsequent rounds, improving its overall eﬀectiveness. A series of experiments demonstrates the 
+eﬀectiveness of the proposed LFND-AB method and the base learner. In summary, this paper makes the following contributions:
+Information Processing and Management 63 (2026) 104789 
+2 
+===== PAGE 3 =====
+S. Yin et al.
+• LLMs are used to generate reasons supporting the truthfulness and falseness of news, providing external background knowledge 
+to assist in fake news detection.
+• An explainable fake news base learner is designed to integrate textual content and reasons, enhancing embedding quality dynam-
+ically. 
+• An adaptive boosting framework is introduced, speciﬁcally tailored for label-imbalanced datasets in fake news detection. 
+2.  Related work
+2.1.  SLM-Based fake news detection
+As the fake news in social networks increases rapidly, automatically detecting fake news has become an urgent issue (Zhou 
+& Zafarani, 2020). The task of detecting fake news can be seen as a classiﬁcation task for news. According to the features 
+used, fake news detection methods can be divided into two categories: Social context-based methods and news content-based
+methods.
+Context-based methods use social context, such as user characteristics (Dou et al., 2021), comments (Jin et al., 2016), propagation 
+networks (Zhang et al., 2024), to provide additional information to help detect fake news. Ma et al. (2018) model the information 
+dissemination process as a tree with both bottom-up and top-down directions, using recurrent neural networks designed for tree 
+structures to identify rumors. Due to the superior ability of GNNs to represent structured data, Bian et al. (2020) propose a bidirectional 
+graph convolutional network that learns the characteristics of rumor propagation in both bottom-up and top-down directions, thereby 
+enhancing the accuracy of rumor detection. To better capture structured information, GLAN constructs a heterogeneous graph for 
+each post by establishing relationships between the original posts, reposts, and users, fully leveraging the correlations between 
+diﬀerent types of nodes for rumor detection (Yuan et al., 2019). Additionally, considering the poor robustness of existing methods 
+to noisy propagation structures, Sun et al. introduce graph adversarial contrastive learning to handle such complex scenarios, where 
+contrastive learning is incorporated as part of the loss function to perceive the diﬀerences between similar and diﬀerent categories (Sun 
+et al., 2022). Bazmi et al. (2023) introduce a multi-view attention network, which captures semantic and propagation structure clues 
+through designed attention modules, providing reasonable explanations for fake news detection. Moreover, the historical information 
+of the publisher can also assist in detecting fake news. For instance, Shu et al. (2019) study the relationship between user proﬁles 
+and fake news, proposing a method to represent implicit features of user proﬁles, demonstrating the potential of user features in 
+distinguishing fake news. However, acquiring the additional information required by these methods involves signiﬁcant resources, 
+reducing their practicality.
+Content-based fake news detection has garnered widespread attention due to the relatively low cost of dataset acquisition (Shu 
+et al., 2017). These methods typically examine textual patterns in news articles, including writing style and article inclination (Przy-
+byla, 2020), semantic features (Qi et al., 2021), and emotional characteristics (Luvembe et al., 2023). And most of the corresponding 
+researches use small models to extract content features (Capuano et al., 2023). For example, Chen et al. (2018) use the Recurrent Neu-
+ral Network (RNN) to capture long-term dependent features from news text sequences, while introducing the soft attention mechanism 
+to capture time-varying features. To exploit the emotional information in the text, Zhang et al. (2021) propose the dual sentiment 
+feature for fake news detection, which extracts the publisher sentiment and social sentiment and the similarities and diﬀerences 
+between them from the text to judge the authenticity of the news.  Guo et al. (2023) construct positive and negative evidence graphs 
+using news signals from the dataset. When detecting a particular news article, it is compared with the evidence graphs to generate 
+relevant matching vectors to assist in fake news detection. To address fake news detection across multiple domains, Zhu et al. (2022b) 
+introduce a multi-view fake news detection framework. This framework models news from three perspectives: semantics, sentiment, 
+and style. Then it uses the unique information from these domains to eﬀectively identify fake news. Learning from multiple views, 
+the framework captures both diﬀerences and commonalities across domains, improving the accuracy of fake news detection. To fur-
+ther leverage auxiliary information, multimodal methods have been proposed to jointly utilize text and image features for fake news 
+detection. For example, Wu et al. (2021b) propose the Multimodal Co-Attention Network (MCAN), which models the inter-modal 
+interactions between visual and textual content, addressing the limitations of simple feature concatenation. Furthermore, CMMTN 
+enhances multimodal fake news detection accuracy by employing a masked transformer architecture to fuse cross-modal signals and 
+dynamically ﬁlter out irrelevant inter-modal context (Wang et al., 2023). Considering that fake news usually carries speciﬁc negative 
+intentions, Wang et al. (2024a) construct a hierarchical intent classiﬁcation system based on psychological theory, and gradually 
+infer the potential intentions of the article through the encoder-decoder model to detect fake news. Diﬀerent from traditional meth-
+ods that treat news-related text data as sequences, Wu et al. (2023a) model them as graph-structured data and captures long-range 
+semantic dependencies through neighborhood propagation, thereby eﬀectively reducing information redundancy and improving the 
+accuracy of semantic representation. However, news often contains rich background information and clues that are diﬃcult for small 
+models to extract. At the same time, the knowledge that pre-trained models learn during their pre-training phase limits the model’s 
+capabilities and further restricts the performance of future fake news detection. For example, Bidirectional Encoder Representation 
+from Transformers (BERT) is pre-trained on corpora like Wikipedia, making it diﬃcult to handle the rich background knowledge 
+and potential clues in future news (Sheng et al., 2021). To address these issues, we propose the introduction of LLMs to understand 
+the news content and generate analytical statements for each news instance, which incorporate additional information beyond the 
+original text.
+Information Processing and Management 63 (2026) 104789 
+3 
+===== PAGE 4 =====
+S. Yin et al.
+2.2.  LLM-Based fake news detection
+Recently, LLMs have demonstrated exceptional abilities in various ﬁelds, particularly in classiﬁcation, reasoning tasks, and other 
+classic natural language processing tasks  (Chang et al., 2024; Ouyang et al., 2022). In the speciﬁc context of fake news detection, 
+Kuntur et al. (2024) provide a survey of LLM-based fake news detection methods, outlining how they extend pre-LLM approaches 
+and summarizing their advantages, limitations, and open challenges.  Liang et al. (2024) explore a multi-agent debate framework, 
+showcasing the collaborative problem-solving abilities of LLM agents. Strong et al. (2024) present a zero-shot fact veriﬁcation method 
+based on natural logic and LLMs, emphasizing the model’s generalization ability and interpretability. However, LLMs have not per-
+formed well as fake news detectors and come with high training costs (Hu et al., 2024). With their powerful reasoning capabilities, 
+designing reasonable prompts for samples and analyzing the outputs to indirectly improve detection ability has shown potential for 
+LLMs in the fake news detection domain. Li et al. (2024) propose a framework that uses externally acquired knowledge as prompts 
+for LLMs, achieving good results in a zero-shot environment. Cheung and Lam (2023) train a detector based on LLaMa using exter-
+nal knowledge. Furthermore, Wan et al. (2024) integrate LLMs to generate diverse user reactions, execute explainable agent tasks, 
+and merge expert predictions, thus improving detection accuracy in the fake news detection process. In parallel, Courtroom-FND 
+formulates fake news detection as a multi-role courtroom debate with a judge and two adversarial agents that switch roles, aim-
+ing to reduce cognitive bias and improve decision reliability (Jin et al., 2025b). Moreover, PMTL-DisCo and CAPE-FND investigate 
+prompting-based few-shot and zero-shot fake news detection (Jin et al., 2025a,c). SheepDog diﬀers from previous studies that use 
+LLM to make accuracy judgments to distinguish false information from true information (Wu et al., 2024). Instead, it studies how 
+LLM can enhance the style robustness of fake news detectors, especially by injecting style-diverse reconstructions and content-centric 
+cues during training. However, there are challenges associated with using LLMs for fake news detection. One key issue is that the 
+content generated by LLMs may sometimes suﬀer from low quality, which can degrade the overall performance. Therefore, designing 
+a dynamic interaction attention module that selectively focuses on high-quality, relevant information from the LLM-generated content 
+is crucial. What’s more, veriﬁable fake news is much less frequent than real news on actual social networks. Thus, improving the 
+detection performance under imbalanced data conditions is an important consideration. While recent methods such as ARG (Hu et al., 
+2024) and SheepDog (Wu et al., 2024) also leverage LLM-generated rationales, our approach introduces several novel designs. First, 
+unlike ARG, which only generates single-perspective rationales supporting truthfulness, we employ dual-perspective prompting to 
+generate both supporting and opposing reasons, providing more balanced and comprehensive interpretive signals. Second, we design 
+a contrastive learning module that encourages the model to distinguish between aligned and misaligned news-reason pairs. Third, 
+we further integrate these dual-perspective reasons into a boosting-based ensemble framework, where each base learner is adaptively 
+trained with reweighted examples to handle data imbalance. These components together enable our model not only to beneﬁt from 
+LLM knowledge but also to enhance robustness and explainability under limited supervision. 
+3.  Method
+Fake news detection is a binary classiﬁcation task, where the core objective is to identify the veracity of news articles (true or 
+false). Given a news item with its textual content denoted as 𝐶, our approach initiates by generating two distinct sets of reasons by 
+LLMs: 𝑅 = {𝑟1, 𝑟2, 𝑟3
+} supporting the news as true, and 𝐹 = {𝑓1, 𝑓2, 𝑓3
+} suggesting it is false. Using the original text 𝐶 along with 
+these generated reasons, the main goal is to develop a model function:
+𝑓 (𝐶, 𝐹 , 𝑅) → 𝑦, (1)
+where 𝑦 is the authentic label indicating the truthfulness of the news. The proposed LFND-AB includes three main phases: the LLM 
+assistance phase for analytical data generation, the base learner design phase for fake news detection, and the ensemble strategy 
+phase for performance boosting. Each phase is presented in the subsequent parts.
+3.1.  Textual analysis and reason data generation
+Considering the high overhead of multimodal information collection, our method focuses solely on the traditional textual content 
+𝐶 of the news. As extensive knowledge bases and expert systems, LLMs have advanced reasoning capabilities and contextual compre-
+hension by analyzing and generating insights that stand expert perspective. Leveraging these properties, LLMs are employed to mine 
+the textual content 𝐶, focusing not only on contextual information but also on views that smaller models cannot deal with, such as 
+historical and factual contexts, emotional tones, etc.
+The rationale for using LLMs instead of traditional external knowledge sources, such as fact-checking databases or structured 
+knowledge graphs, lies in the scalability and ﬂexibility that LLMs provide. While traditional knowledge sources are accurate and 
+manually veriﬁed, they often demand signiﬁcant maintenance eﬀorts and are limited in scope (Wang et al., 2024b; Xie et al., 2024). In 
+contrast, LLMs can oﬀer a more dynamic and adaptable solution (Pan et al., 2024). However, although LLMs enhance the background 
+knowledge associated with news content, previous studies have shown that they are not ideally suited to function as standalone 
+fake news detectors. Instead, they perform more eﬀectively when used to guide smaller models in their decision-making processes. 
+Therefore, our method does not rely solely on the reasons generated by LLMs as the foundation for detecting fake news. Instead, we 
+integrate these generated reasons with the original news content. We introduce a dual-perspective prompting strategy that guides 
+LLMs to generate both true and false reasoning, oﬀering richer evidence than ARG.  Speciﬁcally, for each news text 𝐶, our methodology 
+utilizes an LLM to generate three analytical statements supporting the news as true (𝑅 = {𝑟1, 𝑟2, 𝑟3}) and three contesting it as false 
+Information Processing and Management 63 (2026) 104789 
+4 
+===== PAGE 5 =====
+S. Yin et al.
+Fig. 2. Prompts used for generating reasons in the fake news detection process. The system prompt requests the generation of 3 reasons supporting 
+the authenticity and 3 reasons supporting the falseness of the news, while the context prompt provides the news content for analysis.
+(𝐹 = {𝑓1, 𝑓2, 𝑓3}). ChatGPT-4.0 1 is used as the LLM for generating reasons, and prompts are shown in Fig. 2. This balanced approach 
+of generating reasons for both truthfulness and falseness ensures a comprehensive dataset, facilitating a more nuanced understanding 
+and training of the subsequent fake news detection model.
+In our experiments, generating reasons for each Chinese news item takes an average of 3.4 seconds with 208 input tokens and 242 
+output tokens, while each English item takes an average of 3.6 seconds with 297 input tokens and 298 output tokens. For the Chinese 
+dataset (1,000 news items), the input and output costs are $6.24 and $14.52, respectively, resulting in a total of $20.76. For the 
+English dataset (1,000 news items), the input and output costs are $8.91 and $17.88, respectively, with a total of $26.79. 2 To reduce 
+latency and computational cost, the generation of truthfulness and falseness reasons via LLMs is performed as a one-time preprocessing 
+step for each news article. Rather than querying the LLM repeatedly during training or inference, the generated reasons are stored 
+in structured JavaScript Object Notation (JSON) ﬁles, indexed by their corresponding news IDs. This design explicitly separates the 
+high-cost LLM reasoning stage from the online detection stage, ensuring that the inference latency is bounded by model computation 
+rather than API calls. Furthermore, the preprocessing stage can be executed oﬄine or in batch mode, which further improves the 
+engineering feasibility of the proposed framework under diﬀerent system constraints. In real-world applications, when a new news 
+article is encountered for detection, we can use the above prompt strategy to generate corresponding reasons, then save the reasons 
+in the JSON ﬁle for downstream use. Moreover, the weight of the detection model should be updated periodically through ﬁne-tuning 
+with new labeled data, and the saved generated reason ﬁles should be updated when shifts in topic or language style are observed.
+3.2.  Fake news base learner design
+Following the generation of datasets via LLM, our objective is to use the synthesized reasons 𝑅 and 𝐹 eﬀectively to determine 
+the veracity of news articles. To achieve this, an explainable model is proposed to obtain composite representations for news, which 
+is also the base learner of the ensemble boosting framework. The model includes three core modules: the content-reason interaction 
+attention module, the contrastive learning module, and the loss function. Fig. 3 shows the framework of the model.
+3.2.1.  Interaction attention module
+Although LLMs can generate the truthfulness or falseness reasons based on external knowledge, their inherent hallucination 
+problem may lead to fabricated evidence. This undermines the feasibility of using LLMs as direct predictors for fake news detection (Hu 
+et al., 2024). The valid generated reasons often contain background knowledge related to the news content, which provide signiﬁcant 
+value for the model to better understand the veracity of the news. To address this, we leverage the attention mechanism to implicitly 
+learn the dynamic scores of diﬀerent reasons based on the downstream ground-truth labels. This allows the model to assign higher 
+weights to reliable reasons while down-weighting less trustworthy reasons. In this way, the attention mechanism acts as a ﬁlter that 
+mitigates the unreliable generated reasons in a data-driven manner.
+The interaction attention module dynamically focuses on the original news and each pair of reasons, which includes the reason 
+aggregation strategy and explainable weight adjustment strategy. The weight coeﬃcient reﬂects the importance of each reason, 
+which can assist in judging fake news while maintaining explainability and improving the eﬀectiveness and transparency of the fake 
+news detection process. While our model adaptively weights each reason via interaction attention, it does not explicitly assess causal 
+relationships or inter-reason redundancy, which we consider these aspects as important directions for future research.
+Given the news text 𝐶 and the sets of reasons 𝑅 = {𝑟1, 𝑟2, 𝑟3} for truthfulness and 𝐹 = {𝑓1, 𝑓2, 𝑓3} for falseness, we employ the 
+pre-trained BERT model to encode these texts into embeddings as:
+⎧
+⎪
+⎨
+⎪⎩
+ℎ𝐶 = BERT(𝐶)
+ℎ𝑟𝑛 = BERT(𝑟𝑛)
+ℎ𝑓𝑛 = BERT(𝑓𝑛)
+, 𝑛 = 1, 2, 3, (2)
+where ℎ𝑐, ℎ𝑟𝑛 , and ℎ𝑓𝑛 represent the embeddings of the main content 𝐶, reasons 𝑟𝑛 supporting truthfulness, and reasons 𝑓𝑛 supporting 
+falseness, respectively. Subsequently, a content-based interaction attention mechanism is developed to dynamically focus on each 
+1 https://openai.com/
+2 Using ChatGPT-3.5-turbo as a more economical alternative, the input and output costs for the Chinese dataset (1,000 items) are $0.08 and $0.35. 
+For the English dataset, the corresponding input and output costs are $0.10 and $0.14.
+Information Processing and Management 63 (2026) 104789 
+5 
+===== PAGE 6 =====
+S. Yin et al.
+Fig. 3. The illustration of an explainable base learner for fake news detection. (a) is the content-reason interaction attention module to obtain the 
+information aggregation between the textual content and reasons, and the weight of each content-reason pair is evaluated. (b) is the contrastive 
+learning module based on the self-attention mechanism, enhancing the embedding quality of the original content. (c) is the joint loss to diﬀerentiate 
+reason embeddings representing opposing stances on truthfulness and falseness.
+pair between the original text and each reason, which includes the reason aggregation strategy and explainable weight adjustment 
+strategy. The reason aggregation strategy for the textual content is shown as follows:
+𝐻𝑋𝑛→𝐶 = sof tmax
+(
+𝐐(ℎ𝑋𝑛 ) ⋅ 𝐊(ℎ𝐶 )𝑇 ∕
+√
+𝑑
+)
+𝐕(ℎ𝐶 ), (3)
+where 𝑋𝑛 ∈ 𝑋, and 𝑋 = 𝑅 ∪ 𝐹 = {𝑟1, 𝑟2, 𝑟3, 𝑓1, 𝑓2, 𝑓3}. 𝐐(ℎ𝑋𝑛 ) = 𝑊Qℎ𝑋𝑛 , 𝐊(ℎ𝐶 ) = 𝑊Kℎ𝐶 , and 𝐕(ℎ𝐶 ) = 𝑊Vℎ𝐶 . 𝑑 is the dimensionality. 
+𝐻𝑋𝑛→𝐶 denotes the n-th reason-guided content embedding. After using Eq.  (3), six distinct content embeddings that aggregate reasons 
+supporting truthfulness or falseness are obtained, separately. Further, the importance of six distinct embeddings 𝐻𝑋𝑛→𝐶 are diﬀerent 
+intuitively. To evaluate their importance, an explainable weight coeﬃcient3 𝑊𝐶→𝑋𝑛 is introduced using a reverse attention mechanism 
+from the textual content to each reason, measuring how useful the n-th reason is for judging the veracity of the current news item.
+𝑊𝐶→𝑋𝑛 = MLP(sof tmax
+(
+𝐐(ℎ𝐶 ) ⋅ 𝐊(𝐻𝑋𝑛 )𝑇 ∕
+√
+𝑑
+)
+𝐕(𝐻𝑋𝑛 )), (4)
+where MLP transfers the attention vector to a weight number. Then the explainable coeﬃcient 𝑊𝐶→𝑋𝑛 can adjust the weight of the 
+reason-attention based textual embedding 𝐻𝑋𝑛→𝐶 .
+𝐻𝑋𝑛→𝐶 ← 𝑊𝐶→𝑋𝑛 ⋅ 𝐻𝑋𝑛→𝐶 . (5)
+3.2.2.  Contrastive learning module
+Six content embeddings incorporating true or false reasons are dynamically reweighted after executing the content-reason in-
+teraction attention module. Contrastive learning is a representation learning paradigm that aims to learn discriminative features by 
+bringing semantically similar samples closer and pushing dissimilar samples apart in the latent space (Wang et al., 2022). Since it 
+has shown strong capability in improving representation learning and has achieved promising results across various tasks (Hu et al., 
+2025), a contrastive learning strategy is employed to enhance the representation quality of original textual content. Based on the 
+ground-truth labels, the embeddings of the original content are contrasted with those of the corresponding reasons by minimizing the 
+distance between positive similar pairs (i.e., content and matching reason) and maximizing the distance between negative dissimilar 
+pairs (i.e., content and opposing reason). To implement the procedure, we ﬁrst utilize a self-attention mechanism to enhance the 
+textual relationships within the original content. The computation is deﬁned as follows:
+𝐻𝐶 = sof tmax
+(
+𝐐(ℎ𝐶 ) ⋅ 𝐊(ℎ𝐶 )𝑇 ∕
+√
+𝑑
+)
+𝐕(ℎ𝐶 ). (6)
+3 These weight coeﬃcients for each reason can be ranked, and the explainable weights are demonstrated in the Case Study.
+Information Processing and Management 63 (2026) 104789 
+6 
+===== PAGE 7 =====
+S. Yin et al.
+After the attention mechanism, the contrastive module is computed by contrasting a random positive pair against the set of negative 
+pairs, which is demonstrated as follows:
+CL(𝐻𝐶 ) = − log
+(
+exp(sim(𝐻𝐶 , 𝐒∗(𝐻 +))∕𝜏)
+exp(sim(𝐻𝐶 , 𝐒∗(𝐻 +))∕𝜏)) + ∑3
+𝑘=1 exp(sim(𝐻𝐶 , 𝐻−)∕𝜏)
+)
+, (7)
+where 𝜏 is the temperature parameter that scales the similarity scores before the softmax normalization. In this work, we use the 
+standard unscaled softmax without additional temperature tuning, and therefore set 𝜏 = 1. Here, 𝐻 + denotes the set of reason-guided 
+content embeddings whose stance is consistent with the ground-truth label, while 𝐻 − denotes those with the opposite stance. For 
+example, 𝐻 + = {𝐻𝑟1→𝐶 , 𝐻𝑟2→𝐶 , 𝐻𝑟3→𝐶 } when the ground-truth label is true, and 𝐻 + = {𝐻𝑓1→𝐶 , 𝐻𝑓2→𝐶 , 𝐻𝑓3→𝐶 } when the ground-
+truth label is false, and 𝐻 − includes the instances opposite to those in 𝐻 +, 𝐒∗ denotes the random sampling operator, which selects 
+an instance from the set, and sim(⋅, ⋅) is the learnable cosine similarity evaluation measuring the closeness between two vectors. The 
+contrastive revision eﬀectively reﬁnes the discriminative ability of the embeddings of the textual content, ensuring that the learned 
+representations are more aligned with the underlying truth or falsity of the news.
+3.2.3.  Loss function
+In the base learner for fake news detection, we design a comprehensive loss  to train the model, including a main loss item Main
+for binary classiﬁcation, a contrastive loss item CL to enhance the quality of the original content embedding, a reason judgment loss 
+item R_Pred to align the reasons with the ground-truth label, and a reason Kullback-Leibler (KL) divergence item TF_KL to diﬀerent 
+the reasons supporting truthfulness and reasons supporting falseness.
+As for Main, a dynamic concatenation-based attention weight calculation module is employed to determine and normalize the 
+weights across a set of seven main embeddings, denoted as 𝐻 Φ = {𝐻𝐶 , 𝐻𝑋𝑛→𝐶 }, where 𝑛 = 1, … , 6.
+𝜙(𝐻) = sof tmax 𝐻∈𝐻 Φ (𝑒(𝐻)) = exp (𝑒(𝐻))∑
+𝐻 ′∈𝐻 Φ exp (𝑒(𝐻 ′)) =
+exp (ReLU (
+⃖ ⃗𝑎𝑇 [𝑊𝐴
+𝑇 𝐻]))
+∑
+𝐻 ′∈𝐻 Φ exp (ReLU (
+⃖ ⃗𝑎𝑇 [𝑊𝐴
+𝑇 𝐻 ′])) , (8)
+where 𝑊𝐴 is the learnable matrix in the attention module, ⃖ ⃗𝑎 is the learnable attention vector used to map the transformed embedding 
+into a scalar attention score, and 𝑒(𝐻) is the concatenation-based attention coeﬃcient of 𝐻. 𝜙(𝐻) can be viewed as the normalized 
+contribution score of embedding 𝐻 in the ﬁnal prediction. Further, the multi-head attention can be executed for 𝐻 and the average 
+operator is selected as the pooling process. Then the main loss is shown as follows:
+Main = CE
+(
+MLP
+(∑
+𝐻∈𝐻 Φ 𝜙(𝐻) ⋅ 𝐻
+)
+, 𝑦
+)
+. (9)
+where CE(⋅) denotes the standard cross-entropy loss between the predicted probabilities and the ground-truth labels.
+As for R_Pred, reasons supporting the truthfulness or falseness of news inherently align with one perspective in the classiﬁcation 
+tasks. Thus, they can also serve as auxiliary evidence for targeted retrieval of the veracity.
+R_Pred = CE
+(
+MLP(CAT(𝐻𝑟𝑛→𝐶 )), 𝑦
+)
++ CE
+(
+MLP(CAT(𝐻𝑓𝑛→𝐶 )), 𝑦
+)
+. (10)
+As for TF_KL, to ensure that the embeddings for reasons supporting the truthfulness and reasons supporting the falseness capture 
+distinct views of information, we compute the KL divergence between these two categories to enhance their diﬀerentiation. Therefore, 
+we maximize the KL divergence between these two groups by subtracting TF_KL in the overall objective, encouraging the model to 
+learn more separable and stance-aware reason representations.
+TF_KL = KL(CAT(𝐻𝑟𝑛→𝐶 ), CAT(𝐻𝑓𝑛→𝐶 )). (11)
+The the objective loss can be formulated as follows:
+ = Main + 𝛽1 ⋅ CL + 𝛽2 ⋅ R_Pred − 𝛽3 ⋅ TF_KL. (12)
+where 𝛽1, 𝛽2, and 𝛽3 are coeﬃcients that balance the contrastive loss CL, the reason prediction loss R_Pred, and the KL divergence 
+term TF_KL with respect to the main ground-truth classiﬁcation loss Main.
+3.3.  Ensemble boosting strategy
+The above section has designed an explainable base learner for fake news detection, which can be directly applied to the de-
+tection task. However, due to the common phenomenon where true news outnumbers false news in social networks, the dataset 
+typically exhibits label imbalance. This imbalance often limits the performance of traditional small models. To address this issue, we 
+further develop an ensemble boosting framework that combines multiple base learners and each new learner dynamically focuses on 
+the misclassiﬁed samples in previous rounds, thereby collectively enhancing detection performance in an integrated manner. More 
+speciﬁcally, in our adaptive boosting framework, each base learner contributes diﬀerently to the ﬁnal ensemble through sequential 
+training and error-aware weight adjustments. The ﬁrst learner aims to capture the general distribution based on the average same 
+weight loss for each sample. In contrast, the second learner focuses on correcting the errors of the ﬁrst by improving the weight loss 
+of the misclassiﬁed samples. In summary, after each boosting round, the sample distribution is updated. As a result, each base learner 
+focuses on diﬀerent aspects of the training data, which promotes error correction in subsequent stages and improves the ensemble’s 
+overall robustness. 
+Information Processing and Management 63 (2026) 104789 
+7 
+===== PAGE 8 =====
+S. Yin et al.
+Algorithm 1 The algorithm of LFND-AB.
+Input: Number of the base learner 𝑁, the initialized base learners 𝜃𝑛 in the 𝑛-th round.
+Output: The integrated model of base learners.
+1: Initialize weights 𝑤𝑖 = 1
+|𝑋| for all 𝑖 = 1, … , |𝑋| of the training set 𝑋
+2: Record the vote number 𝑉 =0
+3: for 𝑛 = 1 to 𝑁 do
+4:  Fit the base learner 𝜃𝑛 to the training data using weights 𝑤𝑖 //Eqs. (2)–(12)
+5:  Compute the error 𝜖𝑛 = ∑|𝑋|
+𝑖=1 𝑤𝑖 ⋅ 𝐼(𝑦𝑖 ≠ 𝜃𝑛(𝑥𝑖))
+6:  if 𝜖𝑛 > 0.5 then
+7:  Terminate the ensemble boosting strategy
+8:  end if
+9:  Compute 𝛼𝑛 = 1
+2 log
+( 1−𝜖𝑛
+𝜖𝑛
+)
+10:  Update weights 𝑤𝑖 ← 𝑤𝑖 ⋅ exp(−𝛼𝑛 ⋅ 𝑦𝑖 ⋅ 𝜃𝑛(𝑥𝑖))
+11:  Normalize weights 𝑤𝑖 ← 𝑤𝑖
+∑|𝑋|
+𝑗=1 𝑤𝑗
+12:  𝑉 = 𝑉 + 1
+13: end for
+14: The ﬁnal model is 𝑓 (𝜃) = Ω (𝛼𝑛𝜃𝑛
+)
+15: return 𝑓 (𝜃)
+Fig. 4. The diagram of the integrated process for ensemble learning.
+After implementing the ensemble boosting strategy, the complete LFND-AB can predict fake news with higher detection perfor-
+mance. The algorithmic procedure of LFND-AB is illustrated in Algorithm 1. In summary, for scenarios requiring low overhead, the 
+explainable base learner can be directly employed for detecting fake news. While in situations with imbalanced label datasets or 
+where resources are permitted, LFND-AB oﬀers signiﬁcant advantages. These choices provide a ﬂexible framework for fake news 
+detection tasks in social networks. Fig. 4 demonstrates the block diagram to express the process of integrated learning.
+4.  Experiment
+In this section, we conduct a series of experiments to conﬁrm the eﬀectiveness of LFND-AB. The following subsections provide 
+detailed insights into the datasets, experimental setup, baselines, and the results obtained.
+4.1.  Datasets
+To conﬁrm the eﬀectiveness of LFND-AB, this paper conducts experiments on both real-world Chinese and English datasets. Among 
+them, the Chinese dataset is from Weibo21 (Nan et al., 2021), and the English dataset is from Gossipcop (Shu et al., 2020). Building 
+on the methodologies of previous studies (Hu et al., 2024; Zhu et al., 2022a), the datasets are processed by removing duplicates and 
+employing a temporal split. This approach is intended to prevent potential overestimation of performance that could result from data 
+leakage in the SLM. The statistics for the datasets are shown in Table 1.
+4.2.  Experiment setup
+We implement our models using pytorch and the geometric package. The following experiments are run on the server with AMD 
+Ryzen Threadripper PRO 5995WX 64-Cores CPU and four NVIDIA RTX A6000. We use the model with the highest macro F1-score 
+(harmonic mean of precision and recall) of the validation set during training for prediction in the testing set. For the parameters in 
+training, the optimizer is Adam, the learning rate is 7e-5, and the number of epochs is set to 64. To reduce overﬁtting, we apply 
+Information Processing and Management 63 (2026) 104789 
+8 
+===== PAGE 9 =====
+S. Yin et al.
+Table 1 
+The detailed statistics of each dataset.
+ Chinese  English
+ Train  Val-  Test  Train  Val-  Test
+ Real  2331  1172  1137  2878  1030  1024
+ Fake  2873  779  814  1006  244  234
+ Total  5204  1951  1951  3884  1274  1258
+early stopping with 3 epochs, halting training if no improvement is seen in the validation set. For text encoding, we adopt chinese-
+bert-wwm-ext for Chinese and bert-base-uncased for English datasets with a maximum input length of 170 and a hidden size of 
+768. Two BERT encoders are used for the news content and rationale streams, respectively, where only the last Transformer layer 
+is ﬁne-tuned. The ﬁnal classiﬁer is an MLP with a structure of 768 → 384 → 1 and a dropout rate of 0.2. The loss weights are set to 
+𝛽1 = 0.001 for CL, 𝛽2 = 2.0 for R_Pred, and 𝛽3 = 1.0 for TF_KL. For the boosting framework, the number of base learners is set to 2 in 
+LFND-AB. 
+4.3.  Baselines
+To validate the eﬀectiveness of the proposed method, we compared it with two types of baselines as follows:
+4.3.1.  SLM-Based methods
+• BERT (Devlin et al., 2019) is the widely used pre-trained small language model. For Chinese and English datasets, we use chinese-
+bert-wwm-ext and bert-base-uncased, respectively.
+• EANNT (Wang et al., 2018) is a text-only variant of Event Adversarial Neural Network (EANN). EANN is a multimodal method 
+using text and images to learn the pattern features of fake news. It innovatively employs the auxiliary task of event classiﬁcation 
+to extract the invariant features of fake news events.
+• HMCANT (Qian et al., 2021) is a text-only variant of Hierarchical Multi-modal Contextual Attention Network (HMCAN). HMCAN 
+uses BERT and ResNet to extract textual and visual features, respectively, and detects fake news by modeling both inter-modal 
+and intra-modal relationships through a multimodal contextual attention module. 
+• DualEmotionP (Zhang et al., 2021) is a variant of DualEmotion that uses only news content. DualEmotion uses the dual emotions 
+of the news content (publisher) and the comments (social) to assist in the detection of fake news.
+• ENtity DEbiasing Framework (ENDEF) (Zhu et al., 2022a) employs causal learning techniques to eliminate entity bias, enhancing 
+its ability to generalize across fake news datasets with distribution shifts.
+4.3.2.  LLM-Based methods
+• GPT-3.5-turbo (OpenAI, 2022) is the performance of the LLM using zero-shot CoT with the commonsense perspective, following 
+the experimental settings in the SOTA work (Hu et al., 2024).
+• SuperICL (Xu et al., 2024) uses SLM as an in-context learning plug-in for the LLM. It enhances the testing phase by incorporating 
+both the prediction and the conﬁdence level of each sample directly into the prompt.
+• Adaptive Rationale Guidance network (ARG) (Hu et al., 2024) uses SLMs to selectively harness insights derived from the 
+rationales generated by LLMs, optimizing the process of news analysis.
+• Explanation-Guided Network (EGN) (Phung Mai Suong et al., 2025) uses LLMs to generate common sense and sentiment expla-
+nations for news through CoT prompting, thereby enabling the detection of fake news.
+• TED (Liu et al., 2025) uses agents supporting and questioning the veracity of news stories to simulate a human debate process for 
+evaluating news content.
+4.4.  Overall performance
+The fake news detection performance based on diﬀerent datasets is illustrated in Table 2. It can be seen that the lightweight 
+proposed model, i.e., explainable base learner LFND, exhibits the best detection performance among all SOTA methods. Compared to 
+the optimal baseline ARG, LFND demonstrates an average improvement of 1.2% in the Chinese dataset and 1.1% in the English dataset. 
+There are three reasons for the improvement: 1) The reasons supporting the truthfulness or falseness of LLM explore opposing but 
+comprehensive perspectives, oﬀering a broader range of speciﬁc external knowledge rather than vague generalizations. Furthermore, 
+by requiring three reasons per perspective, the bias of the given reasons can be minimized and the robustness is enhanced. 2) The 
+sampling based contrastive learning not only introduces randomness to avoid overﬁtting but also enhances the quality of textual 
+content embeddings by encouraging proximity between positive pairs and enhancing the diﬀerentiation between negative pairs. 3) 
+The joint loss function comprehensively considers the role of each type of embedding in the fake news detection task, ensuring the 
+quality of all embeddings, which optimizes model training.
+Then, we consider the eﬀectiveness of the ensemble boosting strategy, and the LFND-AB is validated. It can be seen that the 
+ensemble strategy can further enhance the detection performance. Compared to the optimal baseline ARG, LFND-AB demonstrates an 
+average improvement of 2.4% in the Chinese dataset and 2.3% in the English dataset.  The primary reason for the further improvement 
+Information Processing and Management 63 (2026) 104789 
+9 
+===== PAGE 10 =====
+S. Yin et al.
+Table 2 
+Performance metrics for diﬀerent models on fake news detection. The bold values represent the best results, while 
+underlined values denote the second-best.
+Group Model  Chinese  English
+ macF1  Acc. 𝐅𝟏𝐑𝐞𝐚𝐥 𝐅𝟏𝐅𝐚𝐤𝐞  macF1  Acc. 𝐅𝟏𝐑𝐞𝐚𝐥 𝐅𝟏𝐅𝐚𝐤𝐞
+SLM-based Methods
+ BERT  0.753  0.754  0.769  0.737  0.765  0.862  0.916  0.615
+ EANNT  0.754  0.756  0.773  0.736  0.763  0.864  0.918  0.608
+ HMCANT  0.758  0.760  0.778  0.738  0.766  0.864  0.915  0.617
+ DualEmotionP  0.761  0.763  0.784  0.738  0.766  0.868  0.920  0.611
+ ENDEF  0.765  0.766  0.779  0.751  0.768  0.865  0.918  0.618
+LLM-based Methods
+ GPT-3.5-turbo  0.725  0.734  0.774  0.676  0.702  0.813  0.884  0.519
+ SuperICL  0.757  0.759  0.779  0.734  0.736  0.864  0.920  0.551
+ ARG  0.784  0.786  0.804  0.764  0.790  0.878  0.926  0.653
+ EGN  0.781  0.785  0.802  0.760  0.791 0.889 0.933  0.650
+ TED  0.755  0.756  0.767  0.744  0.743  0.854  0.912  0.574
+ LFND 0.793 0.795 0.815 0.770 0.799 0.889 0.933 0.665
+ LFND-AB  0.817  0.819  0.823  0.811  0.823  0.904  0.943  0.704
+Table 3 
+Training/testing time and GPU memory usage comparison between base learner and ensemble 
+variant on English and Chinese datasets.
+ Dataset  Variant  Train Time (s/epoch)  Test Time (s/epoch)  GPU Memory (MiB)
+English  Base Learner  46  11  11,478
+ Ensemble (2×)  46  22  12,510
+Chinese  Base Learner  63  17  11,422
+ Ensemble (2×)  63  35  12,328
+is that each new learner not only keeps the advantages mentioned above but also dynamically adjusts the weights of training samples 
+based on the classiﬁcation results of the previous base learner, including decreasing the weights of correctly classiﬁed samples and 
+increasing the weights of incorrectly classiﬁed samples. Consequently, the combined capabilities of the ensemble learners result in a 
+stronger and more accurate detection of samples. Overall, the proposed methods provide ﬂexible options for fake news detection in 
+diﬀerent scenarios. The lightweight LFND method requires less overhead, and the LFND-AB method has better detection performance.
+What’s more, the results reveal distinctions between SLM-based and LLM-based baselines. While LLMs are generally considered 
+to possess stronger semantic reasoning abilities, their performance in this task does not consistently surpass that of smaller models. 
+Speciﬁcally, GPT-3.5-turbo performs worse than all SLM-based baselines across both datasets. This suggests that, although LLMs have 
+access to large-scale knowledge, their performance may be hindered in specialized tasks like fake news detection, particularly when 
+they are not ﬁne-tuned for task-speciﬁc reasoning. Similarly, SuperICL shows improvements over some SLM-based baselines but fails 
+to outperform SOTA SLM-based methods such as ENDEF. This may be attributed to the nature of fake news detection, which often 
+requires understanding semantic and factual cues. While SuperICL incorporates SLM predictions and conﬁdence scores as auxiliary 
+input for in-context learning, this signal may be insuﬃcient to fully represent the deeper patterns necessary for accurate detection. 
+In contrast, ARG exhibits stronger performance, owing to its strategy of selectively utilizing LLM-generated rationales through small 
+models, narrowing the semantic gap and avoiding overreliance on potentially noisy or hallucinated content from LLMs. This ﬁnding 
+aligns with our design intuition in LFND, that is, rather than directly trusting LLM outputs, it is more eﬀective to treat them as 
+auxiliary input and apply learnable interaction mechanisms to select and integrate high-quality reasoning. Additionally, our proposed 
+contrastive learning strategy and composite loss formulation ensure that the model does not merely memorize LLM content but learns 
+to align relevant features and ﬁlter useful signals.
+We further report the GPU memory usage, the training time, and the test time for both the single base learner and the ensemble 
+variant. As shown in Table 3, in the English dataset, the base learner requires 46 seconds per training epoch, 11 seconds per test 
+epoch, and uses 11,478 MiB of GPU memory. The ensemble variant with 2 base learners maintains the same training time per epoch, 
+increases test time to 22 seconds per epoch, and uses 12,510 MiB of memory. In the Chinese dataset, the base learner takes 63 seconds 
+for training and 17 seconds for testing per epoch, with 11,422 MiB of memory usage, while the ensemble variant takes the same 63 
+seconds for training, 35 seconds for testing, and consumes 12,328 MiB of memory. These results show that the ensemble strategy 
+introduces minimal additional memory overhead, with GPU memory usage increasing by less than 10% compared to the single base 
+learner. In terms of inference time, the increase is approximately linear with respect to the number of base learners, which conﬁrms 
+the eﬃciency and scalability of the ensemble strategy.
+4.5.  Statistical comparison analysis
+As shown in Section 4.4, following the same seed from the SOTA method, the reported gains are modest (typically less than 3 
+percentage points in macF1 over ARG). To support claims of LFND’s superiority and more rigorously assess whether performance im-
+Information Processing and Management 63 (2026) 104789 
+10 
+===== PAGE 11 =====
+S. Yin et al.
+Table 4 
+Statistical comparison analysis of macF1 between LFND and ARG methods (15 paired 
+experiments using diﬀerent random seeds) in the English dataset.
+Metric Method Mean ± Std  Signiﬁcance Testing
+ paired t-statistic  p-value  95% CI
+macF1  LFND  0.803 ± 0.004 5.308 <0.001*** [0.006, 0.015] ARG  0.792 ± 0.008
+Note: The t-statistic reﬂects the standardized diﬀerence between LFND and ARG over 
+multiple runs; higher absolute values indicate stronger separation between the two 
+methods. *p < 0.05, **p < 0.01, ***p < 0.001; CI represents 95% conﬁdence interval 
+for the diﬀerence (LFND - ARG).
+Table 5 
+Detailed ranking table for MacF1 across 10 seeds. Rankings are based on performance values for each seed (1=best, 
+3=worst). Each numeric column represents a diﬀerent seed set in the corresponding experimental settings.
+ Experimental Seed  2011  2012  2013  2014  2015  2016  2017  2018  2019  2020  Avg. Rank
+ LFND  1  1  1  2  1  1  1  2  2  1  1.30
+ ARG  2  2  2  1  2  2  2  1  1  2  1.70
+ BERT  3  3  3  3  3  3  3  3  3  3  3
+provements are statistically signiﬁcant, we further report mean ± standard deviation over 15 diﬀerent seeds, and include signiﬁcance 
+testing of paired t-tests and conﬁdence intervals. The paired t-test statistic is calculated as:
+𝑡 = ̄𝑑
+𝑠𝑑 ∕
+√
+𝑛
+, (13)
+where ̄𝑑 is the mean diﬀerence between paired observations (LFND - ARG), 𝑠𝑑 is the standard deviation of the diﬀerences, and 𝑛 is the 
+number of paired observations. A positive t-statistic indicates that LFND performs better on average, while a negative value indicates 
+that ARG performs better.
+As shown in Table 4, for the macF1 metric, LFND demonstrates signiﬁcantly better performance (0.803 vs 0.792, p < 0.001) 
+with a t-statistic of 5.308. The 95% conﬁdence interval [0.006, 0.015] does not include zero, conﬁrming the statistical signiﬁcance. 
+Overall, the mean, standard deviation, and the corresponding paired t-tests and conﬁdence intervals over 15 diﬀerent seeds indicate 
+that LFND demonstrates stable and robust macF1 performance superiority.
+To further count the signiﬁcance of the performance diﬀerences among the algorithms, we conduct the non-parametric statistical 
+test (Demšar, 2006). Speciﬁcally, we employ the Friedman test to assess overall signiﬁcance. Before performing the test, we summarize 
+the average rankings of three representative algorithms across 10 experimental seeds in Table 5. These rankings serve as the basis 
+for subsequent statistical analysis. The tests are conducted at a signiﬁcance level of 𝛼 = 0.05. The Friedman test evaluates the null 
+hypothesis that all algorithms perform equivalently. The test statistic is computed as:
+𝜒 2
+𝐹 = 12𝑁
+𝑘(𝑘 + 1)
+[
+∑
+𝑗
+𝑅2
+𝑗 − 𝑘(𝑘 + 1)2
+4
+]
+= 12𝑁
+𝑘(𝑘 + 1)
+𝑘∑
+𝑗=1
+̄𝑅2
+𝑗 − 3𝑁(𝑘 + 1), (14)
+where 𝑁 = 10 is the number datasets using diﬀerent seeds, 𝑘 = 3 is the number of selected algorithms, and ̄𝑅𝑗 denotes the average 
+rank of the 𝑗-th algorithm. Given the average ranks ̄𝑅1 = 1.3, ̄𝑅2 = 1.7, and ̄𝑅3 = 3.0, we compute:
+𝜒 2
+𝐹 = 12 × 10
+3 × 4 (1.32 + 1.72 + 3.02) − 3 × 10 × 4 = 15 .8.
+With degrees of freedom 𝑘 − 1 = 2 , the critical value from the Chi-square distribution at 95% conﬁdence is 𝜒 2
+0.05(2) = 5 .991. Since 
+15.8 > 5.991, we reject the null hypothesis and conclude that the performance diﬀerences are statistically signiﬁcant. The Friedman 
+test conﬁrms signiﬁcant diﬀerences among the representative algorithms overall.
+4.6.  Ablation study
+In this ablation study, we ﬁrst investigate the impact of the truthfulness and falseness reasons used in our model on the overall 
+performance. Speciﬁcally, we conduct experiments using only the truthfulness reasons and using only the falseness reasons as follows:
+• LFND_R uses only three truthfulness reasons instead of using all reasons.
+• LFND_F uses only three falseness reasons instead of using all reasons.
+Second, we further study the inﬂuence of designed components of LFND-AB on the fake news detection performance to prove 
+their contributions. The critical modules of LFND-AB include the explainable weight evaluation module, contrastive learning nodule, 
+joint loss function, and the ensemble boosting strategy. The variant models of LFND and LFND-AB are developed as follows:
+Information Processing and Management 63 (2026) 104789 
+11 
+===== PAGE 12 =====
+S. Yin et al.
+Table 6 
+The detection performance evaluation of variants from LFND or LFND-AB in the English 
+dataset.
+ Groups  Variants  macF1  Acc. 𝐅𝟏𝐑𝐞𝐚𝐥 𝐅𝟏𝐅𝐚𝐤𝐞
+Variants related to reasons integrated LFND_R  0.769  0.868  0.921  0.617
+LFND_F  0.778  0.872  0.922  0.635
+Variants related to modules introduced
+LFND_W−  0.773  0.874  0.924  0.621
+LFND − Main  0.771  0.854  0.909  0.632
+LFND − CL  0.783  0.883  0.930  0.635
+LFND − R_Pred  0.771  0.862  0.915  0.627
+LFND − TF_KL  0.777  0.873  0.923  0.630
+ LFND-AB_AVG  0.789  0.884  0.931  0.647
+The complete methods  LFND 0.799 0.889 0.933 0.665
+ LFND-AB  0.823  0.904  0.943  0.704
+Table 7 
+The detection performance of LFND under dual-component 
+removal in the English dataset.
+ Variants  macF1  Acc. 𝐅𝟏𝐑𝐞𝐚𝐥 𝐅𝟏𝐅𝐚𝐤𝐞
+LFND − R–F  0.762  0.870  0.922  0.603
+LFND − R_Pred–CL  0.764  0.870  0.922  0.605
+LFND − R_Pred–TF_KL  0.766  0.871  0.923  0.610
+LFND − CL–TF_KL  0.788  0.880  0.921  0.655
+• LFND_W− uses a matrix consisting entirely of 1 to replace the explainable weight matrix 𝑊𝐶→𝑋𝑛 in Eq.  (4).
+• LFND − Main remove the main loss item in Eq.  (9).
+• LFND − CL remove the contrastive loss item in Eq.  (7).
+• LFND − R_Pred remove the reason prediction loss item in Eq.  (10).
+• LFND − TF_KL remove the KL divergence loss item between true and false reasons in Eq.  (11).
+• LFND-AB_AVG keeps the weight of each sample unchanged in the new base learners.
+As can be seen from Table 6, using only the falseness reasons results in a slightly lower F1-score, suggesting that focusing solely 
+on falseness does not provide enough information to distinguish fake news eﬀectively. Similarly, using only the truthfulness reasons 
+leads to a further decrease in performance, indicating that the truthfulness reasons alone are less informative and may not be suﬃcient 
+for accurate fake news detection.
+What’s more, the results also show that removing key components from the model architecture results in varying performance 
+reductions. Speciﬁcally, LFND_W−, which uses a matrix of 1s to replace the explainable weight matrix, shows a noticeable drop 
+in performance. LFND_W− removes the model’s ability to assign diﬀerentiated importance to each rationale and thereby disables 
+the attention mechanism. This indicates that the attention-based weighting plays a key role in mitigating the impact of noisy or 
+less relevant reasons. And the removal of the diﬀerent loss terms also leads to a slight decrease in performance, suggesting that 
+the loss terms contribute to model training. LFND-AB_AVG, where the weights of each sample are kept unchanged in the new base 
+learners, performs slightly worse than the full LFND-AB, suggesting that the adaptive weight adjustment in LFND-AB contributes to 
+better performance by focusing on the most informative samples. In conclusion, each component, including the explainable weight 
+matrix, reason prediction, contrastive learning, and adaptive weight adjustment, plays an important role in enhancing the model’s 
+performance.
+To further understand the joint eﬀect of diﬀerent components in LFND, we conduct dual-component ablation experiments by 
+simultaneously removing two reason-related modules. The results are shown in Table 7. First, we examine the variant LFND − R–F, 
+where all truthfulness and falseness reasons are removed. This also implicitly disables all three reason-related loss terms (R_Pred, CL, 
+and TF_KL). As expected, this variant results in the lowest overall performance, especially in detecting fake news (F1Fake = 0.603), 
+validating that the generated reasons by LLMs play a critical role in enhancing fake news detection. Second, when comparing diﬀerent 
+combinations of two loss terms being removed, we observe that the removal of R_Pred consistently leads to larger performance 
+degradation than removing either CL or TF_KL. This is reasonable since R_Pred is a supervised binary classiﬁcation loss on reasons, 
+directly aligned with the fake news detection objective. Therefore, it serves as a central component among the auxiliary tasks. 
+Interestingly, the variant LFND − CL–TF_KL achieves better performance than the variant where either CL or TF_KL is individually 
+removed (as shown in Table 6). Since both losses are designed to separate real and fake news representations in the latent space via 
+contrastive learning and KL divergence regularization, respectively. The results imply that these two losses are mutually reinforcing. 
+When used together, they better shape the representation space. However, when only one is considered, the joint synergy is partially 
+broken, leading to suboptimal representation learning.
+Information Processing and Management 63 (2026) 104789 
+12 
+===== PAGE 13 =====
+S. Yin et al.
+Fig. 5. Performance of LFND_1, LFND_2, and LFND on the Chinese and English datasets, showing the impact of diﬀerent numbers of reason pairs.
+4.7.  Other experiments
+4.7.1.  The impact of the number of reason pairs
+To explore the impact of diﬀerent numbers of reason pairs on the results, we conducted experiments on both the Chinese and 
+English datasets using one pair of reasons (LFND_1) and two pairs of reasons (LFND_2), respectively. For LFND_1, we separately use 
+the ﬁrst, second, and third sets of reasons, taking the highest performing result. Similarly, for LFND_2, we use the combinations of 
+the ﬁrst and second reasons, the second and third reasons, and the ﬁrst and third reasons, again selecting the highest-performing 
+combination.
+The results in Fig. 5 show that performance improves gradually with an increasing number of reason pairs. Several reasons support 
+this phenomenon: 1) The quality of reason pairs generated by LLM signiﬁcantly contributes positively to fake news detection; 2) Our 
+model can adaptively focus on the more valuable reasons, minimizing the impact of lower-quality reason pairs. 3) The increased 
+number of reason pairs provides more negative sample pairs in the contrastive learning process, which has been shown to play a 
+crucial role in enhancing model performance.
+4.7.2.  The impact of imbalanced data
+In real-world scenarios, collecting high-quality fake news samples is generally more diﬃcult than collecting real news. To better 
+evaluate LFND’s detection performance under such practical conditions, we conduct ablation experiments under imbalanced category 
+data to compare the performance diﬀerences of the model when using and not using this ensemble strategy. In our original Chinese 
+dataset, the number of real and fake news instances used for training is approximately balanced, with 2331 real news and 2873 fake 
+news articles. To simulate increasing levels of fake news scarcity, we keep the real news portion ﬁxed and construct two imbalanced 
+training subsets by randomly downsampling the fake news portion:
+• The 1/2 setting retains half of the original fake news (1,437 fake vs. 2331 real).
+• The 1/3 setting retains only one-third of the original fake news (958 fake vs. 2331 real).
+We then evaluate the performance of both the base model LFND and the boosted variant LFND-AB under the same imbalanced 
+conditions, as shown in Table 8. From the results, we observe that under identical data imbalance conditions, LFND-AB consistently 
+outperforms LFND. For example, in the 1/2 setting, LFND-AB improves macro-F1 by 1.57% over LFND. And in the 1/3 setting, the 
+improvement is 1.64%. This demonstrates that the adaptive boosting strategy in LFND-AB helps the model focus on hard-to-classify 
+instances and alleviates the performance degradation caused by label imbalance. Several factors contribute to these results. For 
+the base learner LFND, the contrastive learning module improves the discriminative power of the embeddings by ensuring that the 
+representations of fake and real news remain separable despite reduced training samples from the minority class. For the complete 
+LFND-AB, the boosting strategy dynamically reweights misclassiﬁed samples during training, placing greater emphasis on challenging 
+instances. This procedure allows the model to focus on the minority class, thus preventing the degradation of performance that often 
+accompanies imbalanced data. Even as the amount of available fake news decreases, AB ensures that the model continues to learn 
+eﬀective decision boundaries.
+Information Processing and Management 63 (2026) 104789 
+13 
+===== PAGE 14 =====
+S. Yin et al.
+Table 8 
+Performance of LFND and LFND-AB under 
+varying levels of fake news scarcity in the Chi-
+nese dataset.
+ Drop Rate  0 (original)  1/3  1/2
+ LFND  0.7934  0.7922  0.7817
+ LFND-AB  0.8172  0.8086  0.7974
+Table 9 
+Performance of reasons generated by diﬀerent LLMs 
+on the Chinese dataset.
+ Used LLM  ChatGPT-4.0  ChatGPT-3.5  Doubao
+ LFND  0.7934  0.7878  0.7863
+ LFND-AB  0.8172  0.8121  0.8117
+4.7.3.  The impact of diﬀerent LLMs
+To investigate the impact of using diﬀerent Large Language Models to generate truthfulness and falseness reasons, we experiment 
+with ChatGPT-3.5, ChatGPT-4.0, and Doubao 4 on the Chinese dataset. Each LLM is employed to produce reasons supporting both the 
+authenticity and falsity of the news samples. The results, shown in Table 9, compare the performance of LFND and LFND-AB when 
+equipped with reasons generated by these diﬀerent LLMs.
+The experimental results in Table 9 indicate that ChatGPT-4.0 achieves slightly better performance than ChatGPT-3.5 and Doubao. 
+This improvement may be attributed to ChatGPT-4.0’s ability to produce more nuanced and context-rich reasons, which in turn can 
+provide slightly more reﬁned representations for the model. However, the overall impact on the ﬁnal performance of the detection 
+framework is not substantial. This is likely because our existing modules–such as contrastive learning and the attention mechanisms–
+are eﬀective at selectively integrating and reﬁning the information provided by the LLMs, thereby minimizing any performance 
+discrepancies arising from the choice of LLM.
+4.7.4.  Case study
+To demonstrate the explainable weight evaluation module in Eq.  (4), we present a case study to visualize how 𝑊𝐶→𝑋𝑛 works, as 
+illustrated in Table 10. The LFND model correctly identiﬁes the given example as fake news. Among the six reasons, the third reason 
+supporting the falseness of the news receives the highest weight, which indicates that the LFND model eﬀectively leverages the given 
+reasons to determine the veracity of the news content.
+To investigate whether the explainable weights assigned by the attention module align with human-perceived reason quality, we 
+conduct a small-scale human evaluation using 10 instances of news items. For each news item, ﬁve annotators are asked to score 
+the quality of six LLM-generated reasons based on the persuasiveness of each reason in supporting or refuting the veracity of the 
+original news content. The reason’s quality scores are on a scale from 1 (least convincing quality) to 6 (most convincing quality), and 
+each annotator is required not give repeated quality scores for six reasons to align and compare with the attention rank mechanism. 
+And the average human-rated reason quality score of each news is computed to compare the consistency of the model attention 
+weights. Although some individual variations exist, we consistently observe a general trend in 10 instances. Reasons assigned higher 
+attention weights by the model tend to receive higher human quality ratings. In particular, when the model assigns signiﬁcantly 
+higher attention weights to the truthfulness reason group compared to the falseness group, the average human-rated reason quality 
+scores for the truthfulness reasons are also notably higher. 
+A case study in Table 10 also reports the average human-rated reason quality score alongside the model attention weights. The 
+results demonstrate a general alignment between the model’s attention weights and human-perceived reason quality. We observe a 
+positive correlation trend: reasons that receive higher attention weights from the model also tend to be rated as higher convincing 
+qualities by human annotators. For example, the reason “Rumors and speculative elements…” obtains both the highest attention 
+score (0.6876) and the highest average human-rated reason quality score (5.0). In contrast, the reason “Photographic evidence can 
+serve as veriﬁcation…” receives a relatively low attention score (0.3693), and its average human-rated reason quality score is also 
+low (1.8). This further supports the alignment between model-assigned importance and human-perceived reasoning quality across 
+diﬀerent examples.
+Further, Fig. 6 demonstrates how the base learners in the LFND-AB framework function cooperatively. During training, the ﬁrst 
+base learner is trained on the original average weighted data. The misclassiﬁed samples are assigned higher weights, and the others 
+are assigned lower weights. Then, these weights for samples are passed to the second learner, which mainly focuses on correcting 
+the errors. Each learner’s inﬂuence on the ﬁnal prediction is controlled by a normalized ensemble weight, which reﬂects its relative 
+conﬁdence. During inference, each learner makes predictions independently, and the ﬁnal prediction is a weighted combination of all 
+4 https://huggingface.co/doubao-llm
+Information Processing and Management 63 (2026) 104789 
+14 
+===== PAGE 15 =====
+S. Yin et al.
+Table 10 
+Case study of the explainable weights (Weighta) assigned by the attention module (𝑊𝐶→𝑋𝑛
+ in Eq.  (4)) and the quality 
+scores of reasons (Scoreh) derived from average human evaluation. Higher attention weights indicate stronger model 
+support for a given reason, while higher human-rated reason quality scores reﬂect stronger perceived support for that 
+reason in judging news veracity.
+Textual Content Reason Weighta Scoreh
+[Label: Fake News]
+Everything’s ﬁne 
+between Soﬁa Richie and 
+Scott Disick! The couple 
+were spotted on a date 
+just 3 weeks after 
+cheating rumors ﬂoated 
+around. Scott even got a 
+bit handsy! See the pics! 
+Scott Disick, 35, and 
+Soﬁa Richie, 19, just 
+proved that their 
+relationship is as strong 
+as ever. The pair met up 
+for a smoothie date, and 
+were all smiles as they 
+were photographed 
+leaving Sun Life Organics 
+in Calabasas. At one 
+point, Kourtney 
+Kardashian’s 
+ex-boyfriend even 
+pinched the model’s butt 
+while she laughed at his 
+antics. Cute! See the PDA 
+pictures of Scott and 
+Soﬁa here. The 
+aﬀectionate outing 
+comes just three weeks 
+after the couple were 
+enthralled in breakup 
+rumors over an alleged 
+cheating incident.
+[Truthfulness reason] Photo-
+graphic evidence can serve as 
+veriﬁcation of the event, provid-
+ing visual conﬁrmation of the 
+couple’s date and aﬀectionate 
+behavior.
+0.3693 1.8
+[Truthfulness reason] The news 
+mentions a speciﬁc location 
+and recognizable public ﬁgures, 
+adding credibility to the story.
+0.6262 3.6
+[Truthfulness reason] The time-
+line provided (three weeks after 
+cheating rumors) matches up with 
+publicly known events about the 
+couple.
+0.3915 2.2
+[Falseness reason] Tabloid-style 
+language and sensationalism 
+could indicate that the story is 
+exaggerated or fabricated for 
+entertainment purposes.
+0.5796 4.4
+[Falseness reason] Lack of direct 
+quotes or statements from the in-
+dividuals involved or their repre-
+sentatives makes the information 
+less reliable.
+0.5315 4.0
+[Falseness reason] Rumors and 
+speculative elements, such as the 
+alleged cheating incident, are 
+common in gossip columns, which 
+often blend truth with ﬁction.
+0.6876 5.0
+Fig. 6. An illustration of the LFND-AB adaptive boosting process. During training, each base learner is trained sequentially with updated sample 
+weights based on previous prediction errors. The ﬁnal ensemble weights are normalized and used to combine predictions from all learners during 
+testing. This process allows each learner to focus on diﬀerent aspects of the data distribution, enhancing overall model robustness.
+Information Processing and Management 63 (2026) 104789 
+15 
+===== PAGE 16 =====
+S. Yin et al.
+Fig. 7. t-SNE visualization of feature embeddings in English and Chinese datasets. Aggregation with reason representations (a, c) yields more 
+separable clusters between real and fake news than using content alone (b, d), in both English and Chinese datasets. Red and blue colors represent 
+fake and real news items. Blue crosses denote real news items that are incorrectly classiﬁed as fake and red crosses denote fake news items that are 
+incorrectly classiﬁed as real.  (For interpretation of the references to colour in this ﬁgure legend, the reader is referred to the web version of this 
+article.)
+learners’ outputs. This design ensures that each base learner contributes uniquely to improving the model’s robustness, particularly 
+in detecting diﬃcult samples like fake news.
+4.7.5.  Feature-level visualization
+To better understand how the feature space reﬂects the discrimination between fake and real news, t-SNE is employed to project 
+high-dimensional features into two-dimensional space. As shown in Figs. 7 (a) and (c), the aggregated embeddings that combine 
+content and reason representations lead to clearer separation between fake and real news, compared to using content embeddings 
+alone in Figs. 7 (b) and (d). This observation holds in both English and Chinese datasets. These results demonstrate that integrating 
+reasoning signals eﬀectively enhances the discriminative power of the learned features.
+We also enhance the t-SNE visualizations by explicitly marking the misclassiﬁed samples with crosses to distinguish them from 
+correctly classiﬁed samples. In particular, we use red crosses to indicate fake news items that are incorrectly classiﬁed as real, and 
+blue crosses to denote real news items that are incorrectly classiﬁed as fake. This more granular visualization oﬀers a clearer picture 
+of where the classiﬁcation errors occur in the latent space and provides more actionable insight for guiding future improvements. By 
+comparing Fig. 7 (a) which incorporates reason-content aggregation and Fig. 7 (b) which uses only content embeddings in the English 
+dataset, we observe that the red crosses in Fig. 7 (b) are more numerous and widely scattered across the embedding space. In contrast, 
+the misclassiﬁed samples in Fig. 7 (a) are visibly fewer and more concentrated. This indicates that the content-only embedding leads 
+to more dispersed and confusing representations, making inaccurate classiﬁcation, while the reason-content aggregation embeddings 
+exhibit clearer separation with fewer misclassiﬁed points scattered across the opposite cluster, proving that the proposed interaction 
+attention from reasons improves feature discriminability and reduces confusion between classes.
+Information Processing and Management 63 (2026) 104789 
+16 
+===== PAGE 17 =====
+S. Yin et al.
+5.  Conclusion
+Given the critical role of external knowledge in fake news detection, traditional SLM-based methods either cannot learn the 
+background information (e.g., historical facts) or require high acquisition costs. To address this, we propose an explainable LLM-
+assisted fake news detection method, which outperforms existing SLM-based and LLM-based methods. Additionally, considering the 
+label imbalance caused by the facts of true news over fake news on social platforms, we introduce the LFND-AB framework, which 
+employs an adaptive ensemble boosting strategy. By using LFND as the base learner, LFND-AB enhances the model’s robustness in 
+imbalanced data scenarios and achieves superior performance in detecting fake news, as compared to the base LFND model.
+Looking ahead, several interesting directions can be further explored. First, we plan to incorporate causal reasoning mechanisms to 
+more explicitly model the underlying cause–eﬀect relations between LLM-generated reasons and news content, thereby strengthening 
+the explainability and decisiveness of evidence. Second, the semantic diversity of generated reasons will be enhanced by developing 
+diversity-oriented prompting strategies and embedding-based similarity assessment to avoid redundancy and enrich informational 
+coverage. Third, recent studies have explored whether the learnable weights of model inference, such as attention weights or rationale 
+scores, are aligned with human-perceived reasoning quality (Brauwers & Frasincar, 2023; Zeng et al., 2025). Incorporating human 
+ratings or external rationale-quality supervision could further enhance the explainability of the attention mechanism. 
+6.  Ethical considerations and limitations
+The proposed LFND and LFND-AB methods have potential for integration into content management systems on social media 
+platforms. For example, they could be deployed as automated pre-screening tools to ﬂag potentially misleading news content during 
+the early stages of dissemination, which helps identify high-risk posts for manual review. Additionally, the models could also be 
+incorporated into public-facing systems, such as browser extensions, to provide users with real-time authenticity cues while consuming 
+news. However, real-world deployment requires careful attention to several ethical concerns. First, misclassiﬁcation by the model may 
+lead to undesirable consequences. On the one hand, a high false positive rate, where large volumes of truthful news are incorrectly 
+labeled as fake, may result in wasted human veriﬁcation resources and reduced trust in the system’s reliability. On the other hand, 
+false negatives, where harmful fake news is not detected in time, could prolong public exposure to misinformation and potentially 
+trigger widespread panic or misinformed behavior. Second, although the dual-perspective reasoning generated by LLMs improves 
+model explainability, these generated reasons may carry cultural or linguistic biases. This may cause systematic misjudgment of news 
+originating from speciﬁc regions or targeting certain communities. Furthermore, it is important to consider the trade-oﬀ between 
+detection accuracy, model complexity, and computational eﬃciency in practical deployments. While LFND and its variant LFND-AB 
+oﬀer higher accuracy, they incur greater computational cost compared to lightweight models such as BERT. In real-world applications, 
+these models can be ﬂexibly selected based on speciﬁc performance requirements and acceptable trade-oﬀs among accuracy, resource 
+availability, and time constraints.
+CRediT authorship contribution statement
+Shu Yin: Writing – original draft, Methodology, Data curation, Conceptualization; Yuchen Wang: Writing – review & editing, 
+Formal analysis; Dongpeng Hou: Writing – review & editing, Validation; Wenxin An: Writing – review & editing; Chao Gao: Su-
+pervision, Project administration, Funding acquisition; Xianghua Li: Supervision, Project administration, Funding acquisition; Zhen 
+Wang: Supervision, Conceptualization, Methodology, Writing – review & editing, Funding acquisition.
+Acknowlegment
+This research was supported by the National Natural Science Foundation of China (Nos. U22B2036, 62471403, 62271411), 
+the Technological Innovation Team of Shaanxi Province (No. 2025RS-CXTD-009), the International Cooperation Project of Shaanxi 
+Province (No. 2025GH-YBXM-017).
+Data availability
+Data will be made available on request.
+References
+Bazmi, P., Asadpour, M., & Shakery, A. (2023). Multi-view co-attention network for fake news detection by modeling topic-speciﬁc user and news source credibility. 
+Information Processing & Management, 60(1). 
+Bian, T., Xiao, X., Xu, T., Zhao, P., Huang, W., Rong, Y., & Huang, J. (2020). Rumor detection on social media with bi-directional graph convolutional networks. In 
+Proceedings of the AAAI conference on artiﬁcial intelligence (pp. 549–556).
+Brauwers, G., & Frasincar, F. (2023). A general survey on attention mechanisms in deep learning. IEEE Transactions on Knowledge and Data Engineering, 35(4), 3279–3298.
+Capuano, N., Fenza, G., Loia, V., & Nota, F. D. (2023). Content-based fake news detection with machine and deep learning: A systematic review. Neurocomputing, 530, 
+91–103.
+Chang, Y., Wang, X., Wang, J., Wu, Y., Yang, L., Zhu, K., Chen, H., Yi, X., Wang, C., Wang, Y. et al. (2024). A survey on evaluation of large language models. ACM 
+Transactions on Intelligent Systems and Technology, 15(3), 1–45.
+Chen, C., & Shu, K. (2023). Combating misinformation in the age of llms: opportunities and challenges. AI Magazine.
+Information Processing and Management 63 (2026) 104789 
+17 
+===== PAGE 18 =====
+S. Yin et al.
+Chen, T., Li, X., Yin, H., & Zhang, J. (2018). Call attention to rumors: Deep attention based recurrent neural networks for early rumor detection. In Trends and 
+applications in knowledge discovery and data mining (pp. 40–52).
+Cheung, T.-H., & Lam, K.-M. (2023). Factllama: Optimizing instruction-following language models with external knowledge for automated fact-checking. In 2023 Asia 
+paciﬁc signal and information processing association annual summit and conference (pp. 846–853).
+Cui, C., & Jia, C. (2024). Propagation tree is not deep: Adaptive graph contrastive learning approach for rumor detection. In Proceedings of the AAAI conference on 
+artiﬁcial intelligence (pp. 73–81).
+Demšar, J. (2006). Statistical comparisons of classiﬁers over multiple data sets. Journal of Machine Learning Research, 7(Jan), 1–30.
+Devlin, J., Chang, M.-W., Lee, K., & Toutanova, K. (2019). BERT: Pre-training of deep bidirectional transformers for language understanding. In Proceedings of the 2019 
+conference of the north american chapter of the association for computational linguistics: human language technologies, volume 1 (long and short papers) (pp. 4171–4186).
+Dou, Y., Shu, K., Xia, C., Yu, P. S., & Sun, L. (2021). User preference-aware fake news detection. In Proceedings of the 44th international ACM SIGIR conference on research 
+and development in information retrieval (pp. 2051–2055).
+Guo, H., Zeng, W., Tang, J., & Zhao, X. (2023). Interpretable fake news detection with graph evidence. In Proceedings of the 32nd ACM international conference on 
+information and knowledge management (pp. 659–668).
+Hou, D., Gao, C., Wang, Z., Li, X., & Li, X. (2024). Random full-order-coverage based rapid source localization with limited observations for large-scale networks. IEEE 
+Transactions on Network Science and Engineering, 11(5), 4213–4226.
+Hu, B., Sheng, Q., Cao, J., Shi, Y., Li, Y., Wang, D., & Qi, P. (2024). Bad actor, good advisor: Exploring the role of large language models in fake news detection. In 
+Proceedings of the AAAI conference on artiﬁcial intelligence (pp. 22105–22113).
+Hu, B., Sheng, Q., Cao, J., Zhu, Y., Wang, D., Wang, Z., & Jin, Z. (2023). Learn over past, evolve for future: Forecasting temporal trends for fake news detection. In 
+Proceedings of the 61st annual meeting of the association for computational linguistics (volume 5: Industry track) (pp. 116–125).
+Hu, S., Zhang, C., Zou, G., Lou, Z., & Ye, Y. (2025). Deep multiview clustering by pseudo-label guided contrastive learning and dual correlation learning. IEEE 
+Transactions on Neural Networks and Learning Systems, 36(2), 3646–3658.
+Jin, W., Gao, Y., Tao, T., Wang, X., Wang, N., Wu, B., & Zhao, B. (2025a). Veracity-oriented context-aware large language models–based prompting optimization for 
+fake news detection. International Journal of Intelligent Systems, 2025(1), 5920142.
+Jin, W., Su, D., Tao, T., Wang, X., Wang, N., & Zhao, B. (2025b). Courtroom-FND: A multi-role fake news detection method based on argument switching-based 
+courtroom debate. Journal of King Saud University Computer and Information Sciences, 37(3), 33.
+Jin, W., Wang, N., Tao, T., Jiang, M., Xing, Y., Zhao, B., Wu, H., Duan, H., & Yang, G. (2025c). A prompting multi-task learning-based veracity dissemination consistency 
+reasoning augmentation for few-shot fake news detection. Engineering Applications of Artiﬁcial Intelligence, 144, 110122.
+Jin, Z., Cao, J., Zhang, Y., & Luo, J. (2016). News veriﬁcation by exploiting conﬂicting social viewpoints in microblogs. In Proceedings of the AAAI conference on artiﬁcial 
+intelligence (p. 2972–2978).
+Kuntur, S., Wróblewska, A., Paprzycki, M., & Ganzha, M. (2024). Under the inﬂuence: A survey of large language models in fake news detection. IEEE Transactions on 
+Artiﬁcial Intelligence, 6(2), 458–476.
+Li, M., Peng, B., Galley, M., Gao, J., & Zhang, Z. (2024). Self-checker: Plug-and-play modules for fact-checking with large language models. In Findings of the association 
+for computational linguistics: NAACL 2024 (pp. 163–181).
+Liang, T., He, Z., Jiao, W., Wang, X., Wang, Y., Wang, R., Yang, Y., Shi, S., & Tu, Z. (2024). Encouraging divergent thinking in large language models through 
+multi-agent debate. In Proceedings of the 2024 conference on empirical methods in natural language processing (pp. 17889–17904).
+Liu, Y., Liu, Y., Zhang, X., Chen, X., & Yan, R. (2025). The truth becomes clearer through debate! multi-agent systems with large language models unmask fake news. 
+In Proceedings of the 48th international ACM SIGIR conference on research and development in information retrieval (pp. 504–514).
+Lu, Y.-W., Chen, C.-Y., & Li, C.-T. (2024). Dual graph networks with synthetic oversampling for imbalanced rumor detection on social media. In Companion proceedings 
+of the ACM web conference 2024 (p. 750–753).
+Luvembe, A. M., Li, W., Li, S., Liu, F., & Xu, G. (2023). Dual emotion based fake news detection: A deep attention-weight update approach. Information Processing & 
+Management, 60(4). 
+Ma, J., Gao, W., & Wong, K.-F. (2018). Rumor detection on twitter with tree-structured recursive neural networks. In Proceedings of the 56th annual meeting of the 
+association for computational linguistics (volume 1: Long papers) (pp. 1980–1989).
+Nan, Q., Cao, J., Zhu, Y., Wang, Y., & Li, J. (2021). Mdfend: Multi-domain fake news detection. In Proceedings of the 30th ACM international conference on information 
+& knowledge management (pp. 3343–3347).
+OpenAI (2022). ChatGPT: Optimizing language models for dialogue. https://openai.com/blog/chatgpt/. Accessed: 2023-08-13.
+Ouyang, L., Wu, J., Jiang, X., Almeida, D., Wainwright, C., Mishkin, P., Zhang, C., Agarwal, S., Slama, K., Ray, A. et al. (2022). Training language models to follow 
+instructions with human feedback. In Advances in neural information processing systems (pp. 27730–27744).
+Pan, S., Luo, L., Wang, Y., Chen, C., Wang, J., & Wu, X. (2024). Unifying large language models and knowledge graphs: a roadmap. IEEE Transactions on Knowledge 
+and Data Engineering, 36(7), 3580–3599.
+Phung Mai Suong, T., Huynh Nghiem, L., & Khai Tran, T. (2025). Leveraging large language models for enhanced fake news detection: A novel approach using 
+explanation-guided networks. Enterprise Information Systems, (p. 2520213).
+Przybyla, P. (2020). Capturing the style of fake news. In Proceedings of the AAAI conference on artiﬁcial intelligence (pp. 490–497).
+Qi, P., Cao, J., Li, X., Liu, H., Sheng, Q., Mi, X., He, Q., Lv, Y., Guo, C., & Yu, Y. (2021). Improving fake news detection by using an entity-enhanced framework to fuse 
+diverse multimodal clues. In Proceedings of the 29th ACM international conference on multimedia (pp. 1212–1220).
+Qian, S., Wang, J., Hu, J., Fang, Q., & Xu, C. (2021). Hierarchical multi-modal contextual attention network for fake news detection. In Proceedings of the 44th 
+international ACM SIGIR conference on research and development in information retrieval (pp. 153–162).
+Sheng, Q., Cao, J., Zhang, X., Li, R., Wang, D., & Zhu, Y. (2022). Zoom out and observe: News environment perception for fake news detection. In Proceedings of the 
+60th annual meeting of the association for computational linguistics (volume 1: Long papers) (pp. 4543–4556).
+Sheng, Q., Zhang, X., Cao, J., & Zhong, L. (2021). Integrating pattern-and fact-based fake news detection via model preference learning. In Proceedings of the 30th ACM 
+international conference on information & knowledge management (pp. 1640–1650).
+Shu, K., Mahudeswaran, D., Wang, S., Lee, D., & Liu, H. (2020). Fakenewsnet: A data repository with news content, social context, and spatiotemporal information for 
+studying fake news on social media. Big Data, 8(3), 171–188.
+Shu, K., Sliva, A., Wang, S., Tang, J., & Liu, H. (2017). Fake news detection on social media: A data mining perspective. ACM SIGKDD Explorations Newsletter, 19(1), 
+22–36.
+Shu, K., Zhou, X., Wang, S., Zafarani, R., & Liu, H. (2019). The role of user proﬁles for fake news detection. In Proceedings of the 2019 IEEE/ACM international conference 
+on advances in social networks analysis and mining (pp. 436–439).
+Strong, M., Aly, R., & Vlachos, A. (2024). Zero-shot fact veriﬁcation via natural logic and large language models. In Findings of the association for computational linguistics: 
+EMNLP 2024 (pp. 17021–17035).
+Sun, T., Qian, Z., Dong, S., Li, P., & Zhu, Q. (2022). Rumor detection on social media with graph adversarial contrastive learning. In Proceedings of the ACM web 
+conference 2022 (pp. 2789–2797).
+Vosoughi, S., Roy, D., & Aral, S. (2018). The spread of true and false news online. Science (New York, N.Y.), 359(6380), 1146–1151.
+Wan, H., Feng, S., Tan, Z., Wang, H., Tsvetkov, Y., & Luo, M. (2024). DELL: Generating reactions and explanations for LLM-based misinformation detection. In L.-W. 
+Ku, A. Martins, & V. Srikumar (Eds.), Findings of the association for computational linguistics: ACL 2024 (pp. 2637–2667).
+Wang, B., Li, X., Li, C., Fu, B., Pei, S., & Wang, S. (2024a). Why misinformation is created? detecting them by integrating intent features. In Proceedings of the 33rd 
+ACM international conference on information and knowledge management (p. 2304–2314).
+Wang, B., Ma, J., Lin, H., Yang, Z., Yang, R., Tian, Y., & Chang, Y. (2024b). Explainable fake news detection with large language model via defense among competing 
+wisdom. In Proceedings of the ACM on web conference 2024 (pp. 2452–2463).
+Information Processing and Management 63 (2026) 104789 
+18 
+===== PAGE 19 =====
+S. Yin et al.
+Wang, J., Qian, S., Hu, J., & Hong, R. (2023). Positive unlabeled fake news detection via multi-modal masked transformer network. IEEE Transactions on Multimedia, 
+26, 234–244.
+Wang, R., Li, L., Tao, X., Wang, P., & Liu, P. (2022). Contrastive and attentive graph learning for multi-view clustering. Information Processing & Management, 59(4), 
+102967.
+Wang, Y., Ma, F., Jin, Z., Yuan, Y., Xun, G., Jha, K., Su, L., & Gao, J. (2018). Eann: Event adversarial neural networks for multi-modal fake news detection. In Proceedings 
+of the 24th acm sigkdd international conference on knowledge discovery & data mining (pp. 849–857).
+Wu, J., Guo, J., & Hooi, B. (2024). Fake news in sheep’s clothing: Robust fake news detection against LLM-empowered style attacks. In Proceedings of the 30th ACM 
+SIGKDD conference on knowledge discovery and data mining (pp. 3367–3378).
+Wu, J., & Hooi, B. (2023). Decor: Degree-corrected social graph reﬁnement for fake news detection. In Proceedings of the 29th ACM SIGKDD conference on knowledge 
+discovery and data mining (pp. 2582–2593).
+Wu, J., Xu, W., Liu, Q., Wu, S., & Wang, L. (2023a). Adversarial contrastive learning for evidence-aware fake news detection with graph neural networks. IEEE 
+Transactions on Knowledge and Data Engineering, 36(11), 5591–5604.
+Wu, L., Long, Y., Gao, C., Wang, Z., & Zhang, Y. (2023b). Mﬁr: Multimodal fusion and inconsistency reasoning for explainable fake news detection. Information Fusion, 
+100, 101944.
+Wu, L., Rao, Y., Zhang, C., Zhao, Y., & Nazir, A. (2021a). Category-controlled encoder-decoder for fake news detection. IEEE Transactions on Knowledge and Data 
+Engineering, 35(2), 1242–1257.
+Wu, Y., Zhan, P., Zhang, Y., Wang, L., & Xu, Z. (2021b). Multimodal fusion with co-attention networks for fake news detection. In Findings of the association for 
+computational linguistics: ACL-IJCNLP 2021 (pp. 2560–2569).
+Xia, Y., Jiang, H., & Yu, S. (2025). Exploring the dynamics of group-based internet rumors propagation: A novel model from the perspective of random hypergraphs. 
+Information Processing & Management, 62(1). 
+Xie, B., Ma, X., Shan, X., Beheshti, A., Yang, J., Fan, H., & Wu, J. (2024). Multiknowledge and LLM-inspired heterogeneous graph neural network for fake news 
+detection. IEEE Transactions on Computational Social Systems, (pp. 1–13).
+Xu, C., Xu, Y., Wang, S., Liu, Y., Zhu, C., & McAuley, J. (2024). Small models are valuable plug-ins for large language models. In Findings of the association for 
+computational linguistics: ACL 2024 (pp. 283–294).
+Yuan, C., Ma, Q., Zhou, W., Han, J., & Hu, S. (2019). Jointly embedding the local and global relations of heterogeneous graph for rumor detection. In 2019 IEEE 
+International conference on data mining (pp. 796–805).
+Zeng, Y., Ding, X., Cai, B., Liu, T., & Qin, B. (2025). Exploring large language models for eﬀective rumor detection on social media. In Proceedings of the 2025 conference 
+of the nations of the americas chapter of the association for computational linguistics: Human language technologies (volume 1: Long papers) (pp. 2537–2552).
+Zhang, H., Liu, X., Yang, Q., Yang, Y., Qi, F., Qian, S., & Xu, C. (2024). T3RD: Test-time training for rumor detection on social media. In Proceedings of the ACM on web 
+conference 2024 (pp. 2407–2416).
+Zhang, X., Cao, J., Li, X., Sheng, Q., Zhong, L., & Shu, K. (2021). Mining dual emotion for fake news detection. In Proceedings of the web conference 2021 (p. 3465–3476).
+Zhou, X., & Zafarani, R. (2020). A survey of fake news: Fundamental theories, detection methods, and opportunities. ACM Computing Surveys, 53(5), 1–40.
+Zhu, Y., Sheng, Q., Cao, J., Li, S., Wang, D., & Zhuang, F. (2022a). Generalizing to the future: Mitigating entity bias in fake news detection. In Proceedings of the 45th 
+international ACM SIGIR conference on research and development in information retrieval (pp. 2120–2125).
+Zhu, Y., Sheng, Q., Cao, J., Nan, Q., Shu, K., Wu, M., Wang, J., & Zhuang, F. (2022b). Memory-guided multi-view multi-domain fake news detection. IEEE Transactions 
+on Knowledge and Data Engineering, 35(7), 7178–7191.
+Information Processing and Management 63 (2026) 104789 
+19 
