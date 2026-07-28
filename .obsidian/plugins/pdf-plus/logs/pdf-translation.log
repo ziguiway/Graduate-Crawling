@@ -373,3 +373,21 @@ AttributeError: 'str' object has no attribute 'choices'
     at maybeClose (node:internal/child_process:1101:16)
     at ChildProcess._handle.onexit (node:internal/child_process:304:5)
 
+[2026-07-26T05:37:22.543Z]
+Error: PDFMathTranslate 2.x was not found. Install pdf2zh-next or configure its absolute executable path.
+    at Gu.detect (plugin:pdf-plus:572:608)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Gu.run (plugin:pdf-plus:568:2153)
+
+[2026-07-26T06:33:52.004Z]
+Error: PDFMathTranslate 2.x was not found. Install pdf2zh-next or configure its absolute executable path.
+    at Gu.detect (plugin:pdf-plus:572:608)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Gu.run (plugin:pdf-plus:568:2153)
+
+[2026-07-26T06:34:14.206Z]
+Error: PDFMathTranslate 2.x was not found. Install pdf2zh-next or configure its absolute executable path.
+    at Gu.detect (plugin:pdf-plus:572:608)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Gu.run (plugin:pdf-plus:568:2153)
+
