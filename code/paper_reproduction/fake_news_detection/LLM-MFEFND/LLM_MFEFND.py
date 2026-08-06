@@ -4,12 +4,12 @@ from cn_clip.clip import load_from_name
 import tqdm
 from utils import models_mae
 from utils.layers import TokenAttention, clip_fuion
-from .layers import *
+from layers import *
 from sklearn.metrics import *
 from transformers import BertModel
 from transformers import RobertaModel
 from utils.utils import data2gpu, Averager, metrics, Recorder, metrics1, visualize_tsne
-from .pivot import TransformerLayer, MLP_trans
+from pivot import TransformerLayer, MLP_trans
 
 
 class MultiDomainFENDModel(torch.nn.Module):
