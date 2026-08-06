@@ -85,7 +85,8 @@ uv run jupyter nbconvert --to notebook --execute <notebook.ipynb>
 ## Python 环境
 
 - Python 版本：3.12
-- 包管理：uv（项目根在 `code/Lhy_Machine_Learning/`）
+- 包管理：uv。用户习惯使用 uv 管理 Python 环境；本仓库内所有 Python 相关操作默认使用 `uv run`、`uv sync`、`uv add`、`uv pip` 等 uv 命令，不直接使用系统 `python` / `pip`。只有在用户明确要求或 uv 不可用时，才考虑其他 Python 入口，并需先说明原因。
+- 课程作业 uv 项目根在 `code/Lhy_Machine_Learning/`
 - 主要依赖：PyTorch、transformers、datasets、scikit-learn、matplotlib、wandb
 
 ## Obsidian Vault
