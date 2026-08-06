@@ -5,7 +5,10 @@
       "Bash(git pull *)",
       "Bash(git submodule *)",
       "Bash(git checkout *)",
-      "Bash(Remove-Item *)"
+      "Bash(Remove-Item *)",
+      "Read(//Users/zhengshuang/.cc-switch/skills/nature-paper-card/static/core/**)",
+      "Read(//Users/zhengshuang/.cc-switch/skills/nature-paper-card/references/**)",
+      "Read(//Users/zhengshuang/.cc-switch/skills/nature-paper-card/scripts/**)"
     ]
   }
 }
