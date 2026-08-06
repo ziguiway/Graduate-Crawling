@@ -146,10 +146,10 @@ class MultiDomainFENDModel(torch.nn.Module):
         self.pivot_mlp_fusion_list = torch.nn.ModuleList()
         self.pivot_background_fusion_list = torch.nn.ModuleList()
         self.pivot_comments_fusion_list = torch.nn.ModuleList()
-        self.content_attention_rationale = SelfAttentionFeatureExtract(1, 768)
-        self.content_attention_comments = SelfAttentionFeatureExtract(1, 768)
-        self.rationale_attention_content = SelfAttentionFeatureExtract(1, 768)
-        self.comments_attention_content = SelfAttentionFeatureExtract(1, 768)
+        self.content_attention_rationale = SelfAttentionFeatureExtract(1, 768, 768)
+        self.content_attention_comments = SelfAttentionFeatureExtract(1, 768, 768)
+        self.rationale_attention_content = SelfAttentionFeatureExtract(1, 768, 768)
+        self.comments_attention_content = SelfAttentionFeatureExtract(1, 768, 768)
         self.fusion_fc1 =nn.Linear(768*5,768)
         self.fusion_fc2 = nn.Linear(768 * 2, 768 * 1)
 
@@ -266,7 +266,11 @@ class MultiDomainFENDModel(torch.nn.Module):
         expert_content_background_1 = torch.mean(expert_content_background_1, dim=1)
         mutual_content_background_2 = torch.mean(mutual_content_background_2, dim=1)
         #background_hard_ftr_2_pred = self.hard_mlp_ftr_2(mutual_content_background_2).squeeze(1)
-        reweight_score_background = self.score_mapper_ftr_2(mutual_content_background_2)
+        reweight_score_background = torch.ones(
+            mutual_content_background_2.size(0), 1,
+            device=mutual_content_background_2.device,
+            dtype=mutual_content_background_2.dtype,
+        )
         expert_content_background_1 = expert_content_background_1*reweight_score_background
         #mutual_content_background = torch.cat((mutual_content_background_1, mutual_content_background_2), dim=1)
         expert_content_comments_1, _ = self.content_attention_comments(bert_content_feature, bert_comment_feature,
@@ -276,7 +280,11 @@ class MultiDomainFENDModel(torch.nn.Module):
         mutual_content_comments_1 = torch.mean(expert_content_comments_1, dim=1)
         mutual_content_comments_2 = torch.mean(mutual_content_comments_2, dim=1)
         #hard_mlp_ftr_3 = self.hard_mlp_ftr_3(mutual_content_comments_2).squeeze(1)
-        reweight_score_comments = self.score_mapper_ftr_3(mutual_content_comments_2)
+        reweight_score_comments = torch.ones(
+            mutual_content_comments_2.size(0), 1,
+            device=mutual_content_comments_2.device,
+            dtype=mutual_content_comments_2.dtype,
+        )
         expert_content_comments_1 = reweight_score_comments*mutual_content_comments_1
         #mutual_content_comments = torch.cat((mutual_content_comments_1, mutual_content_comments_2), dim=1)
         #mutual_content_comments = self.fc_comments(mutual_content_comments)
