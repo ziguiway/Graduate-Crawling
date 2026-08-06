@@ -15,6 +15,8 @@
 - FineFake image paths are complete: 16909/16909 rows map to local files.
 - FineFake raw size is large, so it stays ignored by Git.
 - This workspace has its own uv project in `code/paper_reproduction/fake_news_detection/`.
+- FineFake auxiliary multimodal dataloader can feed the model.
+- A development-only LLM-MFEFND forward smoke test runs successfully on a batch of 2.
 
 ## Reproduction gaps
 
@@ -32,6 +34,7 @@
 2. Reconstruct the missing training scaffold from the MDFEND reference repo.
 3. Add preprocessing for image-path mapping and LLM-generated auxiliary text.
 4. Run a minimal baseline first, then add the full LLM-MFEFND fusion model.
+5. Replace development fallbacks with the real pretrained MAE and CN-CLIP components.
 
 ## Data facts
 
@@ -53,6 +56,8 @@ uv run python scripts/audit_datasets.py
 uv run python scripts/audit_aux_data.py
 uv run python scripts/run_text_baseline.py --dataset weibo21
 uv run python scripts/run_text_baseline.py --dataset finefake
+uv run python scripts/smoke_multimodal_dataloader.py
+uv run python scripts/smoke_llm_mfefnd_forward.py
 ```
 
 ## Sanity-check baselines
@@ -65,6 +70,10 @@ These are not paper results. They are lightweight data-flow checks using TF-IDF 
 - FineFake text baseline:
   - validation accuracy: 0.7758
   - test accuracy: 0.7923
+- FineFake auxiliary multimodal forward smoke:
+  - input batch shapes include text `(2, 170)`, image `(2, 1, 3, 224, 224)`, and CLIP text placeholder `(2, 77)`
+  - model output shapes: `classify_pred` `(2,)`, `final_fusion_feature` `(2, 768)`
+  - this is a development smoke test, not a paper result
 
 ## Auxiliary LLM data coverage
 

@@ -237,9 +237,9 @@ class MultiDomainFENDModel(torch.nn.Module):
             fused = pivot_background_fusion_list[layer_idx](fused)
             fused = pivot_comments_fusion_list[layer_idx](fused)
         pooled = fused.mean(dim=1)
-        hidden = mlp_star_f1_list[0](torch.cat([pooled, pooled, pooled, pooled], dim=-1))
+        hidden = mlp_star_f1_list(torch.cat([pooled, pooled, pooled, pooled], dim=-1))
         hidden = torch.relu(hidden)
-        return mlp_star_f2_list[0](hidden)
+        return mlp_star_f2_list(hidden)
 
     def forward(self, **kwargs):
         content, content_masks = kwargs['content'], kwargs['content_masks']
