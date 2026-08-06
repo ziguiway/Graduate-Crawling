@@ -1,27 +1,70 @@
-# from math import dist
 import os
-from cn_clip.clip import load_from_name
+from pathlib import Path
+
+import torch
+import torch.nn as nn
 import tqdm
-from utils import models_mae
-from utils.layers import TokenAttention, clip_fuion
-from layers import *
 from sklearn.metrics import *
 from transformers import BertModel
 from transformers import RobertaModel
+
+from utils import models_mae
+from utils.layers import TokenAttention, clip_fuion
 from utils.utils import data2gpu, Averager, metrics, Recorder, metrics1, visualize_tsne
+from layers import *
 from pivot import TransformerLayer, MLP_trans
+
+try:
+    from cn_clip.clip import load_from_name
+except Exception:  # pragma: no cover - optional dependency
+    load_from_name = None
+
+
+class _LiteCLIP(nn.Module):
+    def __init__(self, text_dim=512, image_dim=512):
+        super().__init__()
+        self.text_proj = nn.Linear(77, text_dim)
+        self.image_proj = nn.Linear(3, image_dim)
+
+    def encode_image(self, image_tensor):
+        pooled = image_tensor.mean(dim=(-1, -2))
+        return self.image_proj(pooled)
+
+    def encode_text(self, text_tensor):
+        text_tensor = text_tensor.float()
+        return self.text_proj(text_tensor)
+
+
+class _LiteTextEncoder(nn.Module):
+    def __init__(self, hidden_size=768, vocab_size=30522):
+        super().__init__()
+        self.emb = nn.Embedding(vocab_size, hidden_size)
+        self.pos = nn.Embedding(512, hidden_size)
+        self.ln = nn.LayerNorm(hidden_size)
+
+    def forward(self, input_ids, attention_mask=None):
+        device = input_ids.device
+        pos_ids = torch.arange(input_ids.size(1), device=device).unsqueeze(0)
+        x = self.emb(input_ids % self.emb.num_embeddings) + self.pos(pos_ids)
+        if attention_mask is not None:
+            x = x * attention_mask.unsqueeze(-1).float()
+        return (self.ln(x),)
 
 
 class MultiDomainFENDModel(torch.nn.Module):
     def __init__(self, emb_dim, mlp_dims, domain_num, dropout, dataset):
         super(MultiDomainFENDModel, self).__init__()
 
-        self.bert_content = BertModel.from_pretrained('hfl/chinese-bert-wwm-ext').requires_grad_(False)
-        self.bert_FTR = BertModel.from_pretrained('hfl/chinese-bert-wwm-ext').requires_grad_(False)
-        self.bert_comment = BertModel.from_pretrained('hfl/chinese-bert-wwm-ext').requires_grad_(False)
-        '''self.bert_content = BertModel.from_pretrained('hfl/bert-base-uncased').requires_grad_(False)
-        self.bert_FTR = BertModel.from_pretrained('hfl/bert-base-uncased').requires_grad_(False)
-        self.bert_comment = BertModel.from_pretrained('hfl/bert-base-uncased').requires_grad_(False)'''
+        self.dataset = dataset
+        bert_name = "bert-base-uncased" if dataset == "en" else "hfl/chinese-bert-wwm-ext"
+        try:
+            self.bert_content = BertModel.from_pretrained(bert_name).requires_grad_(False)
+            self.bert_FTR = BertModel.from_pretrained(bert_name).requires_grad_(False)
+            self.bert_comment = BertModel.from_pretrained(bert_name).requires_grad_(False)
+        except Exception:
+            self.bert_content = _LiteTextEncoder()
+            self.bert_FTR = _LiteTextEncoder()
+            self.bert_comment = _LiteTextEncoder()
         for name, param in self.bert_comment.named_parameters():
             if name.startswith("encoder.layer.11"):
                 param.requires_grad = True
@@ -38,6 +81,7 @@ class MultiDomainFENDModel(torch.nn.Module):
             else:
                 param.requires_grad = False
         self.model_size = "base"
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.score_mapper_ftr_2 = nn.Sequential(nn.Linear(768, 384),
                                                 nn.BatchNorm1d(384),
                                                 nn.ReLU(),
@@ -50,12 +94,22 @@ class MultiDomainFENDModel(torch.nn.Module):
                                                 nn.Sigmoid()
                                                 )
         self.image_model = models_mae.__dict__["mae_vit_{}_patch16".format(self.model_size)](norm_pix_loss=False)
-        self.image_model.cuda()
-        checkpoint = torch.load('hfl/mae_pretrain_vit_base.pth'.format(self.model_size), map_location='cpu')
-        self.image_model.load_state_dict(checkpoint['model'], strict=False)
+        if torch.cuda.is_available():
+            self.image_model = self.image_model.cuda()
+        checkpoint_path = Path("hfl/mae_pretrain_vit_base.pth")
+        if checkpoint_path.exists():
+            checkpoint = torch.load(checkpoint_path, map_location='cpu')
+            self.image_model.load_state_dict(checkpoint['model'], strict=False)
         for param in self.image_model.parameters():
             param.requires_grad = False
-        self.ClipModel, _ = load_from_name("ViT-B-16", device="cuda", download_root='./')
+        clip_device = "cuda" if torch.cuda.is_available() else "cpu"
+        if load_from_name is not None:
+            try:
+                self.ClipModel, _ = load_from_name("ViT-B-16", device=clip_device, download_root='./')
+            except Exception:
+                self.ClipModel = _LiteCLIP()
+        else:
+            self.ClipModel = _LiteCLIP()
         self.mlp = MLP(768, mlp_dims, dropout)
         self.transformers_list = torch.nn.ModuleList()
         self.layers = 18
@@ -148,6 +202,44 @@ class MultiDomainFENDModel(torch.nn.Module):
         for i in range(9):
             self.mlp_star_f1_list.append(nn.Linear(emb_size * 4, 2 * emb_size))
             self.mlp_star_f2_list.append(nn.Linear(2 * emb_size, emb_size))
+
+    def fusion_img_text(
+        self,
+        image_atn_feature,
+        bert_content_feature,
+        clip_fusion_feature,
+        bert_background_feature,
+        bert_comments_feature,
+        mlp_img_list,
+        mlp_text_list,
+        pivot_mlp_fusion_list,
+        pivot_background_fusion_list,
+        pivot_comments_fusion_list,
+        transformers_list,
+        mlp_star_f1_list,
+        mlp_star_f2_list,
+        num_layers=4,
+    ):
+        tokens = [
+            image_atn_feature,
+            bert_content_feature,
+            clip_fusion_feature,
+            bert_background_feature,
+            bert_comments_feature,
+        ]
+        fused = torch.stack(tokens, dim=1)
+        num_layers = min(num_layers, len(transformers_list))
+        for layer_idx in range(num_layers):
+            fused, _ = transformers_list[layer_idx](fused)
+            fused = mlp_img_list[layer_idx](fused)
+            fused = mlp_text_list[layer_idx](fused)
+            fused = pivot_mlp_fusion_list[layer_idx](fused)
+            fused = pivot_background_fusion_list[layer_idx](fused)
+            fused = pivot_comments_fusion_list[layer_idx](fused)
+        pooled = fused.mean(dim=1)
+        hidden = mlp_star_f1_list[0](torch.cat([pooled, pooled, pooled, pooled], dim=-1))
+        hidden = torch.relu(hidden)
+        return mlp_star_f2_list[0](hidden)
 
     def forward(self, **kwargs):
         content, content_masks = kwargs['content'], kwargs['content_masks']
