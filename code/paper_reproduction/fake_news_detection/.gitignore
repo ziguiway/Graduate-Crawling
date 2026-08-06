@@ -1,0 +1,9 @@
+# Raw datasets and pretrained weights for local reproduction.
+datasets/
+pretrained/
+*.zip
+*.tar
+*.tar.gz
+*.pth
+*.pt
+*.pkl
