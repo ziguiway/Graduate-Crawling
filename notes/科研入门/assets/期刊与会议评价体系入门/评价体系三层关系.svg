@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560">
+  <rect width="1100" height="560" fill="#fbfaf7"/>
+  <text x="550" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#20252b">Three layers of academic labels</text>
+  <text x="550" y="86" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#66707a">Different systems answer different questions</text>
+  <rect x="70" y="140" width="290" height="310" rx="12" fill="#e8f0f5" stroke="#7895a8" stroke-width="3"/>
+  <text x="215" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#23465a">1. Indexing</text>
+  <text x="215" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#23465a">Is it included?</text>
+  <text x="215" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#23465a">SCI / SCIE</text>
+  <text x="215" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#3e5967">Web of Science</text>
+  <text x="215" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#3e5967">收录与检索</text>
+  <rect x="405" y="140" width="290" height="310" rx="12" fill="#f5eadc" stroke="#b9976c" stroke-width="3"/>
+  <text x="550" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#634622">2. Ranking</text>
+  <text x="550" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#634622">How high is the journal?</text>
+  <text x="550" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#634622">JCR Q1-Q4</text>
+  <text x="550" y="338" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#634622">CAS 1-4</text>
+  <text x="550" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#765e45">期刊分区排名</text>
+  <rect x="740" y="140" width="290" height="310" rx="12" fill="#e9eee2" stroke="#8b9d77" stroke-width="3"/>
+  <text x="885" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#40502e">3. Field list</text>
+  <text x="885" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#40502e">Is it important in CS?</text>
+  <text x="885" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#40502e">CCF A / B / C</text>
+  <text x="885" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536344">Journals + Conferences</text>
+  <text x="885" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536344">计算机领域推荐</text>
+  <path d="M360 295 H405 M695 295 H740" stroke="#515a63" stroke-width="3" marker-end="url(#arrow)"/>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#515a63"/></marker></defs>
+</svg>

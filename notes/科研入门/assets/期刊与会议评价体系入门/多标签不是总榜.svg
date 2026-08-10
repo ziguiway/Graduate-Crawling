@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="570" viewBox="0 0 1100 570">
+  <rect width="1100" height="570" fill="#fbfaf7"/>
+  <text x="550" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#20252b">Labels can overlap, but they are not one total score</text>
+  <circle cx="430" cy="295" r="145" fill="#d9e9ed" stroke="#4b8795" stroke-width="3" opacity="0.9"/>
+  <circle cx="600" cy="295" r="145" fill="#f0dec6" stroke="#bd8752" stroke-width="3" opacity="0.9"/>
+  <circle cx="515" cy="180" r="145" fill="#dfe8d2" stroke="#809866" stroke-width="3" opacity="0.9"/>
+  <text x="350" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#245362">SCI</text>
+  <text x="350" y="322" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#245362">indexed</text>
+  <text x="680" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#704a29">JCR/CAS</text>
+  <text x="680" y="322" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#704a29">ranking</text>
+  <text x="515" y="133" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#405531">CCF</text>
+  <text x="515" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#405531">computer science</text>
+  <text x="515" y="265" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#333">One venue</text>
+  <text x="515" y="298" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#333">may have several labels</text>
+  <text x="515" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#333">but no universal conversion</text>
+  <rect x="165" y="445" width="770" height="60" rx="8" fill="#fff4e8" stroke="#d08a52" stroke-width="2"/>
+  <text x="550" y="483" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#8b4b27">CCF A + SCI + JCR Q1 is possible for a journal.</text>
+</svg>

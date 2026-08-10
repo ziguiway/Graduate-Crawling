@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="600" viewBox="0 0 1100 600">
+  <rect width="1100" height="600" fill="#fbfaf7"/>
+  <text x="550" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#20252b">Two rulers, one journal</text>
+  <rect x="70" y="110" width="430" height="380" rx="12" fill="#f5eadc" stroke="#b9976c" stroke-width="3"/>
+  <text x="285" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" font-weight="700" fill="#634622">JCR ranking</text>
+  <text x="285" y="208" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#765e45">Clarivate / Q1-Q4</text>
+  <rect x="125" y="260" width="320" height="42" fill="#c87b53"/><text x="285" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">Q1: top 25% (approx.)</text>
+  <rect x="125" y="309" width="320" height="42" fill="#d5a27c"/><text x="285" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#4b3827">Q2</text>
+  <rect x="125" y="358" width="320" height="42" fill="#e1c4a7"/><text x="285" y="386" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#4b3827">Q3</text>
+  <rect x="125" y="407" width="320" height="42" fill="#eadbc9"/><text x="285" y="435" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#4b3827">Q4</text>
+  <rect x="600" y="110" width="430" height="380" rx="12" fill="#e8f0f5" stroke="#7895a8" stroke-width="3"/>
+  <text x="815" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" font-weight="700" fill="#23465a">CAS ranking</text>
+  <text x="815" y="208" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#3e5967">Chinese Academy / Zone 1-4</text>
+  <rect x="655" y="260" width="320" height="42" fill="#447b91"/><text x="815" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">Zone 1</text>
+  <rect x="655" y="309" width="320" height="42" fill="#78a1b0"/><text x="815" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="white">Zone 2</text>
+  <rect x="655" y="358" width="320" height="42" fill="#a9c2c8"/><text x="815" y="386" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#23465a">Zone 3</text>
+  <rect x="655" y="407" width="320" height="42" fill="#d8e3e5"/><text x="815" y="435" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#23465a">Zone 4</text>
+  <text x="550" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#9a4d36">The same journal can be Q1 in JCR but Zone 2 in CAS.</text>
+</svg>
