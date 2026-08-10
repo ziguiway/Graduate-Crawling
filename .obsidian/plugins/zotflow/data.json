@@ -1,0 +1,73 @@
+{
+  "settings": {
+    "librariesConfig": {
+      "21113734": {
+        "mode": "bidirectional"
+      }
+    },
+    "syncInterval": 30,
+    "autoSync": false,
+    "useWebDav": false,
+    "useCache": true,
+    "maxCacheSizeMB": 500,
+    "librarySourceNoteTemplatePath": "",
+    "sourceNoteFolder": "",
+    "librarySourceNotePathTemplate": "Source/{{libraryName}}/@{{citationKey | default: title | default: key}}",
+    "localSourceNoteTemplatePath": "",
+    "localSourceNoteFolder": "",
+    "localSidecarFolder": "",
+    "localSourceNotePathTemplate": "Source/Local/@{{basename}}",
+    "autoImportAnnotationImages": false,
+    "annotationImageFolder": "",
+    "overwriteViewer": true,
+    "readerColorScheme": "obsidian-theme",
+    "defaultLightTheme": "obsidian",
+    "defaultDarkTheme": "obsidian",
+    "treeCollectionSort": "name-asc",
+    "treeItemSort": "title-asc",
+    "treeSingleClickOpen": false,
+    "convertNoteLinks": true,
+    "linkedAttachmentBaseDir": "",
+    "useZoteroStorage": false,
+    "zoteroStoragePath": "",
+    "defaultEditableRegionLocked": true,
+    "hideEditableRegionMarkers": false,
+    "alwaysOpenChildNoteInEditor": false,
+    "defaultCitationFormat": "footnote",
+    "citationTrigger": "@@",
+    "citationPandocTemplate": "",
+    "citationFootnoteRefTemplate": "",
+    "citationFootnoteTemplate": "",
+    "citationWikilinkTemplate": "",
+    "autoCopyAnnotation": "off",
+    "autoUpdateSourceNotesAfterSync": true,
+    "autoPurgeTrashedSourceNotes": false,
+    "autoDisableNoteImageTextTools": true,
+    "epubFontFamily": "",
+    "cslDefaultStyleId": "apa",
+    "cslDefaultFormat": "markdown",
+    "cslStylesFolder": ""
+  },
+  "customThemes": [
+    {
+      "background": "#ffffff",
+      "foreground": "#222222",
+      "id": "obsidian",
+      "label": "Obsidian"
+    }
+  ],
+  "viewStates": {
+    "21113734:QG798F48": {
+      "secondaryViewState": null,
+      "primaryViewState": {
+        "pageIndex": 0,
+        "scale": "page-width",
+        "top": 507,
+        "left": -2,
+        "scrollMode": 0,
+        "spreadMode": 0,
+        "lastReadAloudPosition": null
+      }
+    }
+  }
+}
