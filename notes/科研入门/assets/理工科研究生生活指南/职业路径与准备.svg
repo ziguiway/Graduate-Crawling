@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="600" viewBox="0 0 1100 600">
+  <rect width="1100" height="600" fill="#fbfaf7"/>
+  <text x="550" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#20252b">Career choices are different preparation paths</text>
+  <rect x="420" y="90" width="260" height="70" rx="12" fill="#fff3e4" stroke="#c9864e" stroke-width="3"/>
+  <text x="550" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#824a29">Current stage</text>
+  <text x="550" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#824a29">探索与积累</text>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <rect x="70" y="300" width="260" height="150" rx="12" fill="#dcebef" stroke="#5a8d9c" stroke-width="3"/><text x="200" y="345" font-size="22" font-weight="700" fill="#244e5c">Industry</text><text x="200" y="378" font-size="17" fill="#244e5c">实习 / 项目 / 工程能力</text><text x="200" y="408" font-size="15" fill="#244e5c">算法、系统、面试</text>
+    <rect x="420" y="300" width="260" height="150" rx="12" fill="#e7efd9" stroke="#839b67" stroke-width="3"/><text x="550" y="345" font-size="22" font-weight="700" fill="#40572d">PhD</text><text x="550" y="378" font-size="17" fill="#40572d">研究能力 / 论文 / 推荐信</text><text x="550" y="408" font-size="15" fill="#40572d">方向匹配、研究计划</text>
+    <rect x="770" y="300" width="260" height="150" rx="12" fill="#eee0e5" stroke="#a76d81" stroke-width="3"/><text x="900" y="345" font-size="22" font-weight="700" fill="#653c4b">Other paths</text><text x="900" y="378" font-size="17" fill="#653c4b">岗位信息 / 资格准备</text><text x="900" y="408" font-size="15" fill="#653c4b">按目标倒推时间表</text>
+  </g>
+  <g stroke="#59636a" stroke-width="4" marker-end="url(#arrow)"><path d="M500 160 L250 300"/><path d="M550 160 V300"/><path d="M600 160 L850 300"/></g>
+  <text x="550" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#66707a">方向可以调整；先收集信息，再根据目标分配时间。</text>
+  <defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="3.5" orient="auto"><path d="M0,0 L0,7 L10,3.5 z" fill="#59636a"/></marker></defs>
+</svg>

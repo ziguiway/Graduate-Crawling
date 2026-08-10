@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="650" viewBox="0 0 1000 650">
+  <rect width="1000" height="650" fill="#fbfaf7"/>
+  <text x="500" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#20252b">A sustainable graduate-school system</text>
+  <polygon points="500,115 820,500 180,500" fill="#f7efe4" stroke="#b9976c" stroke-width="4"/>
+  <circle cx="500" cy="300" r="92" fill="#fff3e4" stroke="#c9864e" stroke-width="3"/>
+  <text x="500" y="294" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#824a29">Research</text>
+  <text x="500" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#824a29">科研主线</text>
+  <text x="500" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#40572d">Health</text>
+  <text x="500" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#40572d">健康与心理</text>
+  <text x="155" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#244e5c">Time</text>
+  <text x="155" y="557" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#244e5c">时间与专注</text>
+  <text x="845" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#653c4b">People &amp; Future</text>
+  <text x="845" y="557" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#653c4b">关系与职业规划</text>
+  <text x="500" y="615" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#66707a">科研是主线，但长期稳定运行需要多个支点共同支撑。</text>
+</svg>

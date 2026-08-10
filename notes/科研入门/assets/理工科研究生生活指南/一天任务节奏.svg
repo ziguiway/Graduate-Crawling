@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="470" viewBox="0 0 1100 470">
+  <rect width="1100" height="470" fill="#fbfaf7"/>
+  <text x="550" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#20252b">Match task difficulty to energy</text>
+  <line x1="120" y1="350" x2="1010" y2="350" stroke="#59636a" stroke-width="3"/>
+  <line x1="120" y1="350" x2="120" y2="100" stroke="#59636a" stroke-width="3"/>
+  <text x="95" y="115" text-anchor="end" font-family="Arial, sans-serif" font-size="16" fill="#59636a">Energy</text>
+  <text x="1015" y="378" font-family="Arial, sans-serif" font-size="16" fill="#59636a">Time</text>
+  <path d="M150 270 Q270 105 410 165 T650 245 T930 300" fill="none" stroke="#5a8d9c" stroke-width="6"/>
+  <circle cx="280" cy="150" r="9" fill="#5a8d9c"/><circle cx="550" cy="215" r="9" fill="#5a8d9c"/><circle cx="850" cy="286" r="9" fill="#5a8d9c"/>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <rect x="175" y="75" width="210" height="62" rx="8" fill="#dcebef"/><text x="280" y="103" font-size="18" font-weight="700" fill="#244e5c">Deep work</text><text x="280" y="125" font-size="14" fill="#244e5c">读论文 / 写代码 / 推导</text>
+    <rect x="445" y="275" width="210" height="62" rx="8" fill="#e7efd9"/><text x="550" y="303" font-size="18" font-weight="700" fill="#40572d">Routine tasks</text><text x="550" y="325" font-size="14" fill="#40572d">跑实验 / 整理数据</text>
+    <rect x="745" y="350" width="210" height="62" rx="8" fill="#f4e6d4"/><text x="850" y="378" font-size="18" font-weight="700" fill="#674625">Low-focus work</text><text x="850" y="400" font-size="14" fill="#674625">消息 / 文件 / 行政</text>
+  </g>
+  <text x="550" y="435" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#66707a">先观察自己的节律，再安排任务；图中的时间段不是固定作息模板。</text>
+</svg>
