@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+  <rect width="1000" height="620" fill="#fbfaf7"/>
+  <text x="500" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#20252b">Research is an iterative loop</text>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <rect x="395" y="90" width="210" height="72" rx="12" fill="#dcebef" stroke="#5a8d9c" stroke-width="3"/><text x="500" y="122" font-size="20" font-weight="700" fill="#244e5c">Question</text><text x="500" y="148" font-size="16" fill="#244e5c">研究问题</text>
+    <rect x="680" y="220" width="210" height="72" rx="12" fill="#e7efd9" stroke="#839b67" stroke-width="3"/><text x="785" y="252" font-size="20" font-weight="700" fill="#40572d">Prior work</text><text x="785" y="278" font-size="16" fill="#40572d">前人工作</text>
+    <rect x="610" y="430" width="210" height="72" rx="12" fill="#f4e6d4" stroke="#bd9063" stroke-width="3"/><text x="715" y="462" font-size="20" font-weight="700" fill="#674625">Experiment</text><text x="715" y="488" font-size="16" fill="#674625">实验验证</text>
+    <rect x="180" y="430" width="210" height="72" rx="12" fill="#eee0e5" stroke="#a76d81" stroke-width="3"/><text x="285" y="462" font-size="20" font-weight="700" fill="#653c4b">Method</text><text x="285" y="488" font-size="16" fill="#653c4b">方法</text>
+    <rect x="110" y="220" width="210" height="72" rx="12" fill="#e4e1ef" stroke="#7e76a5" stroke-width="3"/><text x="215" y="252" font-size="20" font-weight="700" fill="#47416e">Gap</text><text x="215" y="278" font-size="16" fill="#47416e">研究缺口</text>
+  </g>
+  <g fill="none" stroke="#59636a" stroke-width="4" marker-end="url(#arrow)"><path d="M605 130 Q700 150 745 220"/><path d="M790 292 Q790 360 740 430"/><path d="M610 470 Q470 540 390 470"/><path d="M180 455 Q100 370 155 292"/><path d="M320 235 Q385 150 395 130"/></g>
+  <rect x="365" y="250" width="270" height="115" rx="18" fill="#fff3e4" stroke="#c9864e" stroke-width="3"/>
+  <text x="500" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#824a29">MVP check</text>
+  <text x="500" y="323" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#824a29">这个想法值得继续吗？</text>
+  <text x="500" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#824a29">失败也能帮助我尽早止损</text>
+  <defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="3.5" orient="auto"><path d="M0,0 L0,7 L10,3.5 z" fill="#59636a"/></marker></defs>
+</svg>

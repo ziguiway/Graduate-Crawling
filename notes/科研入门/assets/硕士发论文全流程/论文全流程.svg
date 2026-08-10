@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430">
+  <rect width="1200" height="430" fill="#fbfaf7"/>
+  <text x="600" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#20252b">From research idea to conference talk</text>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <rect x="40" y="135" width="145" height="82" rx="10" fill="#dcebef" stroke="#5a8d9c" stroke-width="3"/><text x="112" y="170" font-size="19" font-weight="700" fill="#244e5c">Topic</text><text x="112" y="196" font-size="15" fill="#244e5c">选题</text>
+    <rect x="220" y="135" width="145" height="82" rx="10" fill="#e7efd9" stroke="#839b67" stroke-width="3"/><text x="292" y="170" font-size="19" font-weight="700" fill="#40572d">Baseline</text><text x="292" y="196" font-size="15" fill="#40572d">基线</text>
+    <rect x="400" y="135" width="145" height="82" rx="10" fill="#f4e6d4" stroke="#bd9063" stroke-width="3"/><text x="472" y="170" font-size="19" font-weight="700" fill="#674625">Experiments</text><text x="472" y="196" font-size="15" fill="#674625">实验</text>
+    <rect x="580" y="135" width="145" height="82" rx="10" fill="#eee0e5" stroke="#a76d81" stroke-width="3"/><text x="652" y="170" font-size="19" font-weight="700" fill="#653c4b">Writing</text><text x="652" y="196" font-size="15" fill="#653c4b">写作</text>
+    <rect x="760" y="135" width="145" height="82" rx="10" fill="#e4e1ef" stroke="#7e76a5" stroke-width="3"/><text x="832" y="170" font-size="19" font-weight="700" fill="#47416e">Submit</text><text x="832" y="196" font-size="15" fill="#47416e">投稿</text>
+    <rect x="940" y="135" width="145" height="82" rx="10" fill="#f0ead5" stroke="#b39b54" stroke-width="3"/><text x="1012" y="170" font-size="19" font-weight="700" fill="#665525">Review</text><text x="1012" y="196" font-size="15" fill="#665525">审稿</text>
+  </g>
+  <g stroke="#59636a" stroke-width="3" marker-end="url(#arrow)"><path d="M185 176 H220"/><path d="M365 176 H400"/><path d="M545 176 H580"/><path d="M725 176 H760"/><path d="M905 176 H940"/></g>
+  <rect x="300" y="285" width="600" height="70" rx="12" fill="#fff3e4" stroke="#c9864e" stroke-width="3"/>
+  <text x="600" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#824a29">Accept → Camera-Ready → Register → Present</text>
+  <text x="600" y="341" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#824a29">录用 → 终稿 → 注册 → 汇报</text>
+  <defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="3.5" orient="auto"><path d="M0,0 L0,7 L10,3.5 z" fill="#59636a"/></marker></defs>
+</svg>
