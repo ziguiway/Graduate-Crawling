@@ -15,6 +15,7 @@ from layers import *
 from pivot import (
     BidirectionalCrossAttention,
     HierarchicalProgressiveTransformer,
+    OfficialHierarchicalProgressiveTransformer,
     TransformerLayer,
     MLP_trans,
 )
@@ -133,14 +134,17 @@ class MultiDomainFENDModel(torch.nn.Module):
 
         self.clip_fusion = clip_fuion(1024, 768, [348], 0.1)
 
-        # Paper-aligned HPT: five feature streams, five tokens per stream,
-        # progressive fusion in the paper's order, repeated four times.
-        self.hpt = HierarchicalProgressiveTransformer(
+        # Use the official GitHub implementation for result reproduction.
+        # The cleaner equation-based HPT remains available in pivot.py for
+        # controlled comparisons against the paper description.
+        self.hpt = OfficialHierarchicalProgressiveTransformer(
             feature_dim=768,
             num_tokens=5,
+            star_tokens=4,
             num_heads=4,
             num_rounds=4,
-            dropout=0.1,
+            transformer_slots=18,
+            dropout=0.6,
         )
         self.background_interaction = BidirectionalCrossAttention(768, num_heads=4)
         self.comments_interaction = BidirectionalCrossAttention(768, num_heads=4)

@@ -19,6 +19,8 @@
 - A development-only LLM-MFEFND forward smoke test runs successfully on a batch of 2.
 - Added a paper-aligned HPT with five feature streams, five tokens per stream,
   the paper's fusion order, residual averaging, and four repeated rounds.
+- Added an official-code-compatible HPT path using four text-initialized star
+  tokens, 18 Transformer slots, and the public branch's update order.
 - Replaced the previous simplified fusion path with the HPT module.
 - A one-batch training smoke test confirms finite BCE loss, HPT gradients, and
   an optimizer parameter update.
@@ -68,9 +70,11 @@ uv run python scripts/run_text_baseline.py --dataset weibo21
 uv run python scripts/run_text_baseline.py --dataset finefake
 uv run python scripts/smoke_multimodal_dataloader.py
 uv run python scripts/smoke_hpt.py
+uv run python scripts/smoke_official_hpt.py
 uv run python scripts/smoke_interaction.py
 uv run python scripts/smoke_llm_mfefnd_forward.py
 uv run python scripts/smoke_llm_mfefnd_train_step.py
+uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 2
 ```
 
 ## Sanity-check baselines

@@ -38,6 +38,9 @@ def main() -> None:
         "background_new_git.csv",
         "comments_new_git.csv",
         "content_new_git.csv",
+        "background_new.csv",
+        "comments_new.csv",
+        "content_new.csv",
     ]:
         df = pd.read_csv(aux_root / name)
         matches = df["content"].astype(str).isin(weibo_texts).sum()

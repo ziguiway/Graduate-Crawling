@@ -225,3 +225,120 @@ class HierarchicalProgressiveTransformer(nn.Module):
         if return_trace:
             return fused, trace
         return fused
+
+
+class OfficialHierarchicalProgressiveTransformer(nn.Module):
+    """Compatibility implementation of the official GitHub fusion code.
+
+    The public ``data`` branch uses four text-initialized ``star`` tokens,
+    eighteen Transformer slots, and updates the feature sequence with an
+    additive residual.  This differs from the cleaner R-based equations in
+    the paper, so it is kept as a separate implementation for auditability.
+    """
+
+    FEATURE_NAMES = ("text", "image", "aligned", "background", "comments")
+    OFFICIAL_ORDER = ("comments", "background", "aligned", "image", "text")
+    OFFICIAL_OFFSETS = {
+        "comments": 0,
+        "background": 2,
+        "aligned": 3,
+        "image": 4,
+        "text": 5,
+    }
+
+    def __init__(
+        self,
+        feature_dim: int = 768,
+        num_tokens: int = 5,
+        star_tokens: int = 4,
+        num_heads: int = 4,
+        num_rounds: int = 4,
+        transformer_slots: int = 18,
+        dropout: float = 0.6,
+    ):
+        super().__init__()
+        if feature_dim % num_heads != 0:
+            raise ValueError("feature_dim must be divisible by num_heads")
+        if transformer_slots < (num_rounds - 1) * 3 + max(self.OFFICIAL_OFFSETS.values()) + 1:
+            raise ValueError("transformer_slots is too small for the official indexing")
+
+        self.feature_dim = feature_dim
+        self.num_tokens = num_tokens
+        self.star_tokens = star_tokens
+        self.num_rounds = num_rounds
+        self.feature_projections = nn.ModuleDict(
+            {
+                name: nn.ModuleList(
+                    [MLP_trans(feature_dim, feature_dim, dropout=dropout) for _ in range(num_tokens)]
+                )
+                for name in self.FEATURE_NAMES
+            }
+        )
+        self.transformers = nn.ModuleList(
+            [
+                TransformerLayer(
+                    feature_dim,
+                    head_num=num_heads,
+                    dropout=dropout,
+                    attention_dropout=0.0,
+                )
+                for _ in range(transformer_slots)
+            ]
+        )
+        self.dropout = nn.Dropout(0.2)
+        self.activation = nn.SiLU()
+        self.star_f1 = nn.Linear(feature_dim * star_tokens, feature_dim * 2)
+        self.star_f2 = nn.Linear(feature_dim * 2, feature_dim)
+
+    def _project_feature(self, name: str, feature: torch.Tensor) -> torch.Tensor:
+        if feature.ndim != 2 or feature.shape[-1] != self.feature_dim:
+            raise ValueError(
+                f"{name} must have shape [batch, {self.feature_dim}], got {tuple(feature.shape)}"
+            )
+        return torch.stack([projection(feature) for projection in self.feature_projections[name]], dim=1)
+
+    def forward(
+        self,
+        text: torch.Tensor,
+        image: torch.Tensor,
+        aligned: torch.Tensor,
+        background: torch.Tensor,
+        comments: torch.Tensor,
+        return_trace: bool = False,
+    ) -> torch.Tensor | tuple[torch.Tensor, dict[str, object]]:
+        inputs = {
+            "text": text,
+            "image": image,
+            "aligned": aligned,
+            "background": background,
+            "comments": comments,
+        }
+        sequences = {
+            name: self._project_feature(name, feature)
+            for name, feature in inputs.items()
+        }
+        star = sequences["text"][:, : self.star_tokens]
+        trace: dict[str, object] = {
+            "order": list(self.OFFICIAL_ORDER),
+            "rounds": [],
+        }
+
+        for round_idx in range(self.num_rounds):
+            round_trace = []
+            base = round_idx * 3
+            for name in self.OFFICIAL_ORDER:
+                slot = base + self.OFFICIAL_OFFSETS[name]
+                stage_input = torch.cat([star, sequences[name]], dim=1)
+                stage_output, _ = self.transformers[slot](stage_input)
+                star = (stage_output[:, : self.star_tokens] + star) / 2.0
+                sequences[name] = stage_output[:, self.star_tokens :] + sequences[name]
+                round_trace.append({"feature": name, "slot": slot})
+            trace["rounds"].append(round_trace)
+
+        fused = torch.cat([star[:, index] for index in range(self.star_tokens)], dim=1)
+        fused = self.dropout(fused)
+        fused = self.dropout(self.activation(self.star_f1(fused)))
+        fused = self.dropout(self.activation(self.star_f2(fused)))
+        if return_trace:
+            return fused, trace
+        return fused

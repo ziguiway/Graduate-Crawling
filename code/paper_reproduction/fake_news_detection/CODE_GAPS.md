@@ -34,12 +34,15 @@ The public `LLM-MFEFND` repository is not directly runnable. It only contains:
 - Added `LLM-MFEFND/pivot.py` with basic `TransformerLayer` and `MLP_trans`.
 - Added `HierarchicalProgressiveTransformer` in `pivot.py` with the paper's
   five-stage progressive fusion, residual averaging, and four-round iteration.
+- Added `OfficialHierarchicalProgressiveTransformer` to mirror the public
+  `data` branch's `fusion_img_text()` implementation.
 - Added `LLM-MFEFND/utils/models_mae.py` with a lightweight `forward_ying` fallback for smoke tests.
 - Patched `LLM-MFEFND/LLM_MFEFND.py` so CPU-only forward smoke tests can run without CN-CLIP and MAE checkpoint files.
 - Added `scripts/smoke_llm_mfefnd_forward.py`; it currently reaches `forward_ok` on FineFake auxiliary data.
 - Added `scripts/smoke_hpt.py` and `scripts/smoke_llm_mfefnd_train_step.py` for HPT
   structure and trainability checks.
 - Added `scripts/smoke_interaction.py` for bidirectional cross-attention and mask checks.
+- Added `scripts/smoke_official_hpt.py` for the official HPT slot/order contract.
 
 ## Recoverable from MDFEND
 

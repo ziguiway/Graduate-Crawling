@@ -46,6 +46,24 @@ wheels = [
 ]
 
 [[package]]
+name = "cn-clip"
+version = "1.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "lmdb" },
+    { name = "numpy" },
+    { name = "six" },
+    { name = "timm" },
+    { name = "torch" },
+    { name = "torchvision" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3e/7c/0a98d168f5a35bf274cad1f7834c7f48f06016dfa7e0132314d0326c978e/cn_clip-1.6.0.tar.gz", hash = "sha256:6549776d12dd8f7226ec95f876c4f9c1b4f2c5754887b83b653fa80541d8a609", size = 160987, upload-time = "2025-08-29T08:07:14.892Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/d8/c8d5206d9e759073df0a770495e151cc50d8e7a069fce3ae13c1878d9a99/cn_clip-1.6.0-py3-none-any.whl", hash = "sha256:1129e296d707a39450eb5e761903cfa3db89dd74a9ddfbd69f0d80c027046e75", size = 209896, upload-time = "2025-08-29T08:07:13.124Z" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -128,6 +146,7 @@ name = "fake-news-detection-reproduction"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "cn-clip" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "pillow" },
@@ -139,6 +158,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cn-clip", specifier = ">=1.6.0" },
     { name = "numpy", specifier = "<2" },
     { name = "pandas", specifier = "==1.5.3" },
     { name = "pillow", specifier = ">=12.3.0" },
@@ -271,6 +291,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/41/f2/d34e8b3a08a9cc79a
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7b/91/984aca2ec129e2757d1e4e3c81c3fcda9d0f85b74670a094cc443d9ee949/joblib-1.5.3-py3-none-any.whl", hash = "sha256:5fc3c5039fc5ca8c0276333a188bbd59d6b7ab37fe6632daa76bc7f9ec18e713", size = 309071, upload-time = "2025-12-15T08:41:44.973Z" },
 ]
+
+[[package]]
+name = "lmdb"
+version = "1.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ed/61/41f3c7cbd8a67202ef24fad3375ed936093a0547dc645581dd11c09581b7/lmdb-1.3.0.tar.gz", hash = "sha256:60a11efc21aaf009d06518996360eed346f6000bfc9de05114374230879f992e", size = 881422, upload-time = "2021-12-30T17:43:49.969Z" }
 
 [[package]]
 name = "markdown-it-py"
@@ -753,6 +779,22 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/b7/4d/08c89e34946fce2aec4fbb45c9016efd5f4d7f24af8e5d93296e935631d8/threadpoolctl-3.6.0.tar.gz", hash = "sha256:8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e", size = 21274, upload-time = "2025-03-13T13:49:23.031Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/32/d5/f9a850d79b0851d1d4ef6456097579a9005b31fea68726a4ae5f2d82ddd9/threadpoolctl-3.6.0-py3-none-any.whl", hash = "sha256:43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb", size = 18638, upload-time = "2025-03-13T13:49:21.846Z" },
+]
+
+[[package]]
+name = "timm"
+version = "1.0.28"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "huggingface-hub" },
+    { name = "pyyaml" },
+    { name = "safetensors" },
+    { name = "torch" },
+    { name = "torchvision" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/35/03/e41389ac641747bfec48d016fde8be1eade1901e6f2c1aedcb0c8cb4b5d9/timm-1.0.28.tar.gz", hash = "sha256:3789d313fdd5541a327b60180d70dbb4bdec73db8ff0655e413db3c3d134a9a4", size = 2451413, upload-time = "2026-07-11T17:24:32.615Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/76/de1bfac17d183c49c6d0887903d3064ced51cf1d9ba7a8d611c1a8808c4f/timm-1.0.28-py3-none-any.whl", hash = "sha256:e577b88da96b3a722ea5e2f042455ce6f715d398304d8e63b17d126ed7d89968", size = 2597944, upload-time = "2026-07-11T17:24:30.869Z" },
 ]
 
 [[package]]
