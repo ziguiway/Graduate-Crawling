@@ -34,6 +34,8 @@
   perturbations, cosine-kernel weighting, and local ridge explanations.
 - Added `scripts/smoke_mlime.py` and `scripts/compare_hpt.py` for explanation and
   HPT-variant verification.
+- Added `scripts/explain_finefake_aux.py`, which sends a real FineFake sample
+  through the complete model and explains the five raw input modality groups.
 
 ## Reproduction gaps
 
@@ -60,6 +62,9 @@
 7. Wrap the trained multimodal predictor with `mlime.explain` for sample-level
    word/patch explanations; the generic explainer is ready, while a full
    benchmark explanation audit still needs the authors' 400 labeled samples.
+   The current end-to-end script additionally validates five-group modality
+   explanations on a real FineFake sample; without `--checkpoint`, its scores
+   are only an integration check.
 
 ## HPT implementation boundary
 
@@ -67,9 +72,12 @@
 that matches the public GitHub forward path. `HierarchicalProgressiveTransformer`
 is retained as a paper-equation implementation for controlled comparison. They
 are materially different: the smoke comparison gives parameter counts of
-67,918,848 and 163,011,840, with stage orders `text > image > aligned >
-background > comments` and `comments > background > aligned > image > text`.
-They should not be treated as two random seeds of the same model.
+67,918,848 and 163,011,840. Both execute the stages in
+`text > image > aligned > background > comments`; the official version uses
+the source code's slot indices `5, 4, 3, 2, 0`, while the equation version
+allocates its five layers in forward order. They should not be treated as two
+random seeds of the same model because their state updates and parameter
+counts differ.
 
 ## Data facts
 
@@ -96,10 +104,13 @@ uv run python scripts/smoke_hpt.py
 uv run python scripts/smoke_official_hpt.py
 uv run python scripts/smoke_mlime.py
 uv run python scripts/compare_hpt.py
+uv run python scripts/explain_finefake_aux.py --num-samples 16
 uv run python scripts/smoke_interaction.py
 uv run python scripts/smoke_llm_mfefnd_forward.py
 uv run python scripts/smoke_llm_mfefnd_train_step.py
 uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 2
+uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 2 --checkpoint-out /tmp/llm-mfefnd-dev.pt
+uv run python scripts/explain_finefake_aux.py --checkpoint /tmp/llm-mfefnd-dev.pt --num-samples 16
 LLM_MFEFND_REAL_BACKBONES=1 uv run python scripts/smoke_llm_mfefnd_forward.py
 uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 1 --real-backbones
 uv run python LLM-MFEFND/main.py --dataset en --epoch 1 --batchsize 8

@@ -49,6 +49,7 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--val-ratio", type=float, default=0.2)
     parser.add_argument("--real-backbones", action="store_true")
+    parser.add_argument("--checkpoint-out", type=Path, help="optional path for the final model state_dict")
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -109,6 +110,10 @@ def main() -> None:
         )
         if args.max_steps and global_step >= args.max_steps:
             break
+    if args.checkpoint_out is not None:
+        args.checkpoint_out.parent.mkdir(parents=True, exist_ok=True)
+        torch.save(model.state_dict(), args.checkpoint_out)
+        print(f"checkpoint_saved={args.checkpoint_out}")
 
 
 if __name__ == "__main__":

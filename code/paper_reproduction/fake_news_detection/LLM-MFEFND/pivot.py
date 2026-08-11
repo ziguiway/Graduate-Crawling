@@ -237,13 +237,16 @@ class OfficialHierarchicalProgressiveTransformer(nn.Module):
     """
 
     FEATURE_NAMES = ("text", "image", "aligned", "background", "comments")
-    OFFICIAL_ORDER = ("comments", "background", "aligned", "image", "text")
+    # The source code executes these stages in this order. The transformer
+    # indices are intentionally descending because that is how the author
+    # allocated the 18-slot list.
+    OFFICIAL_ORDER = ("text", "image", "aligned", "background", "comments")
     OFFICIAL_OFFSETS = {
-        "comments": 0,
-        "background": 2,
-        "aligned": 3,
-        "image": 4,
         "text": 5,
+        "image": 4,
+        "aligned": 3,
+        "background": 2,
+        "comments": 0,
     }
 
     def __init__(

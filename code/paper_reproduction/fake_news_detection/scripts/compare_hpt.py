@@ -22,6 +22,7 @@ def main() -> None:
     official_output, official_trace = official_hpt(**kwargs, return_trace=True)
     assert equation_output.shape == official_output.shape == (2, 768)
     assert len(equation_trace["rounds"]) == len(official_trace["rounds"]) == 4
+    assert equation_trace["order"] == official_trace["order"]
     print("hpt_compare_ok")
     print({"equation_parameters": sum(p.numel() for p in equation_hpt.parameters()), "official_parameters": sum(p.numel() for p in official_hpt.parameters()), "mean_abs_output_gap": float((equation_output - official_output).abs().mean().detach())})
     print({"equation_order": equation_trace["order"], "official_order": official_trace["order"]})

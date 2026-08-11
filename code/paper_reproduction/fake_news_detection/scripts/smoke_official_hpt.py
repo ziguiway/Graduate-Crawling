@@ -27,9 +27,9 @@ def main() -> None:
     output, trace = model(*features, return_trace=True)
 
     assert output.shape == (2, 32)
-    assert trace["order"] == ["comments", "background", "aligned", "image", "text"]
-    assert [stage["slot"] for stage in trace["rounds"][0]] == [0, 2, 3, 4, 5]
-    assert [stage["slot"] for stage in trace["rounds"][-1]] == [9, 11, 12, 13, 14]
+    assert trace["order"] == ["text", "image", "aligned", "background", "comments"]
+    assert [stage["slot"] for stage in trace["rounds"][0]] == [5, 4, 3, 2, 0]
+    assert [stage["slot"] for stage in trace["rounds"][-1]] == [14, 13, 12, 11, 9]
 
     output.square().mean().backward()
     used_slots = {stage["slot"] for round_trace in trace["rounds"] for stage in round_trace}
