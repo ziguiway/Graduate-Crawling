@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <title>LLM-MFEFND 通俗流程图</title>
+  <desc>从多角度读取新闻，到 LLM 补充背景和评论，再由 HPT 逐步融合并完成真假新闻分类。</desc>
+  <style>
+    .title { font: 700 30px sans-serif; fill: #18212b; }
+    .subtitle { font: 400 16px sans-serif; fill: #536170; }
+    .stage { font: 700 18px sans-serif; fill: #ffffff; }
+    .head { font: 700 18px sans-serif; fill: #18212b; }
+    .body { font: 400 15px sans-serif; fill: #344252; }
+    .small { font: 400 13px sans-serif; fill: #526170; }
+    .box { stroke: #cbd5df; stroke-width: 2; rx: 12; }
+    .arrow { stroke: #627386; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .step { stroke: #d6dce3; stroke-width: 2; rx: 10; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#627386"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="760" fill="#f7f9fb"/>
+  <text x="60" y="58" class="title">LLM-MFEFND：一条新闻是怎样被判断的？</text>
+  <text x="60" y="88" class="subtitle">核心不是让 LLM 直接判真假，而是把它生成的内容当作额外材料，再交给融合模型判断。</text>
+
+  <rect x="45" y="125" width="250" height="505" fill="#e8f1f8" class="box"/>
+  <rect x="45" y="125" width="250" height="48" fill="#397aa8" rx="12"/>
+  <text x="70" y="156" class="stage">1. 多角度阅读新闻</text>
+
+  <rect x="70" y="200" width="200" height="70" fill="#ffffff" class="step"/>
+  <text x="91" y="228" class="head">文本 T</text>
+  <text x="91" y="252" class="body">BERT → 文本特征 ft</text>
+  <rect x="70" y="290" width="200" height="70" fill="#ffffff" class="step"/>
+  <text x="91" y="318" class="head">图片 I</text>
+  <text x="91" y="342" class="body">ViT → 图像特征 fi</text>
+  <rect x="70" y="380" width="200" height="88" fill="#ffffff" class="step"/>
+  <text x="91" y="408" class="head">图文关系</text>
+  <text x="91" y="432" class="body">CLIP → 图文对齐特征</text>
+  <text x="91" y="454" class="small">判断文字和图片是否匹配</text>
+  <text x="70" y="525" class="small">得到：文本、图片、图文对齐</text>
+  <text x="70" y="550" class="small">三类基础特征</text>
+
+  <rect x="325" y="125" width="250" height="505" fill="#f8efe4" class="box"/>
+  <rect x="325" y="125" width="250" height="48" fill="#b56b36" rx="12"/>
+  <text x="350" y="156" class="stage">2. LLM 补充材料</text>
+  <rect x="350" y="215" width="200" height="100" fill="#fffaf4" class="step"/>
+  <text x="371" y="245" class="head">背景知识</text>
+  <text x="371" y="271" class="body">这条新闻涉及什么？</text>
+  <text x="371" y="294" class="body">有哪些相关事实？</text>
+  <rect x="350" y="345" width="200" height="100" fill="#fffaf4" class="step"/>
+  <text x="371" y="375" class="head">模拟评论</text>
+  <text x="371" y="401" class="body">用户可能怎样评价？</text>
+  <text x="371" y="424" class="body">有哪些支持或质疑？</text>
+  <text x="350" y="510" class="small">LLM 是“顾问”，不是最终裁判</text>
+  <text x="350" y="535" class="small">生成后离线保存，训练时直接读取</text>
+
+  <rect x="605" y="125" width="310" height="505" fill="#edf5ed" class="box"/>
+  <rect x="605" y="125" width="310" height="48" fill="#4d8961" rx="12"/>
+  <text x="630" y="156" class="stage">3. HPT 逐步融合</text>
+  <text x="630" y="204" class="body">五类特征先变成一组 token，</text>
+  <text x="630" y="228" class="body">再放入共享记忆 R 中逐步更新。</text>
+
+  <rect x="645" y="260" width="230" height="46" fill="#d9eadb" class="step"/>
+  <text x="680" y="289" class="head">文本 + R</text>
+  <rect x="645" y="320" width="230" height="46" fill="#d9eadb" class="step"/>
+  <text x="680" y="349" class="head">图片 + R</text>
+  <rect x="645" y="380" width="230" height="46" fill="#d9eadb" class="step"/>
+  <text x="680" y="409" class="head">图文对齐 + R</text>
+  <rect x="645" y="440" width="230" height="46" fill="#d9eadb" class="step"/>
+  <text x="680" y="469" class="head">背景 + R</text>
+  <rect x="645" y="500" width="230" height="46" fill="#d9eadb" class="step"/>
+  <text x="680" y="529" class="head">评论 + R</text>
+  <path d="M760 306 L760 320 M760 366 L760 380 M760 426 L760 440 M760 486 L760 500" class="arrow"/>
+  <text x="630" y="580" class="small">每一步：Transformer 学交互</text>
+  <text x="630" y="603" class="small">新旧信息各保留一部分，整套流程约 N=4 轮</text>
+
+  <rect x="945" y="125" width="210" height="505" fill="#f1eaf5" class="box"/>
+  <rect x="945" y="125" width="210" height="48" fill="#795694" rx="12"/>
+  <text x="970" y="156" class="stage">4. 输出结果</text>
+  <rect x="970" y="250" width="160" height="90" fill="#ffffff" class="step"/>
+  <text x="997" y="282" class="head">MLP 分类器</text>
+  <text x="997" y="309" class="body">真假概率</text>
+  <text x="997" y="330" class="small">Real / Fake</text>
+  <rect x="970" y="390" width="160" height="100" fill="#ffffff" class="step"/>
+  <text x="997" y="422" class="head">MLIME</text>
+  <text x="997" y="448" class="body">重要词语</text>
+  <text x="997" y="470" class="body">重要图像区域</text>
+  <path d="M915 380 L945 380" class="arrow"/>
+
+  <path d="M295 380 L325 380" class="arrow"/>
+  <path d="M575 380 L605 380" class="arrow"/>
+  <text x="60" y="700" class="small">研究启发：HPT 可以作为基础框架，进一步研究特征可靠性、动态融合顺序、可学习残差权重和缺失模态处理。</text>
+</svg>
