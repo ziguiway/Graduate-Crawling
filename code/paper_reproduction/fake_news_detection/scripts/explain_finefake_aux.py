@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "LLM-MFEFND"))
 
 from LLM_MFEFND import MultiDomainFENDModel
-from mlime import explain
+from mlime import explain, masked_image_patches
 from utils.multimodal_dataloader import FineFakeAuxMultimodalDataset
 
 
@@ -35,6 +35,7 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--num-samples", type=int, default=16)
     parser.add_argument("--seed", type=int, default=2026)
+    parser.add_argument("--granularity", choices=("modality", "content", "image"), default="modality")
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -54,7 +55,11 @@ def main() -> None:
         model.load_state_dict(state)
     model.eval()
 
-    def predictor(masks: torch.Tensor) -> torch.Tensor:
+    def run_candidates(candidate: dict[str, torch.Tensor]) -> torch.Tensor:
+        with torch.no_grad():
+            return model(**candidate)["classify_pred"].cpu()
+
+    def modality_predictor(masks: torch.Tensor) -> torch.Tensor:
         masks = masks.to(device)
         outputs = []
         with torch.no_grad():
@@ -80,22 +85,71 @@ def main() -> None:
                             candidate[mask_key][absent, 0] = 1
                         else:
                             candidate[input_key] *= present.view(-1, *([1] * (candidate[input_key].ndim - 1)))
-                outputs.append(model(**candidate)["classify_pred"].cpu())
+                outputs.append(run_candidates(candidate))
         return torch.cat(outputs)
 
-    result = explain(predictor, feature_count=len(MODALITIES), num_samples=args.num_samples, seed=args.seed)
-    print(
-        "mlime_model_ok",
-        {
-            "checkpoint_loaded": loaded_checkpoint,
-            "prediction": round(result.prediction, 6),
-            "r2": round(result.r2, 6),
+    if args.granularity == "modality":
+        result = explain(modality_predictor, feature_count=len(MODALITIES), num_samples=args.num_samples, seed=args.seed)
+        explanation = {
             "top_modalities": [
                 (MODALITIES[index][0], round(weight, 6))
                 for index, weight in result.top_features(len(MODALITIES))
-            ],
-        },
-    )
+            ]
+        }
+    elif args.granularity == "content":
+        content_mask = batch["content_masks"][0].bool()
+        active_positions = torch.where(content_mask)[0]
+        input_ids = batch["content"][0]
+
+        def content_predictor(masks: torch.Tensor) -> torch.Tensor:
+            masks = masks.to(device)
+            outputs = []
+            for start in range(0, masks.size(0), 4):
+                chunk = masks[start : start + 4]
+                full_mask = torch.ones((chunk.size(0), input_ids.numel()), dtype=torch.bool, device=device)
+                full_mask[:, active_positions] = chunk.bool()
+                full_mask[:, 0] = True
+                candidate = {
+                    key: value[:1].repeat((chunk.size(0),) + (1,) * (value.ndim - 1))
+                    for key, value in batch.items()
+                }
+                candidate["content"][~full_mask] = 0
+                candidate["content_masks"] = candidate["content_masks"] * full_mask.long()
+                candidate["content"][..., 0] = input_ids[0]
+                outputs.append(run_candidates(candidate))
+            return torch.cat(outputs)
+
+        result = explain(content_predictor, feature_count=active_positions.numel(), num_samples=args.num_samples, seed=args.seed)
+        tokens = dataset.tokenizer.convert_ids_to_tokens(input_ids[active_positions].tolist())
+        explanation = {
+            "top_tokens": [(tokens[index], round(weight, 6)) for index, weight in result.top_features(min(10, len(tokens)))]
+        }
+    else:
+        image = batch["image_features"][0, 0]
+
+        def image_predictor(masks: torch.Tensor) -> torch.Tensor:
+            masks = masks.to(device)
+            outputs = []
+            for start in range(0, masks.size(0), 4):
+                chunk = masks[start : start + 4]
+                candidate = {
+                    key: value[:1].repeat((chunk.size(0),) + (1,) * (value.ndim - 1))
+                    for key, value in batch.items()
+                }
+                candidate["image_features"] = masked_image_patches(image, chunk, grid_size=(14, 14)).unsqueeze(1)
+                outputs.append(run_candidates(candidate))
+            return torch.cat(outputs)
+
+        result = explain(image_predictor, feature_count=14 * 14, num_samples=args.num_samples, seed=args.seed)
+        explanation = {"top_patches": result.top_features(10)}
+
+    print("mlime_model_ok", {
+        "checkpoint_loaded": loaded_checkpoint,
+        "granularity": args.granularity,
+        "prediction": round(result.prediction, 6),
+        "r2": round(result.r2, 6),
+        **explanation,
+    })
 
 
 if __name__ == "__main__":

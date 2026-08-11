@@ -18,6 +18,7 @@ from pivot import (
     OfficialHierarchicalProgressiveTransformer,
     TransformerLayer,
     MLP_trans,
+    ConcatenationFusion,
 )
 
 try:
@@ -58,10 +59,14 @@ class _LiteTextEncoder(nn.Module):
 
 
 class MultiDomainFENDModel(torch.nn.Module):
-    def __init__(self, emb_dim, mlp_dims, domain_num, dropout, dataset):
+    def __init__(self, emb_dim, mlp_dims, domain_num, dropout, dataset, hpt_variant="official", use_interactions=True):
         super(MultiDomainFENDModel, self).__init__()
 
         self.dataset = dataset
+        if hpt_variant not in {"official", "equation", "concat"}:
+            raise ValueError("hpt_variant must be 'official', 'equation', or 'concat'")
+        self.hpt_variant = hpt_variant
+        self.use_interactions = use_interactions
         bert_name = "bert-base-uncased" if dataset == "en" else "hfl/chinese-bert-wwm-ext"
         try:
             self.bert_content = BertModel.from_pretrained(bert_name).requires_grad_(False)
@@ -135,18 +140,28 @@ class MultiDomainFENDModel(torch.nn.Module):
 
         self.clip_fusion = clip_fuion(1024, 768, [348], 0.1)
 
-        # Use the official GitHub implementation for result reproduction.
-        # The cleaner equation-based HPT remains available in pivot.py for
-        # controlled comparisons against the paper description.
-        self.hpt = OfficialHierarchicalProgressiveTransformer(
-            feature_dim=768,
-            num_tokens=5,
-            star_tokens=4,
-            num_heads=4,
-            num_rounds=4,
-            transformer_slots=18,
-            dropout=0.6,
-        )
+        # Keep both structures selectable for a controlled reproduction
+        # ablation; the official code path remains the default.
+        if hpt_variant == "official":
+            self.hpt = OfficialHierarchicalProgressiveTransformer(
+                feature_dim=768,
+                num_tokens=5,
+                star_tokens=4,
+                num_heads=4,
+                num_rounds=4,
+                transformer_slots=18,
+                dropout=0.6,
+            )
+        elif hpt_variant == "equation":
+            self.hpt = HierarchicalProgressiveTransformer(
+                feature_dim=768,
+                num_tokens=5,
+                num_heads=4,
+                num_rounds=4,
+                dropout=0.6,
+            )
+        else:
+            self.hpt = ConcatenationFusion(feature_dim=768, dropout=0.6)
         self.background_interaction = BidirectionalCrossAttention(768, num_heads=4)
         self.comments_interaction = BidirectionalCrossAttention(768, num_heads=4)
 
@@ -301,9 +316,11 @@ class MultiDomainFENDModel(torch.nn.Module):
 
         clip_fusion_feature = clip_fusion_feature.to(torch.float32)
 
+        background_feature = background_interaction if self.use_interactions else bert_background_feature
+        comments_feature = comments_interaction if self.use_interactions else bert_comments_feature
         final_fusion_feature = self.fusion_img_text(image_atn_feature, bert_content_feature, clip_fusion_feature,
-                                                    background_interaction,
-                                                    comments_interaction, self.mlp_img_list[0],
+                                                    background_feature,
+                                                    comments_feature, self.mlp_img_list[0],
                                                     self.mlp_text_list[0],
                                                     self.pivot_mlp_fusion_list[0],
                                                     self.pivot_background_fusion_list[0],
@@ -337,6 +354,8 @@ class Trainer():
                  weight_decay,
                  save_param_dir,
                  dataset,
+                 hpt_variant="official",
+                 use_interactions=True,
                  early_stop=5,
                  epoches=100
                  ):
@@ -350,6 +369,8 @@ class Trainer():
         self.category_dict = category_dict
         self.use_cuda = use_cuda
         self.dataset = dataset
+        self.hpt_variant = hpt_variant
+        self.use_interactions = use_interactions
 
         self.emb_dim = emb_dim
         self.mlp_dims = mlp_dims
@@ -366,7 +387,8 @@ class Trainer():
             logger.info('start training......')
 
         self.model = MultiDomainFENDModel(self.emb_dim, self.mlp_dims, len(self.category_dict), self.dropout,
-                                          self.dataset)
+                                          self.dataset, hpt_variant=self.hpt_variant,
+                                          use_interactions=self.use_interactions)
         if self.use_cuda:
             self.model = self.model.cuda()
 

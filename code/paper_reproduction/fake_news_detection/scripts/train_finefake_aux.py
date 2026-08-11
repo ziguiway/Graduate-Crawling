@@ -50,6 +50,8 @@ def main() -> None:
     parser.add_argument("--val-ratio", type=float, default=0.2)
     parser.add_argument("--real-backbones", action="store_true")
     parser.add_argument("--checkpoint-out", type=Path, help="optional path for the final model state_dict")
+    parser.add_argument("--hpt-variant", choices=("official", "equation", "concat"), default="official")
+    parser.add_argument("--no-interactions", action="store_true")
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -79,13 +81,15 @@ def main() -> None:
         domain_num=6,
         dropout=0.2,
         dataset="en",
+        hpt_variant=args.hpt_variant,
+        use_interactions=not args.no_interactions,
     ).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=5e-5)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.98)
     loss_fn = torch.nn.BCELoss()
     global_step = 0
 
-    print(f"dataset_size={len(dataset)} train={train_size} val={val_size} device={device}")
+    print(f"dataset_size={len(dataset)} train={train_size} val={val_size} device={device} hpt={args.hpt_variant} interactions={not args.no_interactions}")
     for epoch in range(args.epochs):
         model.train()
         losses = []

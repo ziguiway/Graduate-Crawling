@@ -18,6 +18,20 @@ class Run:
         self.config = config
         self.project_root = Path(__file__).resolve().parents[1]
 
+    def _resolve_path(self, value, default: Path) -> Path:
+        if value is None:
+            return default
+        path = Path(value)
+        if path.is_absolute():
+            return path
+        # Support both `python LLM-MFEFND/main.py` from the parent directory
+        # and the upstream README's `cd LLM-MFEFND && python main.py`.
+        candidates = (Path.cwd() / path, self.project_root / path, self.project_root.parent / path)
+        for candidate in candidates:
+            if candidate.exists():
+                return candidate
+        return Path.cwd() / path
+
     def _get_loaders(self):
         if self.config["dataset"] != "en":
             raise RuntimeError(
@@ -29,14 +43,20 @@ class Run:
 
         use_real_backbones = os.environ.get("LLM_MFEFND_REAL_BACKBONES", "0") == "1"
         dataset = FineFakeAuxMultimodalDataset(
-            aux_csv=self.project_root / "LLM-MFEFND/data/GPT-DS-GLM-Weibo21-FineFake.csv",
-            finefake_root=self.project_root / "datasets/FineFake/extracted",
-            tokenizer_name="bert-base-uncased",
+            aux_csv=self._resolve_path(
+                self.config.get("aux_csv"),
+                self.project_root / "LLM-MFEFND/data/GPT-DS-GLM-Weibo21-FineFake.csv",
+            ),
+            finefake_root=self._resolve_path(
+                self.config.get("finefake_root"),
+                self.project_root / "datasets/FineFake/extracted",
+            ),
+            tokenizer_name=self.config.get("tokenizer_name", "bert-base-uncased"),
             max_len=self.config["max_len"],
             use_cn_clip=use_real_backbones,
         )
-        val_size = max(1, round(len(dataset) * 0.2))
-        test_size = max(1, round(len(dataset) * 0.2))
+        val_size = max(1, round(len(dataset) * self.config.get("val_ratio", 0.2)))
+        test_size = max(1, round(len(dataset) * self.config.get("test_ratio", 0.2)))
         train_size = len(dataset) - val_size - test_size
         train_set, val_set, test_set = random_split(
             dataset,
@@ -71,6 +91,8 @@ class Run:
             weight_decay=self.config["weight_decay"],
             save_param_dir=self.config["save_param_dir"],
             dataset=self.config["dataset"],
+            hpt_variant=self.config.get("hpt_variant", "official"),
+            use_interactions=self.config.get("use_interactions", True),
             early_stop=self.config["early_stop"],
             epoches=self.config["epoch"],
         )

@@ -20,6 +20,13 @@ parser.add_argument('--emotion_num', type=int, default=7)
 parser.add_argument('--style_num', type=int, default=2)
 parser.add_argument('--lnn_dim', type=int, default=50)
 parser.add_argument('--domain_num', type=int, default=9)
+parser.add_argument('--aux_csv', default=None)
+parser.add_argument('--finefake_root', default=None)
+parser.add_argument('--tokenizer_name', default='bert-base-uncased')
+parser.add_argument('--val_ratio', type=float, default=0.2)
+parser.add_argument('--test_ratio', type=float, default=0.2)
+parser.add_argument('--hpt_variant', choices=('official', 'equation', 'concat'), default='official')
+parser.add_argument('--no_interactions', action='store_true')
 
 args = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
@@ -106,7 +113,14 @@ config = {
         'lnn_dim': args.lnn_dim,#the number of cross-view representations
         'save_log_dir': args.save_log_dir,
         'save_param_dir': args.save_param_dir,
-        'param_log_dir': args.param_log_dir
+        'param_log_dir': args.param_log_dir,
+        'aux_csv': args.aux_csv,
+        'finefake_root': args.finefake_root,
+        'tokenizer_name': args.tokenizer_name,
+        'val_ratio': args.val_ratio,
+        'test_ratio': args.test_ratio,
+        'hpt_variant': args.hpt_variant,
+        'use_interactions': not args.no_interactions,
         }
 
 

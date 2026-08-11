@@ -16,6 +16,21 @@ class MLP_trans(nn.Module):
         return self.net(x)
 
 
+class ConcatenationFusion(nn.Module):
+    """Simple five-stream concatenation baseline for the HPT ablation."""
+
+    def __init__(self, feature_dim: int = 768, dropout: float = 0.6):
+        super().__init__()
+        self.projection = nn.Sequential(
+            nn.Linear(feature_dim * 5, feature_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+        )
+
+    def forward(self, text, image, aligned, background, comments):
+        return self.projection(torch.cat((text, image, aligned, background, comments), dim=-1))
+
+
 class BidirectionalCrossAttention(nn.Module):
     """News-auxiliary interaction from Eqs. (6)-(13)."""
 

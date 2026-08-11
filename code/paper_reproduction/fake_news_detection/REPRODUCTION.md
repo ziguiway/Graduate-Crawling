@@ -35,7 +35,17 @@
 - Added `scripts/smoke_mlime.py` and `scripts/compare_hpt.py` for explanation and
   HPT-variant verification.
 - Added `scripts/explain_finefake_aux.py`, which sends a real FineFake sample
-  through the complete model and explains the five raw input modality groups.
+  through the complete model and explains modality groups, content tokens, or
+  image patches via `--granularity modality|content|image`.
+- Added `--hpt-variant official|equation|concat` to the development trainer so
+  both HPT implementations and the simple concatenation baseline can be
+  trained under the same public-subset split.
+- Added `--no-interactions` to reproduce the ablation that removes learned
+  news-background/comments cross-attention while retaining pooled auxiliary
+  features.
+- Added `scripts/validate_author_data.py` to validate the complete-data
+  contract before a long training run; duplicate texts are reported as a
+  warning because one story can legitimately have multiple records.
 
 ## Reproduction gaps
 
@@ -105,15 +115,26 @@ uv run python scripts/smoke_official_hpt.py
 uv run python scripts/smoke_mlime.py
 uv run python scripts/compare_hpt.py
 uv run python scripts/explain_finefake_aux.py --num-samples 16
+uv run python scripts/explain_finefake_aux.py --granularity content --num-samples 16
+uv run python scripts/explain_finefake_aux.py --granularity image --num-samples 16
+uv run python scripts/validate_author_data.py --aux-csv /path/to/complete_aux.csv --finefake-root /path/to/FineFake/extracted --expected-rows 15140
 uv run python scripts/smoke_interaction.py
 uv run python scripts/smoke_llm_mfefnd_forward.py
 uv run python scripts/smoke_llm_mfefnd_train_step.py
 uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 2
+uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 1 --hpt-variant equation
+uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 1 --hpt-variant concat
+uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 1 --no-interactions
 uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 2 --checkpoint-out /tmp/llm-mfefnd-dev.pt
 uv run python scripts/explain_finefake_aux.py --checkpoint /tmp/llm-mfefnd-dev.pt --num-samples 16
 LLM_MFEFND_REAL_BACKBONES=1 uv run python scripts/smoke_llm_mfefnd_forward.py
 uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 1 --real-backbones
 uv run python LLM-MFEFND/main.py --dataset en --epoch 1 --batchsize 8
+uv run python LLM-MFEFND/main.py --dataset en --aux_csv /path/to/complete_aux.csv --finefake_root /path/to/FineFake/extracted
+
+# The upstream README-style working directory is also supported:
+cd LLM-MFEFND
+uv run python main.py --dataset en --epoch 1 --batchsize 8 --num_workers 0 --early_stop 1
 ```
 
 ## Sanity-check baselines
@@ -134,6 +155,25 @@ These are not paper results. They are lightweight data-flow checks using TF-IDF 
   - CN-CLIP text input `(2, 52)` and image input `(2, 1, 3, 224, 224)`
   - MAE output is consumed as ViT tokens `(2, 197, 768)`
   - this is a data-flow validation, not a paper result
+- Official `main.py` development run on the 200-row FineFake auxiliary subset:
+  - one epoch, batch size 2, CPU, default official HPT
+  - validation accuracy `0.6000`, test accuracy `0.6750`, test AUC `0.7151`
+  - this is a development-subset result and must not be compared directly with
+    the paper's full-data metrics
+- README-style launch from inside `LLM-MFEFND/` also completes one epoch:
+  - batch size 16, test accuracy `0.7500`, test AUC `0.8405`
+- HPT/concat structural comparison:
+  - equation HPT: `67,918,848` parameters
+  - official-code HPT: `163,011,840` parameters
+  - concatenation baseline: `2,949,888` parameters
+  - all three produce a `(2, 768)` fused feature and pass backward checks
+- Interaction ablation smoke on the same public subset:
+  - cross-attention disabled: one-step loss `0.852036`, validation AUC `0.5824`
+  - this is a development smoke result, not a paper-scale ablation result
+- MLIME granularity smoke on one real FineFake sample:
+  - content-token explanation: `r2=0.997975`
+  - image `14x14` patch explanation: `r2=0.999456`
+  - default runs use a random model unless `--checkpoint` is supplied
 
 ## Auxiliary LLM data coverage
 
