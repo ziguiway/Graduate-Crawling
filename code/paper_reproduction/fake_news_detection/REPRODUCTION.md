@@ -30,6 +30,10 @@
 - Replaced the previous simplified fusion path with the HPT module.
 - A one-batch training smoke test confirms finite BCE loss, HPT gradients, and
   an optimizer parameter update.
+- Added `LLM-MFEFND/mlime.py` with model-agnostic MLIME for token and image-patch
+  perturbations, cosine-kernel weighting, and local ridge explanations.
+- Added `scripts/smoke_mlime.py` and `scripts/compare_hpt.py` for explanation and
+  HPT-variant verification.
 
 ## Reproduction gaps
 
@@ -53,7 +57,19 @@
 4. Add preprocessing for image-path mapping and LLM-generated auxiliary text.
 5. Replace development fallbacks with the real pretrained MAE and CN-CLIP components.
 6. Build the complete paper split and run a small real-data training experiment.
-7. Implement MLIME after the classifier and feature pipeline are stable.
+7. Wrap the trained multimodal predictor with `mlime.explain` for sample-level
+   word/patch explanations; the generic explainer is ready, while a full
+   benchmark explanation audit still needs the authors' 400 labeled samples.
+
+## HPT implementation boundary
+
+`MultiDomainFENDModel` uses `OfficialHierarchicalProgressiveTransformer` because
+that matches the public GitHub forward path. `HierarchicalProgressiveTransformer`
+is retained as a paper-equation implementation for controlled comparison. They
+are materially different: the smoke comparison gives parameter counts of
+67,918,848 and 163,011,840, with stage orders `text > image > aligned >
+background > comments` and `comments > background > aligned > image > text`.
+They should not be treated as two random seeds of the same model.
 
 ## Data facts
 
@@ -78,6 +94,8 @@ uv run python scripts/run_text_baseline.py --dataset finefake
 uv run python scripts/smoke_multimodal_dataloader.py
 uv run python scripts/smoke_hpt.py
 uv run python scripts/smoke_official_hpt.py
+uv run python scripts/smoke_mlime.py
+uv run python scripts/compare_hpt.py
 uv run python scripts/smoke_interaction.py
 uv run python scripts/smoke_llm_mfefnd_forward.py
 uv run python scripts/smoke_llm_mfefnd_train_step.py

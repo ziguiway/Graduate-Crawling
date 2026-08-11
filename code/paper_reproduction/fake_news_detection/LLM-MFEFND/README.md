@@ -31,6 +31,21 @@ You can run this code through:
 python main.py
 ```
 
+The public repository contains only a 200-row FineFake auxiliary subset, so
+the reconstructed entrypoint is intended for data-flow and development
+experiments until the authors provide the complete data. From the parent
+reproduction directory, the current checks are:
+
+```bash
+uv run python scripts/smoke_mlime.py
+uv run python scripts/compare_hpt.py
+uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 1
+```
+
+`mlime.py` is a post-hoc explainer. It perturbs one modality while the caller
+keeps the other modalities fixed and supplies the complete model prediction;
+it does not alter classifier training.
+
 ## Reference
 
 
