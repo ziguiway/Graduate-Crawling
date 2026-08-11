@@ -37,7 +37,11 @@ The public `LLM-MFEFND` repository is not directly runnable. It only contains:
 - Added `OfficialHierarchicalProgressiveTransformer` to mirror the public
   `data` branch's `fusion_img_text()` implementation.
 - Added `LLM-MFEFND/utils/models_mae.py` with a lightweight `forward_ying` fallback for smoke tests.
+- Added an optional real `timm` ViT-Base MAE wrapper and loaded the official
+  `mae_pretrain_vit_base.pth` checkpoint from `pretrained/`.
 - Patched `LLM-MFEFND/LLM_MFEFND.py` so CPU-only forward smoke tests can run without CN-CLIP and MAE checkpoint files.
+- Added explicit `LLM_MFEFND_REAL_BACKBONES=1` mode for CN-CLIP tokenizer,
+  image preprocessing, CN-CLIP weights, and MAE weights.
 - Added `scripts/smoke_llm_mfefnd_forward.py`; it currently reaches `forward_ok` on FineFake auxiliary data.
 - Added `scripts/smoke_hpt.py` and `scripts/smoke_llm_mfefnd_train_step.py` for HPT
   structure and trainability checks.
@@ -60,9 +64,9 @@ The `sources/MDFEND-Weibo21` repo can provide:
 
 These are specific to LLM-MFEFND and need to be reconstructed:
 
-- image preprocessing and batching
-- CN-CLIP image/text encoding input format
-- MAE model wrapper and `forward_ying`
+- complete image preprocessing and batching for the unreleased full dataset
+- complete CN-CLIP image/text encoding input files for the unreleased full dataset
+- full-data training and result verification
 - isolated tests and ablations for strict bidirectional news-background/comments interaction
 - exact paper-side preprocessing and complete hierarchical fusion configuration
 - LLM-generated background/comment preprocessing

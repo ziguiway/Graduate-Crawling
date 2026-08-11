@@ -16,7 +16,12 @@ from LLM_MFEFND import MultiDomainFENDModel
 
 
 def main() -> None:
-    loader = build_finefake_aux_dataloader(batch_size=2, num_workers=0)
+    use_real_backbones = os.environ.get("LLM_MFEFND_REAL_BACKBONES", "0") == "1"
+    loader = build_finefake_aux_dataloader(
+        batch_size=2,
+        num_workers=0,
+        use_cn_clip=use_real_backbones,
+    )
     batch = next(iter(loader))
     model = MultiDomainFENDModel(
         emb_dim=768,

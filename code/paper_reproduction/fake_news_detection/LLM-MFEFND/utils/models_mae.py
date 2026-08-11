@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
 import torch
 import torch.nn as nn
 
@@ -28,4 +31,41 @@ class LiteMAE(nn.Module):
 
 
 def mae_vit_base_patch16(*args, **kwargs):
+    use_real_backbones = os.environ.get("LLM_MFEFND_REAL_BACKBONES", "0") == "1"
+    if use_real_backbones:
+        try:
+            import timm
+        except ImportError as exc:  # pragma: no cover - dependency is optional
+            raise RuntimeError("Real MAE path requires timm; install project dependencies first") from exc
+
+        model = timm.create_model("vit_base_patch16_224", pretrained=False, num_classes=0)
+        checkpoint_path = Path(
+            os.environ.get(
+                "LLM_MFEFND_MAE_CHECKPOINT",
+                "pretrained/mae_pretrain_vit_base.pth",
+            )
+        )
+        if not checkpoint_path.exists():
+            raise FileNotFoundError(
+                f"Real MAE checkpoint not found: {checkpoint_path}. "
+                "Set LLM_MFEFND_MAE_CHECKPOINT or use the development fallback."
+            )
+        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+        missing, unexpected = model.load_state_dict(checkpoint["model"], strict=False)
+        if missing or unexpected:
+            raise RuntimeError(
+                f"Unexpected MAE checkpoint mismatch: missing={missing}, unexpected={unexpected}"
+            )
+        return TimmMAE(model)
     return LiteMAE()
+
+
+class TimmMAE(nn.Module):
+    """MAE encoder wrapper exposing the official repo's ``forward_ying`` API."""
+
+    def __init__(self, model: nn.Module):
+        super().__init__()
+        self.model = model
+
+    def forward_ying(self, x: torch.Tensor) -> torch.Tensor:
+        return self.model.forward_features(x)

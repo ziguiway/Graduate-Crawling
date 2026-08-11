@@ -21,6 +21,12 @@
   the paper's fusion order, residual averaging, and four repeated rounds.
 - Added an official-code-compatible HPT path using four text-initialized star
   tokens, 18 Transformer slots, and the public branch's update order.
+- Added optional real-backbone mode: `cn-clip` `ViT-B-16` plus the official
+  MAE ViT-Base checkpoint. Enable it with `LLM_MFEFND_REAL_BACKBONES=1`;
+  fallback mode remains the default for fast smoke tests.
+- Added a `grid_search.py` training scaffold so the public `main.py` can run
+  on the available FineFake auxiliary subset; WeiBo21 full multimodal training
+  still requires the unreleased author data.
 - Replaced the previous simplified fusion path with the HPT module.
 - A one-batch training smoke test confirms finite BCE loss, HPT gradients, and
   an optimizer parameter update.
@@ -36,7 +42,8 @@
 4. The final paper setting is not identical to the raw public splits.
 5. Strict learned bidirectional news-background/comments interaction is now
    present; its learned weights still need an isolated unit test and ablation.
-6. The current CLIP text input and MAE image encoder remain development fallbacks.
+6. Fallback CLIP/MAE remains the default, but the real CN-CLIP and MAE path has
+   passed a batch-2 forward test.
 
 ## Next steps
 
@@ -75,6 +82,9 @@ uv run python scripts/smoke_interaction.py
 uv run python scripts/smoke_llm_mfefnd_forward.py
 uv run python scripts/smoke_llm_mfefnd_train_step.py
 uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 2
+LLM_MFEFND_REAL_BACKBONES=1 uv run python scripts/smoke_llm_mfefnd_forward.py
+uv run python scripts/train_finefake_aux.py --epochs 1 --max-steps 1 --real-backbones
+uv run python LLM-MFEFND/main.py --dataset en --epoch 1 --batchsize 8
 ```
 
 ## Sanity-check baselines
@@ -91,6 +101,10 @@ These are not paper results. They are lightweight data-flow checks using TF-IDF 
   - input batch shapes include text `(2, 170)`, image `(2, 1, 3, 224, 224)`, and CLIP text placeholder `(2, 77)`
   - model output shapes: `classify_pred` `(2,)`, `final_fusion_feature` `(2, 768)`
   - this is a development smoke test, not a paper result
+- Real-backbone forward smoke:
+  - CN-CLIP text input `(2, 52)` and image input `(2, 1, 3, 224, 224)`
+  - MAE output is consumed as ViT tokens `(2, 197, 768)`
+  - this is a data-flow validation, not a paper result
 
 ## Auxiliary LLM data coverage
 

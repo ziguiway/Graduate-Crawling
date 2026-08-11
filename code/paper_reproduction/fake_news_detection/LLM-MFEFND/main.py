@@ -81,7 +81,7 @@ print('lr: {}; model name: {}; batchsize: {}; epoch: {}; gpu: {}; domain_num: {}
 
 
 config = {
-        'use_cuda': True,
+        'use_cuda': torch.cuda.is_available(),
         'batchsize': args.batchsize,
         'max_len': args.max_len,
         'early_stop': args.early_stop,

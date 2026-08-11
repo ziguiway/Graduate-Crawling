@@ -48,15 +48,19 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--val-ratio", type=float, default=0.2)
+    parser.add_argument("--real-backbones", action="store_true")
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
+    if args.real_backbones:
+        os.environ["LLM_MFEFND_REAL_BACKBONES"] = "1"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dataset = FineFakeAuxMultimodalDataset(
         aux_csv=ROOT / "LLM-MFEFND/data/GPT-DS-GLM-Weibo21-FineFake.csv",
         finefake_root=ROOT / "datasets/FineFake/extracted",
         tokenizer_name="bert-base-uncased",
         max_len=170,
+        use_cn_clip=args.real_backbones,
     )
     val_size = max(1, round(len(dataset) * args.val_ratio))
     train_size = len(dataset) - val_size

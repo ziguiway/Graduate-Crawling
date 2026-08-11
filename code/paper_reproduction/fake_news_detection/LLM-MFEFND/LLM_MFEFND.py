@@ -109,7 +109,8 @@ class MultiDomainFENDModel(torch.nn.Module):
         for param in self.image_model.parameters():
             param.requires_grad = False
         clip_device = "cuda" if torch.cuda.is_available() else "cpu"
-        if load_from_name is not None:
+        use_real_backbones = os.environ.get("LLM_MFEFND_REAL_BACKBONES", "0") == "1"
+        if load_from_name is not None and use_real_backbones:
             try:
                 self.ClipModel, _ = load_from_name("ViT-B-16", device=clip_device, download_root='./')
             except Exception:
@@ -402,7 +403,8 @@ class Trainer():
             mark = recorder.add(results)
             if mark == 'save':
                 torch.save(self.model.state_dict(), os.path.join(self.save_param_dir, 'parameter_mdfend.pkl'))
-                logger.info("Model saved successfully.")
+                if logger:
+                    logger.info("Model saved successfully.")
                 best_metric = results['metric']
             elif mark == 'esc':
                 break
