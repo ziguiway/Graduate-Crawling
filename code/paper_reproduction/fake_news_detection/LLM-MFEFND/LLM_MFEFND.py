@@ -12,7 +12,12 @@ from utils import models_mae
 from utils.layers import TokenAttention, clip_fuion
 from utils.utils import data2gpu, Averager, metrics, Recorder, metrics1, visualize_tsne
 from layers import *
-from pivot import TransformerLayer, MLP_trans
+from pivot import (
+    BidirectionalCrossAttention,
+    HierarchicalProgressiveTransformer,
+    TransformerLayer,
+    MLP_trans,
+)
 
 try:
     from cn_clip.clip import load_from_name
@@ -128,6 +133,18 @@ class MultiDomainFENDModel(torch.nn.Module):
 
         self.clip_fusion = clip_fuion(1024, 768, [348], 0.1)
 
+        # Paper-aligned HPT: five feature streams, five tokens per stream,
+        # progressive fusion in the paper's order, repeated four times.
+        self.hpt = HierarchicalProgressiveTransformer(
+            feature_dim=768,
+            num_tokens=5,
+            num_heads=4,
+            num_rounds=4,
+            dropout=0.1,
+        )
+        self.background_interaction = BidirectionalCrossAttention(768, num_heads=4)
+        self.comments_interaction = BidirectionalCrossAttention(768, num_heads=4)
+
         feature_num = 5
         self.mlp_img = torch.nn.ModuleList([MLP_trans(768, 768, dropout=0.6) for _ in
                                             range(feature_num)])
@@ -220,26 +237,24 @@ class MultiDomainFENDModel(torch.nn.Module):
         mlp_star_f2_list,
         num_layers=4,
     ):
-        tokens = [
-            image_atn_feature,
-            bert_content_feature,
-            clip_fusion_feature,
-            bert_background_feature,
-            bert_comments_feature,
-        ]
-        fused = torch.stack(tokens, dim=1)
-        num_layers = min(num_layers, len(transformers_list))
-        for layer_idx in range(num_layers):
-            fused, _ = transformers_list[layer_idx](fused)
-            fused = mlp_img_list[layer_idx](fused)
-            fused = mlp_text_list[layer_idx](fused)
-            fused = pivot_mlp_fusion_list[layer_idx](fused)
-            fused = pivot_background_fusion_list[layer_idx](fused)
-            fused = pivot_comments_fusion_list[layer_idx](fused)
-        pooled = fused.mean(dim=1)
-        hidden = mlp_star_f1_list(torch.cat([pooled, pooled, pooled, pooled], dim=-1))
-        hidden = torch.relu(hidden)
-        return mlp_star_f2_list(hidden)
+        del (
+            mlp_img_list,
+            mlp_text_list,
+            pivot_mlp_fusion_list,
+            pivot_background_fusion_list,
+            pivot_comments_fusion_list,
+            transformers_list,
+            mlp_star_f1_list,
+            mlp_star_f2_list,
+            num_layers,
+        )
+        return self.hpt(
+            text=bert_content_feature,
+            image=image_atn_feature,
+            aligned=clip_fusion_feature,
+            background=bert_background_feature,
+            comments=bert_comments_feature,
+        )
 
     def forward(self, **kwargs):
         content, content_masks = kwargs['content'], kwargs['content_masks']
@@ -259,35 +274,18 @@ class MultiDomainFENDModel(torch.nn.Module):
 
         bert_comment_feature = self.bert_comment(comment, attention_mask=comment_masks)[0]
 
-        expert_content_background_1, _ = self.content_attention_rationale(bert_content_feature, bert_background_feature,
-                                                                          content_masks)
-        mutual_content_background_2, _ = self.rationale_attention_content(bert_background_feature, bert_content_feature,
-                                                                          background_masks)
-        expert_content_background_1 = torch.mean(expert_content_background_1, dim=1)
-        mutual_content_background_2 = torch.mean(mutual_content_background_2, dim=1)
-        #background_hard_ftr_2_pred = self.hard_mlp_ftr_2(mutual_content_background_2).squeeze(1)
-        reweight_score_background = torch.ones(
-            mutual_content_background_2.size(0), 1,
-            device=mutual_content_background_2.device,
-            dtype=mutual_content_background_2.dtype,
+        background_interaction, background_weight, _ = self.background_interaction(
+            news=bert_content_feature,
+            auxiliary=bert_background_feature,
+            news_mask=content_masks,
+            auxiliary_mask=background_masks,
         )
-        expert_content_background_1 = expert_content_background_1*reweight_score_background
-        #mutual_content_background = torch.cat((mutual_content_background_1, mutual_content_background_2), dim=1)
-        expert_content_comments_1, _ = self.content_attention_comments(bert_content_feature, bert_comment_feature,
-                                                                       content_masks)
-        mutual_content_comments_2, _ = self.comments_attention_content(bert_comment_feature, bert_content_feature,
-                                                                       comment_masks)
-        mutual_content_comments_1 = torch.mean(expert_content_comments_1, dim=1)
-        mutual_content_comments_2 = torch.mean(mutual_content_comments_2, dim=1)
-        #hard_mlp_ftr_3 = self.hard_mlp_ftr_3(mutual_content_comments_2).squeeze(1)
-        reweight_score_comments = torch.ones(
-            mutual_content_comments_2.size(0), 1,
-            device=mutual_content_comments_2.device,
-            dtype=mutual_content_comments_2.dtype,
+        comments_interaction, comments_weight, _ = self.comments_interaction(
+            news=bert_content_feature,
+            auxiliary=bert_comment_feature,
+            news_mask=content_masks,
+            auxiliary_mask=comment_masks,
         )
-        expert_content_comments_1 = reweight_score_comments*mutual_content_comments_1
-        #mutual_content_comments = torch.cat((mutual_content_comments_1, mutual_content_comments_2), dim=1)
-        #mutual_content_comments = self.fc_comments(mutual_content_comments)
         bert_content_feature, _ = self.content_attention(bert_content_feature, mask=content_masks)
         bert_background_feature, _  = self.background_attention(bert_background_feature)
         bert_comments_feature, _ = self.comments_attention(bert_comment_feature)
@@ -299,8 +297,8 @@ class MultiDomainFENDModel(torch.nn.Module):
         clip_fusion_feature = clip_fusion_feature.to(torch.float32)
 
         final_fusion_feature = self.fusion_img_text(image_atn_feature, bert_content_feature, clip_fusion_feature,
-                                                    bert_background_feature,
-                                                    bert_comments_feature, self.mlp_img_list[0],
+                                                    background_interaction,
+                                                    comments_interaction, self.mlp_img_list[0],
                                                     self.mlp_text_list[0],
                                                     self.pivot_mlp_fusion_list[0],
                                                     self.pivot_background_fusion_list[0],

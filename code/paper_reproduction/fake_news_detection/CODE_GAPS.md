@@ -32,9 +32,14 @@ The public `LLM-MFEFND` repository is not directly runnable. It only contains:
 - Added `LLM-MFEFND/utils/utils.py` from MDFEND and extended it with `metrics1`, dict-batch `data2gpu`, and `visualize_tsne` placeholder.
 - Added `LLM-MFEFND/utils/layers.py` with `TokenAttention` and `clip_fuion`.
 - Added `LLM-MFEFND/pivot.py` with basic `TransformerLayer` and `MLP_trans`.
+- Added `HierarchicalProgressiveTransformer` in `pivot.py` with the paper's
+  five-stage progressive fusion, residual averaging, and four-round iteration.
 - Added `LLM-MFEFND/utils/models_mae.py` with a lightweight `forward_ying` fallback for smoke tests.
 - Patched `LLM-MFEFND/LLM_MFEFND.py` so CPU-only forward smoke tests can run without CN-CLIP and MAE checkpoint files.
 - Added `scripts/smoke_llm_mfefnd_forward.py`; it currently reaches `forward_ok` on FineFake auxiliary data.
+- Added `scripts/smoke_hpt.py` and `scripts/smoke_llm_mfefnd_train_step.py` for HPT
+  structure and trainability checks.
+- Added `scripts/smoke_interaction.py` for bidirectional cross-attention and mask checks.
 
 ## Recoverable from MDFEND
 
@@ -55,7 +60,8 @@ These are specific to LLM-MFEFND and need to be reconstructed:
 - image preprocessing and batching
 - CN-CLIP image/text encoding input format
 - MAE model wrapper and `forward_ying`
-- hierarchical progressive transformer fusion in `fusion_img_text`
+- isolated tests and ablations for strict bidirectional news-background/comments interaction
+- exact paper-side preprocessing and complete hierarchical fusion configuration
 - LLM-generated background/comment preprocessing
 
 ## Practical next build order

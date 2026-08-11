@@ -17,6 +17,11 @@
 - This workspace has its own uv project in `code/paper_reproduction/fake_news_detection/`.
 - FineFake auxiliary multimodal dataloader can feed the model.
 - A development-only LLM-MFEFND forward smoke test runs successfully on a batch of 2.
+- Added a paper-aligned HPT with five feature streams, five tokens per stream,
+  the paper's fusion order, residual averaging, and four repeated rounds.
+- Replaced the previous simplified fusion path with the HPT module.
+- A one-batch training smoke test confirms finite BCE loss, HPT gradients, and
+  an optimizer parameter update.
 
 ## Reproduction gaps
 
@@ -27,14 +32,19 @@
    - remove incomplete/corrupted samples
    - remove samples that trigger LLM refusal
 4. The final paper setting is not identical to the raw public splits.
+5. Strict learned bidirectional news-background/comments interaction is now
+   present; its learned weights still need an isolated unit test and ablation.
+6. The current CLIP text input and MAE image encoder remain development fallbacks.
 
 ## Next steps
 
 1. Compare raw public data against paper settings.
 2. Reconstruct the missing training scaffold from the MDFEND reference repo.
-3. Add preprocessing for image-path mapping and LLM-generated auxiliary text.
-4. Run a minimal baseline first, then add the full LLM-MFEFND fusion model.
+3. Add isolated tests and ablations for bidirectional cross-attention.
+4. Add preprocessing for image-path mapping and LLM-generated auxiliary text.
 5. Replace development fallbacks with the real pretrained MAE and CN-CLIP components.
+6. Build the complete paper split and run a small real-data training experiment.
+7. Implement MLIME after the classifier and feature pipeline are stable.
 
 ## Data facts
 
@@ -57,7 +67,10 @@ uv run python scripts/audit_aux_data.py
 uv run python scripts/run_text_baseline.py --dataset weibo21
 uv run python scripts/run_text_baseline.py --dataset finefake
 uv run python scripts/smoke_multimodal_dataloader.py
+uv run python scripts/smoke_hpt.py
+uv run python scripts/smoke_interaction.py
 uv run python scripts/smoke_llm_mfefnd_forward.py
+uv run python scripts/smoke_llm_mfefnd_train_step.py
 ```
 
 ## Sanity-check baselines
