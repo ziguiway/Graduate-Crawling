@@ -1,14 +1,7 @@
 [project]
-name = "graduate-crawling"
+name = "nlp-wuenda"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "numpy"
-]
-
-[tool.uv.workspace]
-members = [
-    "code/NLP_wuenda",
-]
+dependencies = []
