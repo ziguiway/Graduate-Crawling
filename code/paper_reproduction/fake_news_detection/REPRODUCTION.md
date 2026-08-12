@@ -46,6 +46,9 @@
 - Added `scripts/validate_author_data.py` to validate the complete-data
   contract before a long training run; duplicate texts are reported as a
   warning because one story can legitimately have multiple records.
+- Opened GitHub data-access request: [Issue #3](https://github.com/li1608335419/LLM-MFEFND/issues/3)
+  on 2026-08-12; submitted from the `ziguiway` account and awaiting author
+  response.
 
 ## Reproduction gaps
 
