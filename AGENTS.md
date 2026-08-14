@@ -165,7 +165,9 @@ notes/深度学习/自注意力机制/
 | 2026-07-15 | 第 7 章 | Transformer 解码器（自回归、掩码注意力、NAR、cross-attention） | `notes/深度学习/Transformer/Transformer.md` | ✅ 7.4–7.5 完成；训练技巧待续 |
 | 2026-07-17 | 第 7 章 | Transformer 训练过程与技巧（teacher forcing、复制、引导注意力、束搜索、加噪声、RL、计划采样） | `notes/深度学习/Transformer/Transformer.md` | ✅ 7.6–7.7 完成；位置编码公式/BLEU 待补 |
 | 2026-07-16 | — | NLP 基础编程练习（导师李正华布置，11 个核心作业 + 4 个扩展） | `notes/NLP基础编程练习/NLP基础编程练习.md` | 🔄 作业 1–2 完成；作业 3 题目已记录，待开始 |
+| 2026-08-14 | — | 吴恩达 NLP 课程 1·W3：向量空间模型（词向量操作、PCA 降维、cosine similarity、词类比推理） | `notes/深度学习/机器学习基础/机器学习基础.md` §10 + `Q&A_PCA.md` | ✅ 完成 |
 
 **续学线索**（下次接着学的起点）：
 - 第 7 章 Transformer：位置编码公式（正余弦）的数学推导、BLEU 的具体计算公式（细节待补）
 - NLP 基础编程练习：从**作业 3 HMM 词性标注**开始（作业 1–2 已完成），有监督版（极大似然 + 加 α 平滑 + Viterbi）+ 无监督版（Hard/Soft EM，5 个种子），等老师出 EM pdf 讲义再补推导
+- 吴恩达 NLP 课程 1 已完成，后续：课程 2（Naive Bayes）待学
