@@ -44,14 +44,10 @@ def get_dict(file_name):
     This function returns the english to french dictionary given a file where the each column corresponds to a word.
     Check out the files this function takes in your workspace.
     """
-    my_file = pd.read_csv(file_name, delimiter=' ')
-    etof = {}  # the english to french dictionary to be returned
-    for i in range(len(my_file)):
-        # indexing into the rows.
-        en = my_file.loc[i][0]
-        fr = my_file.loc[i][1]
-        etof[en] = fr
-    return etof
+    # The dictionary files have no header. Use explicit columns so this stays
+    # compatible with current pandas indexing behavior.
+    my_file = pd.read_csv(file_name, sep=r'\s+', header=None, names=['en', 'fr'])
+    return dict(zip(my_file['en'], my_file['fr']))
 
 
 def cosine_similarity(A, B):
