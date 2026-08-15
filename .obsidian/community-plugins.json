@@ -3,7 +3,6 @@
   "obsidian-custom-attachment-location",
   "obsidian-enhancing-export",
   "jupyter-viewer",
-  "obsidian-git",
   "csv-allinone",
   "editing-toolbar",
   "obsidian42-brat",
@@ -13,5 +12,6 @@
   "obsidian-mind-map",
   "highlightr-plugin",
   "dataview",
-  "pdf-plus"
+  "pdf-plus",
+  "obsidian-git"
 ]
