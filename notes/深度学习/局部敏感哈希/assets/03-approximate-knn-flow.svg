@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+  <rect width="900" height="300" fill="#fffdf8"/>
+  <text x="35" y="42" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#17202a">Approximate KNN with LSH</text>
+  <rect x="35" y="105" width="150" height="82" rx="8" fill="#e7f1fb" stroke="#1261a0" stroke-width="2"/>
+  <text x="73" y="137" font-family="Arial, sans-serif" font-size="19" fill="#17202a">query q</text>
+  <text x="54" y="164" font-family="Arial, sans-serif" font-size="16" fill="#495057">one vector</text>
+  <line x1="185" y1="146" x2="235" y2="146" stroke="#495057" stroke-width="3"/>
+  <polygon points="235,146 220,138 220,154" fill="#495057"/>
+  <rect x="235" y="85" width="190" height="122" rx="8" fill="#fff0d9" stroke="#f08c46" stroke-width="2"/>
+  <text x="264" y="119" font-family="Arial, sans-serif" font-size="19" fill="#17202a">hash tables</text>
+  <text x="260" y="150" font-family="Arial, sans-serif" font-size="16" fill="#495057">random planes</text>
+  <text x="260" y="177" font-family="Arial, sans-serif" font-size="16" fill="#495057">find matching buckets</text>
+  <line x1="425" y1="146" x2="475" y2="146" stroke="#495057" stroke-width="3"/>
+  <polygon points="475,146 460,138 460,154" fill="#495057"/>
+  <rect x="475" y="85" width="190" height="122" rx="8" fill="#e8f5ed" stroke="#16794f" stroke-width="2"/>
+  <text x="508" y="119" font-family="Arial, sans-serif" font-size="19" fill="#17202a">candidates</text>
+  <text x="500" y="150" font-family="Arial, sans-serif" font-size="16" fill="#495057">1000000 -&gt; 500</text>
+  <text x="500" y="177" font-family="Arial, sans-serif" font-size="16" fill="#495057">collect and dedupe</text>
+  <line x1="665" y1="146" x2="715" y2="146" stroke="#495057" stroke-width="3"/>
+  <polygon points="715,146 700,138 700,154" fill="#495057"/>
+  <rect x="715" y="85" width="150" height="122" rx="8" fill="#f7e8ee" stroke="#b02a37" stroke-width="2"/>
+  <text x="751" y="119" font-family="Arial, sans-serif" font-size="19" fill="#17202a">top K</text>
+  <text x="738" y="150" font-family="Arial, sans-serif" font-size="16" fill="#495057">exact cosine</text>
+  <text x="738" y="177" font-family="Arial, sans-serif" font-size="16" fill="#495057">then rank</text>
+  <text x="35" y="252" font-family="Arial, sans-serif" font-size="18" fill="#495057">LSH = cheap coarse filter + exact ranking on a small candidate set</text>
+</svg>
