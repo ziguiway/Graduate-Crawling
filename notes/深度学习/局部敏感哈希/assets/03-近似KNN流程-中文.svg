@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+  <rect width="900" height="300" fill="#fffdf8"/>
+  <text x="35" y="42" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#17202a">LSH 如何加速近似 KNN</text>
+  <rect x="35" y="105" width="150" height="82" rx="8" fill="#e7f1fb" stroke="#1261a0" stroke-width="2"/>
+  <text x="78" y="137" font-family="Arial, sans-serif" font-size="19" fill="#17202a">查询向量</text>
+  <text x="77" y="164" font-family="Arial, sans-serif" font-size="16" fill="#495057">q</text>
+  <line x1="185" y1="146" x2="235" y2="146" stroke="#495057" stroke-width="3"/>
+  <polygon points="235,146 220,138 220,154" fill="#495057"/>
+  <rect x="235" y="85" width="190" height="122" rx="8" fill="#fff0d9" stroke="#f08c46" stroke-width="2"/>
+  <text x="271" y="119" font-family="Arial, sans-serif" font-size="19" fill="#17202a">多张哈希表</text>
+  <text x="264" y="150" font-family="Arial, sans-serif" font-size="16" fill="#495057">计算桶编号</text>
+  <text x="252" y="177" font-family="Arial, sans-serif" font-size="16" fill="#495057">查找同桶数据</text>
+  <line x1="425" y1="146" x2="475" y2="146" stroke="#495057" stroke-width="3"/>
+  <polygon points="475,146 460,138 460,154" fill="#495057"/>
+  <rect x="475" y="85" width="190" height="122" rx="8" fill="#e8f5ed" stroke="#16794f" stroke-width="2"/>
+  <text x="508" y="119" font-family="Arial, sans-serif" font-size="19" fill="#17202a">候选集合</text>
+  <text x="500" y="150" font-family="Arial, sans-serif" font-size="16" fill="#495057">1000000 → 500</text>
+  <text x="500" y="177" font-family="Arial, sans-serif" font-size="16" fill="#495057">合并并去重</text>
+  <line x1="665" y1="146" x2="715" y2="146" stroke="#495057" stroke-width="3"/>
+  <polygon points="715,146 700,138 700,154" fill="#495057"/>
+  <rect x="715" y="85" width="150" height="122" rx="8" fill="#f7e8ee" stroke="#b02a37" stroke-width="2"/>
+  <text x="758" y="119" font-family="Arial, sans-serif" font-size="19" fill="#17202a">前 K 个</text>
+  <text x="738" y="150" font-family="Arial, sans-serif" font-size="16" fill="#495057">精确计算余弦</text>
+  <text x="762" y="177" font-family="Arial, sans-serif" font-size="16" fill="#495057">再排序</text>
+  <text x="35" y="252" font-family="Arial, sans-serif" font-size="18" fill="#495057">先粗筛候选，再精确排序：搜索范围变小，速度更快。</text>
+</svg>
