@@ -11,5 +11,6 @@ dependencies = [
     "nltk>=3.9",
     "numpy>=2.0",
     "pandas>=2.2",
-    "scikit-learn"
+    "scikit-learn",
+    "gensim"
 ]
