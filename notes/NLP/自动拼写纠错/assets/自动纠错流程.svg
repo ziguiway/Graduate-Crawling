@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">自动拼写纠错流程</title>
+  <desc id="desc">从语料统计词频和概率，生成编辑候选，筛选词表并按概率排序。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#46515c"/>
+    </marker>
+    <style>
+      .box{stroke:#34404a;stroke-width:2;rx:12}
+      .title{font:700 22px sans-serif;fill:#17212b}
+      .label{font:600 18px sans-serif;fill:#17212b}
+      .small{font:15px sans-serif;fill:#46515c}
+      .arrow{stroke:#46515c;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1200" height="520" fill="#fbfaf7"/>
+  <text x="600" y="45" text-anchor="middle" class="title">自动拼写纠错：从输入单词到候选建议</text>
+  <rect x="55" y="115" width="205" height="150" fill="#e5f0f4" class="box"/>
+  <text x="157" y="153" text-anchor="middle" class="label">训练语料</text>
+  <text x="157" y="190" text-anchor="middle" class="small">清洗、转小写</text>
+  <text x="157" y="218" text-anchor="middle" class="small">得到 word_list</text>
+  <text x="157" y="246" text-anchor="middle" class="small">词表 vocab</text>
+  <path d="M260 190 H330" class="arrow"/>
+  <rect x="330" y="115" width="205" height="150" fill="#e9f2df" class="box"/>
+  <text x="432" y="153" text-anchor="middle" class="label">概率模型</text>
+  <text x="432" y="190" text-anchor="middle" class="small">统计 count(w)</text>
+  <text x="432" y="218" text-anchor="middle" class="small">P(w)=count(w)/总数</text>
+  <text x="432" y="246" text-anchor="middle" class="small">probs</text>
+  <path d="M535 190 H605" class="arrow"/>
+  <rect x="605" y="115" width="250" height="150" fill="#f7ead7" class="box"/>
+  <text x="730" y="153" text-anchor="middle" class="label">生成编辑候选</text>
+  <text x="730" y="190" text-anchor="middle" class="small">删除 / 替换 / 插入</text>
+  <text x="730" y="218" text-anchor="middle" class="small">相邻字符交换</text>
+  <text x="730" y="246" text-anchor="middle" class="small">编辑距离 1 或 2</text>
+  <path d="M855 190 H925" class="arrow"/>
+  <rect x="925" y="115" width="220" height="150" fill="#f0e5ef" class="box"/>
+  <text x="1035" y="153" text-anchor="middle" class="label">筛选与排序</text>
+  <text x="1035" y="190" text-anchor="middle" class="small">候选 ∩ vocab</text>
+  <text x="1035" y="218" text-anchor="middle" class="small">按 P(w) 降序</text>
+  <text x="1035" y="246" text-anchor="middle" class="small">取 top-n</text>
+  <path d="M730 265 V350 H1035 V385" class="arrow"/>
+  <rect x="875" y="385" width="320" height="85" fill="#dfe9f5" class="box"/>
+  <text x="1035" y="420" text-anchor="middle" class="label">输出建议</text>
+  <text x="1035" y="450" text-anchor="middle" class="small">例如 dys -> days, dye</text>
+  <path d="M730 265 V350 H165 V385" class="arrow"/>
+  <rect x="25" y="385" width="280" height="85" fill="#f4e2e2" class="box"/>
+  <text x="165" y="420" text-anchor="middle" class="label">用户输入</text>
+  <text x="165" y="450" text-anchor="middle" class="small">例如 waht / dys</text>
+</svg>
