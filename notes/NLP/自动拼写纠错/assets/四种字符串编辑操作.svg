@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" role="img" aria-labelledby="title desc">
+  <title id="title">四种字符串编辑操作</title>
+  <desc id="desc">删除、交换、替换和插入四种字符串编辑操作示例。</desc>
+  <style>
+    .bg{fill:#fbfaf7}.box{stroke:#52606d;stroke-width:2;rx:12}.h{font:700 20px sans-serif;fill:#17212b}.t{font:18px monospace;fill:#17212b}.s{font:15px sans-serif;fill:#52606d}.mark{fill:#bd5b4b;font-weight:700}
+  </style>
+  <rect width="1000" height="430" class="bg"/>
+  <text x="500" y="38" text-anchor="middle" class="h">一个单词的四种一次编辑</text>
+  <g transform="translate(35 75)">
+    <rect width="220" height="285" fill="#e8f1f4" class="box"/>
+    <text x="110" y="42" text-anchor="middle" class="h">删除 delete</text>
+    <text x="110" y="105" text-anchor="middle" class="t">cans → <tspan class="mark">ans</tspan></text>
+    <text x="110" y="145" text-anchor="middle" class="s">去掉一个字符</text>
+    <text x="110" y="180" text-anchor="middle" class="s">L + R[1:]</text>
+  </g>
+  <g transform="translate(270 75)">
+    <rect width="220" height="285" fill="#f5ead8" class="box"/>
+    <text x="110" y="42" text-anchor="middle" class="h">交换 switch</text>
+    <text x="110" y="105" text-anchor="middle" class="t">eta → <tspan class="mark">tea</tspan></text>
+    <text x="110" y="145" text-anchor="middle" class="s">交换相邻字符</text>
+    <text x="110" y="180" text-anchor="middle" class="s">L[:-1]+R[0]+L[-1]+R[1:]</text>
+  </g>
+  <g transform="translate(505 75)">
+    <rect width="220" height="285" fill="#edf0df" class="box"/>
+    <text x="110" y="42" text-anchor="middle" class="h">替换 replace</text>
+    <text x="110" y="105" text-anchor="middle" class="t">can → <tspan class="mark">ban</tspan></text>
+    <text x="110" y="145" text-anchor="middle" class="s">把一个字符换成 a-z</text>
+    <text x="110" y="180" text-anchor="middle" class="s">L + c + R[1:]</text>
+  </g>
+  <g transform="translate(740 75)">
+    <rect width="220" height="285" fill="#eee4ef" class="box"/>
+    <text x="110" y="42" text-anchor="middle" class="h">插入 insert</text>
+    <text x="110" y="105" text-anchor="middle" class="t">at → <tspan class="mark">bat</tspan></text>
+    <text x="110" y="145" text-anchor="middle" class="s">在任意位置插入字符</text>
+    <text x="110" y="180" text-anchor="middle" class="s">L + c + R</text>
+  </g>
+</svg>
