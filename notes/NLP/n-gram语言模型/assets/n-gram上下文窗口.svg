@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="380" viewBox="0 0 920 380" role="img" aria-labelledby="title desc">
+  <title id="title">bigram 与 trigram 的上下文窗口</title>
+  <desc id="desc">同一句话中，bigram 只看一个前词，trigram 看两个前词，再预测目标词。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#38678c"/></marker>
+  </defs>
+  <rect width="920" height="380" fill="#f8fafc"/>
+  <text x="460" y="42" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="25" font-weight="700" fill="#173b5b">n 越大，模型能看到的前文越长</text>
+  <g font-family="Arial, PingFang SC, sans-serif" font-size="21" text-anchor="middle">
+    <text x="80" y="135" font-weight="700" fill="#173b5b">bigram</text>
+    <rect x="175" y="92" width="145" height="64" rx="8" fill="#e6eff7" stroke="#38678c" stroke-width="2"/><text x="247" y="132" fill="#173b5b">like</text>
+    <rect x="445" y="92" width="145" height="64" rx="8" fill="#e5f1e8" stroke="#36684d" stroke-width="2"/><text x="517" y="132" fill="#173c2b">NLP</text>
+    <text x="695" y="132" font-size="18" fill="#31506b">只看前 1 个词</text>
+    <text x="80" y="270" font-weight="700" fill="#642724">trigram</text>
+    <rect x="175" y="227" width="145" height="64" rx="8" fill="#f8e9e8" stroke="#9a4c48" stroke-width="2"/><text x="247" y="267" fill="#642724">I</text>
+    <rect x="340" y="227" width="145" height="64" rx="8" fill="#e6eff7" stroke="#38678c" stroke-width="2"/><text x="412" y="267" fill="#173b5b">like</text>
+    <rect x="610" y="227" width="145" height="64" rx="8" fill="#e5f1e8" stroke="#36684d" stroke-width="2"/><text x="682" y="267" fill="#173c2b">NLP</text>
+    <text x="810" y="267" font-size="18" fill="#31513f">看前 2 个词</text>
+  </g>
+  <g stroke="#38678c" stroke-width="3" marker-end="url(#arrow)"><line x1="330" y1="124" x2="435" y2="124"/><line x1="495" y1="259" x2="600" y2="259"/></g>
+  <text x="460" y="340" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="17" fill="#642724">上下文更长不等于一定更好：组合变多后，训练集中恰好见过它的机会也会变少。</text>
+</svg>

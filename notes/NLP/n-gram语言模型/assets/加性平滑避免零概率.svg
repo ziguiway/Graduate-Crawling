@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390" role="img" aria-labelledby="title desc">
+  <title id="title">加性平滑如何避免零概率</title>
+  <desc id="desc">比较未平滑和加一平滑计算一个未见组合的概率。</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#9a4c48"/></marker></defs>
+  <rect width="920" height="390" fill="#fffaf8"/>
+  <text x="460" y="42" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="25" font-weight="700" fill="#642724">未见过的组合：从 0 概率到很小的概率</text>
+  <g font-family="Arial, PingFang SC, sans-serif">
+    <rect x="55" y="91" width="355" height="205" rx="10" fill="#f8e9e8" stroke="#9a4c48" stroke-width="2"/>
+    <text x="232" y="130" text-anchor="middle" font-size="20" font-weight="700" fill="#642724">不平滑</text>
+    <text x="232" y="175" text-anchor="middle" font-size="20" fill="#642724">C(前文, 新词) = 0</text>
+    <text x="232" y="218" text-anchor="middle" font-size="24" font-weight="700" fill="#642724">P(新词 | 前文) = 0</text>
+    <text x="232" y="260" text-anchor="middle" font-size="16" fill="#713b38">一句话中任何一步为 0，</text>
+    <text x="232" y="282" text-anchor="middle" font-size="16" fill="#713b38">整句概率都会变成 0。</text>
+    <rect x="510" y="91" width="355" height="205" rx="10" fill="#e5f1e8" stroke="#36684d" stroke-width="2"/>
+    <text x="687" y="130" text-anchor="middle" font-size="20" font-weight="700" fill="#173c2b">加一平滑 k = 1</text>
+    <text x="687" y="175" text-anchor="middle" font-size="20" fill="#173c2b">分子：0 + 1 = 1</text>
+    <text x="687" y="218" text-anchor="middle" font-size="22" font-weight="700" fill="#173c2b">P(新词 | 前文) &gt; 0</text>
+    <text x="687" y="260" text-anchor="middle" font-size="16" fill="#31513f">没有说它常见，</text>
+    <text x="687" y="282" text-anchor="middle" font-size="16" fill="#31513f">只是不再断言它绝不可能。</text>
+  </g>
+  <line x1="420" y1="194" x2="498" y2="194" stroke="#9a4c48" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="460" y="342" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="18" fill="#563d08">平滑用一点点概率质量，换取对陌生组合的容错能力。</text>
+</svg>

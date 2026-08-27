@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390" role="img" aria-labelledby="title desc">
+  <title id="title">n-gram 自动补全流程</title>
+  <desc id="desc">从训练语料预处理、统计 n-gram，到根据前文预测下一个词的流程。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#36684d"/></marker>
+  </defs>
+  <rect width="920" height="390" fill="#f8fbf8"/>
+  <text x="460" y="42" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="25" font-weight="700" fill="#173c2b">n-gram 语言模型如何完成自动补全</text>
+  <g font-family="Arial, PingFang SC, sans-serif" text-anchor="middle">
+    <rect x="48" y="92" width="180" height="88" rx="10" fill="#e5f1e8" stroke="#36684d" stroke-width="2"/>
+    <text x="138" y="126" font-size="20" font-weight="700" fill="#173c2b">训练语料</text>
+    <text x="138" y="155" font-size="16" fill="#31513f">许多真实句子</text>
+    <rect x="278" y="92" width="180" height="88" rx="10" fill="#f5efe0" stroke="#8d6c25" stroke-width="2"/>
+    <text x="368" y="126" font-size="20" font-weight="700" fill="#563d08">预处理</text>
+    <text x="368" y="155" font-size="16" fill="#654f1e">分词、&lt;unk&gt;</text>
+    <rect x="508" y="92" width="180" height="88" rx="10" fill="#e6eff7" stroke="#38678c" stroke-width="2"/>
+    <text x="598" y="126" font-size="20" font-weight="700" fill="#173b5b">计数统计</text>
+    <text x="598" y="155" font-size="16" fill="#31506b">n-gram / (n+1)-gram</text>
+    <rect x="738" y="92" width="140" height="88" rx="10" fill="#f8e9e8" stroke="#9a4c48" stroke-width="2"/>
+    <text x="808" y="126" font-size="20" font-weight="700" fill="#642724">条件概率</text>
+    <text x="808" y="155" font-size="16" fill="#713b38">加性平滑</text>
+  </g>
+  <g stroke="#36684d" stroke-width="3" marker-end="url(#arrow)">
+    <line x1="228" y1="136" x2="270" y2="136"/>
+    <line x1="458" y1="136" x2="500" y2="136"/>
+    <line x1="688" y1="136" x2="730" y2="136"/>
+  </g>
+  <path d="M808 180 L808 246 L460 246" fill="none" stroke="#36684d" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="280" y="246" width="360" height="104" rx="10" fill="#edf5f0" stroke="#36684d" stroke-width="2"/>
+  <text x="460" y="281" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="20" font-weight="700" fill="#173c2b">根据前文选择下一个词</text>
+  <text x="460" y="311" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="17" fill="#31513f">I eat scrambled  →  eggs</text>
+  <text x="460" y="335" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="15" fill="#31513f">选择 P(候选词 | 前 n 个词) 最大的候选</text>
+</svg>

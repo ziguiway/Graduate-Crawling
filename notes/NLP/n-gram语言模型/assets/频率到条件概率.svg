@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="350" viewBox="0 0 920 350" role="img" aria-labelledby="title desc">
+  <title id="title">从 n-gram 频率得到条件概率</title>
+  <desc id="desc">展示前文和完整词序列的计数如何组成条件概率分子和分母。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#38678c"/></marker>
+  </defs>
+  <rect width="920" height="350" fill="#f8fafc"/>
+  <text x="460" y="40" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="25" font-weight="700" fill="#173b5b">从训练频率估计条件概率</text>
+  <g font-family="Arial, PingFang SC, sans-serif">
+    <rect x="50" y="88" width="250" height="170" rx="10" fill="#e6eff7" stroke="#38678c" stroke-width="2"/>
+    <text x="175" y="124" text-anchor="middle" font-size="20" font-weight="700" fill="#173b5b">训练集统计</text>
+    <text x="78" y="166" font-size="18" fill="#31506b">C(I, like) = 10</text>
+    <text x="78" y="205" font-size="18" fill="#31506b">C(I, like, NLP) = 4</text>
+    <text x="78" y="236" font-size="15" fill="#31506b">前文出现次数 / 完整序列次数</text>
+    <rect x="610" y="88" width="260" height="170" rx="10" fill="#e5f1e8" stroke="#36684d" stroke-width="2"/>
+    <text x="740" y="124" text-anchor="middle" font-size="20" font-weight="700" fill="#173c2b">条件概率</text>
+    <text x="740" y="177" text-anchor="middle" font-size="21" fill="#173c2b">P(NLP | I, like)</text>
+    <text x="740" y="216" text-anchor="middle" font-size="24" font-weight="700" fill="#173c2b">= 4 / 10 = 0.4</text>
+    <text x="740" y="244" text-anchor="middle" font-size="15" fill="#31513f">在这个前文之后接 NLP 的比例</text>
+  </g>
+  <line x1="310" y1="173" x2="595" y2="173" stroke="#38678c" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="450" y="150" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="16" fill="#31506b">完整 n-gram 的次数作分子</text>
+  <text x="450" y="215" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="16" fill="#31506b">前文 n-gram 的次数作分母</text>
+  <text x="460" y="310" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="17" fill="#642724">未出现过的组合需要加性平滑，否则概率会变成 0。</text>
+</svg>
