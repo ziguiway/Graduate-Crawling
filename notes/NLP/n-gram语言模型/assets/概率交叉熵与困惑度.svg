@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390" role="img" aria-labelledby="title desc">
+  <title id="title">概率、交叉熵与困惑度的关系</title>
+  <desc id="desc">从模型给真实词的条件概率，经过负对数平均得到交叉熵，再经指数变换得到困惑度。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#38678c"/></marker>
+  </defs>
+  <rect width="920" height="390" fill="#f8fafc"/>
+  <text x="460" y="43" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="25" font-weight="700" fill="#173b5b">同一件事的三种表达：概率、交叉熵、困惑度</text>
+  <g font-family="Arial, PingFang SC, sans-serif" text-anchor="middle">
+    <rect x="38" y="105" width="245" height="170" rx="10" fill="#e5f1e8" stroke="#36684d" stroke-width="2"/>
+    <text x="160" y="143" font-size="20" font-weight="700" fill="#173c2b">每一步的条件概率</text>
+    <text x="160" y="184" font-size="18" fill="#31513f">P(真实下一个词 | 前文)</text>
+    <text x="160" y="227" font-size="16" fill="#31513f">越大：模型越有把握</text>
+    <rect x="337" y="105" width="245" height="170" rx="10" fill="#f5efe0" stroke="#8d6c25" stroke-width="2"/>
+    <text x="460" y="143" font-size="20" font-weight="700" fill="#563d08">交叉熵</text>
+    <text x="460" y="184" font-size="18" fill="#563d08">平均 -log 概率</text>
+    <text x="460" y="227" font-size="16" fill="#654f1e">越小：平均越不惊讶</text>
+    <rect x="636" y="105" width="245" height="170" rx="10" fill="#e6eff7" stroke="#38678c" stroke-width="2"/>
+    <text x="758" y="143" font-size="20" font-weight="700" fill="#173b5b">困惑度</text>
+    <text x="758" y="184" font-size="18" fill="#173b5b">exp(交叉熵)</text>
+    <text x="758" y="227" font-size="16" fill="#31506b">越小：平均越不犹豫</text>
+  </g>
+  <g stroke="#38678c" stroke-width="3" marker-end="url(#arrow)">
+    <line x1="293" y1="190" x2="327" y2="190"/>
+    <line x1="592" y1="190" x2="626" y2="190"/>
+  </g>
+  <text x="310" y="166" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="15" fill="#31506b">负对数并取平均</text>
+  <text x="609" y="166" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="15" fill="#31506b">取指数</text>
+  <text x="460" y="332" text-anchor="middle" font-family="Arial, PingFang SC, sans-serif" font-size="17" fill="#642724">总概率会随句长自然变小；交叉熵和困惑度按 token 平均后，更适合比较模型。</text>
+</svg>
