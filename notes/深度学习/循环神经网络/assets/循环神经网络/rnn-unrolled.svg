@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+  <title id="title">RNN 沿时间展开</title>
+  <desc id="desc">三个共享参数的循环神经网络单元依次读取输入，前一时刻的隐藏状态传递到下一时刻。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker>
+    <style>.font { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; } .arrow { fill: none; stroke: #334155; stroke-width: 4; stroke-linecap: round; marker-end: url(#arrow); } .label { font-size: 23px; fill: #334155; text-anchor: middle; } .small { font-size: 19px; fill: #64748b; text-anchor: middle; }</style>
+  </defs>
+  <rect x="12" y="12" width="1176" height="406" rx="26" fill="#f8fbff" stroke="#dbe4ef" stroke-width="3"/>
+  <text class="font" x="600" y="58" font-size="32" font-weight="800" fill="#172033" text-anchor="middle">RNN：每一步带着上一刻的状态继续读</text>
+  <text class="font small" x="600" y="88">三个方块参数相同，时间展开只是同一个网络被重复使用</text>
+  <g class="font">
+    <rect x="115" y="178" width="220" height="106" rx="20" fill="#e8f1ff" stroke="#4c78a8" stroke-width="4"/><text class="label" x="225" y="222" font-weight="700">RNN 单元</text><text class="small" x="225" y="253">第 t-1 步</text>
+    <rect x="490" y="178" width="220" height="106" rx="20" fill="#e8f1ff" stroke="#4c78a8" stroke-width="4"/><text class="label" x="600" y="222" font-weight="700">RNN 单元</text><text class="small" x="600" y="253">第 t 步</text>
+    <rect x="865" y="178" width="220" height="106" rx="20" fill="#e8f1ff" stroke="#4c78a8" stroke-width="4"/><text class="label" x="975" y="222" font-weight="700">RNN 单元</text><text class="small" x="975" y="253">第 t+1 步</text>
+    <path class="arrow" d="M 335 231 L 480 231"/><path class="arrow" d="M 710 231 L 855 231"/><text class="small" x="408" y="210">h(t-1)</text><text class="small" x="783" y="210">h(t)</text>
+    <path class="arrow" d="M 225 352 L 225 292"/><path class="arrow" d="M 600 352 L 600 292"/><path class="arrow" d="M 975 352 L 975 292"/><text class="label" x="225" y="384">x(t-1)</text><text class="label" x="600" y="384">x(t)</text><text class="label" x="975" y="384">x(t+1)</text>
+    <path class="arrow" d="M 225 170 L 225 122"/><path class="arrow" d="M 600 170 L 600 122"/><path class="arrow" d="M 975 170 L 975 122"/><text class="label" x="225" y="116">y(t-1)</text><text class="label" x="600" y="116">y(t)</text><text class="label" x="975" y="116">y(t+1)</text>
+  </g>
+</svg>

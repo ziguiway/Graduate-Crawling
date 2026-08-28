@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">LSTM 的记忆更新</title>
+  <desc id="desc">遗忘门保留旧记忆，输入门写入候选记忆，两者相加形成新细胞状态，输出门决定向外输出多少。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker>
+    <style>.font { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; } .arrow { fill: none; stroke: #334155; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); } .label { font-size: 24px; font-weight: 700; fill: #172033; text-anchor: middle; } .sub { font-size: 18px; fill: #526174; text-anchor: middle; }</style>
+  </defs>
+  <rect x="12" y="12" width="1176" height="596" rx="26" fill="#f8fbff" stroke="#dbe4ef" stroke-width="3"/>
+  <text class="font" x="600" y="58" font-size="32" font-weight="800" fill="#172033" text-anchor="middle">LSTM：旧记忆保留多少，新记忆写入多少</text>
+  <g class="font">
+    <rect x="72" y="238" width="180" height="82" rx="18" fill="#fff4d6" stroke="#d69e2e" stroke-width="4"/><text class="label" x="162" y="272">旧记忆</text><text class="sub" x="162" y="300">c(t-1)</text><path class="arrow" d="M 252 279 L 330 279"/>
+    <circle cx="370" cy="279" r="41" fill="#fff7e8" stroke="#d97706" stroke-width="4"/><text class="font" x="370" y="293" font-size="40" font-weight="700" fill="#b45309" text-anchor="middle">×</text><rect x="282" y="128" width="176" height="72" rx="16" fill="#fdeaea" stroke="#c53030" stroke-width="3"/><text class="label" x="370" y="160">遗忘门 f(t)</text><text class="sub" x="370" y="185">留多少旧记忆</text><path class="arrow" d="M 370 200 L 370 230"/>
+    <path class="arrow" d="M 411 279 L 536 279"/><rect x="498" y="238" width="82" height="82" rx="41" fill="#fffaf0" stroke="#d97706" stroke-width="4"/><text class="font" x="539" y="294" font-size="42" font-weight="700" fill="#b45309" text-anchor="middle">+</text><path class="arrow" d="M 580 279 L 710 279"/>
+    <rect x="710" y="238" width="178" height="82" rx="18" fill="#e9f7ef" stroke="#2f855a" stroke-width="4"/><text class="label" x="799" y="272">新记忆</text><text class="sub" x="799" y="300">c(t)</text><path class="arrow" d="M 888 279 L 950 279"/>
+    <circle cx="992" cy="279" r="41" fill="#fff7e8" stroke="#d97706" stroke-width="4"/><text class="font" x="992" y="293" font-size="40" font-weight="700" fill="#b45309" text-anchor="middle">×</text><path class="arrow" d="M 1033 279 L 1120 279"/><text class="label" x="1122" y="270">输出 h(t)</text><text class="sub" x="1122" y="298">对外读出</text>
+    <rect x="904" y="128" width="176" height="72" rx="16" fill="#e8f1ff" stroke="#4c78a8" stroke-width="3"/><text class="label" x="992" y="160">输出门 o(t)</text><text class="sub" x="992" y="185">说多少记忆</text><path class="arrow" d="M 992 200 L 992 230"/>
+    <rect x="268" y="408" width="190" height="76" rx="16" fill="#f3e8ff" stroke="#805ad5" stroke-width="3"/><text class="label" x="363" y="440">候选记忆</text><text class="sub" x="363" y="467">c~(t)</text><path class="arrow" d="M 458 446 L 536 330"/>
+    <circle cx="492" cy="391" r="36" fill="#fff7e8" stroke="#d97706" stroke-width="4"/><text class="font" x="492" y="404" font-size="36" font-weight="700" fill="#b45309" text-anchor="middle">×</text><rect x="502" y="497" width="176" height="72" rx="16" fill="#fdeaea" stroke="#c53030" stroke-width="3"/><text class="label" x="590" y="529">输入门 i(t)</text><text class="sub" x="590" y="554">写多少新记忆</text><path class="arrow" d="M 590 497 L 518 425"/>
+    <text class="sub" x="600" y="590">门的输出在 0 到 1 之间：接近 0 关闭，接近 1 打开</text>
+  </g>
+</svg>
