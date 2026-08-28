@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="620" viewBox="0 0 1450 620" role="img" aria-labelledby="title desc">
   <title id="title">LSTM 的记忆更新</title>
   <desc id="desc">遗忘门保留旧记忆，输入门写入候选记忆，两者相加形成新细胞状态，输出门决定向外输出多少。</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker>
     <style>.font { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; } .arrow { fill: none; stroke: #334155; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); } .label { font-size: 24px; font-weight: 700; fill: #172033; text-anchor: middle; } .sub { font-size: 18px; fill: #526174; text-anchor: middle; }</style>
   </defs>
-  <rect x="12" y="12" width="1176" height="596" rx="26" fill="#f8fbff" stroke="#dbe4ef" stroke-width="3"/>
-  <text class="font" x="600" y="58" font-size="32" font-weight="800" fill="#172033" text-anchor="middle">LSTM：旧记忆保留多少，新记忆写入多少</text>
+  <rect x="12" y="12" width="1426" height="596" rx="26" fill="#f8fbff" stroke="#dbe4ef" stroke-width="3"/>
+  <text class="font" x="725" y="58" font-size="32" font-weight="800" fill="#172033" text-anchor="middle">LSTM：旧记忆保留多少，新记忆写入多少</text>
   <g class="font">
     <rect x="72" y="238" width="180" height="82" rx="18" fill="#fff4d6" stroke="#d69e2e" stroke-width="4"/><text class="label" x="162" y="272">旧记忆</text><text class="sub" x="162" y="300">c(t-1)</text><path class="arrow" d="M 252 279 L 330 279"/>
     <circle cx="370" cy="279" r="41" fill="#fff7e8" stroke="#d97706" stroke-width="4"/><text class="font" x="370" y="293" font-size="40" font-weight="700" fill="#b45309" text-anchor="middle">×</text><rect x="282" y="128" width="176" height="72" rx="16" fill="#fdeaea" stroke="#c53030" stroke-width="3"/><text class="label" x="370" y="160">遗忘门 f(t)</text><text class="sub" x="370" y="185">留多少旧记忆</text><path class="arrow" d="M 370 200 L 370 230"/>
