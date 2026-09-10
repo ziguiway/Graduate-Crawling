@@ -9,7 +9,9 @@
       "Read(//Users/zhengshuang/.cc-switch/skills/nature-paper-card/static/core/**)",
       "Read(//Users/zhengshuang/.cc-switch/skills/nature-paper-card/references/**)",
       "Read(//Users/zhengshuang/.cc-switch/skills/nature-paper-card/scripts/**)",
-      "Bash(rg --files \"/Users/zhengshuang/Documents/code/Graduate-Crawling/notes\")"
+      "Bash(rg --files \"/Users/zhengshuang/Documents/code/Graduate-Crawling/notes\")",
+      "Bash(rg --files)",
+      "Bash(rg '\\(^|/\\)第一学期规划\\\\.md$')"
     ]
   }
 }
