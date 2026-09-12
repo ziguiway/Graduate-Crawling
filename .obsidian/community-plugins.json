@@ -13,5 +13,6 @@
   "highlightr-plugin",
   "dataview",
   "pdf-plus",
-  "obsidian-git"
+  "obsidian-git",
+  "gantt-calendar"
 ]
