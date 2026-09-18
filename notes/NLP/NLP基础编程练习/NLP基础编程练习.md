@@ -161,7 +161,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
   - [李正华老师课件（pdf）](http://hlt.suda.edu.cn/~zhli/teach/cip-2015-fall/7-hmm-tagging/main.pdf)
   - [理解 HMM 的 Viterbi（pptx）](http://hlt.suda.edu.cn/~zhli/teach/cip-2015-fall/7-hmm-tagging/HMM-v2.pptx)
   - [HMM 模型中极大似然估计的由来（公式推导，pdf）](http://hlt.suda.edu.cn/~zhli/teach/cip-2015-fall/7-hmm-tagging-MLE/main.pdf)
-- 数据：见上方 [[#词性标注数据（共用）]]
+- 数据：见上方 [[NLP基础编程练习#词性标注数据（共用）]]
 
 ### 作业 4：基于线性模型的词性标注
 
@@ -182,7 +182,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 - 视频（2022 春 IR 课程）：
   - [第1部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-1.mp4) ｜ [第2部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-2.mp4) ｜ [第3部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-3.mp4) ｜ [第4部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-4.mp4) ｜ [第5部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-5.mp4)
 - 图片：[第1部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-1.jpg) ｜ [第2部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-2.jpg) ｜ [第3部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-3.jpg) ｜ [第4部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-4.jpg) ｜ [第5部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/linear-model-5.jpg)
-- 数据：见 [[#词性标注数据（共用）]]
+- 数据：见 [[NLP基础编程练习#词性标注数据（共用）]]
 
 **日志**
 
@@ -207,7 +207,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 - 视频（2022 春 IR 课程）：
   - [第1部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/Maximum-entropy-1.mp4) ｜ [第2部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/Maximum-entropy-2.mp4)
 - 图片：[第1部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/Maximum-entropy-1.jpg) ｜ [第2部分](http://hlt.suda.edu.cn/LA/Ir-2022-Spring/HMM/Maximum-entropy-2.jpg)
-- 数据：见 [[#词性标注数据（共用）]]
+- 数据：见 [[NLP基础编程练习#词性标注数据（共用）]]
 
 ### 作业 6：基于全局线性模型（GLM）的词性标注
 
@@ -216,7 +216,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
 **资料**
 - 参考课件：[李正华老师课件（pdf）](http://hlt.suda.edu.cn/~zhli/teach/cip-2015-fall/11-global-linear-model/main.pdf)
-- 数据：见 [[#词性标注数据（共用）]]
+- 数据：见 [[NLP基础编程练习#词性标注数据（共用）]]
 
 ### 作业 7：基于 CRF 的词性标注
 
@@ -230,7 +230,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
 **资料**
 - 参考课件：[李正华老师课件（pdf）](http://hlt.suda.edu.cn/~zhli/teach/cip-2015-fall/12-crf/main.pdf)
-- 数据：见 [[#词性标注数据（共用）]]
+- 数据：见 [[NLP基础编程练习#词性标注数据（共用）]]
 
 ### 作业 8：基于前馈神经网络（FFN）的词性标注
 
@@ -251,7 +251,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
   - [第2节：表示学习](http://hlt.suda.edu.cn/~zhli/NLP-DL/13.2.mp4)
   - [第3节：序列标注问题](http://hlt.suda.edu.cn/~zhli/NLP-DL/13.3.mp4)
   - [第4节：句法树解析问题](http://hlt.suda.edu.cn/~zhli/NLP-DL/13.4.mp4)
-- 数据：见 [[#词性标注数据（共用）]]
+- 数据：见 [[NLP基础编程练习#词性标注数据（共用）]]
 
 ### 作业 9：基于 FFN-CRF 的词性标注
 
@@ -262,7 +262,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
 **资料**
 - 入门书、视频同作业 8（Nielsen 书 + 吴恩达视频 + 李老师第 13 章）
-- 数据：见 [[#词性标注数据（共用）]]
+- 数据：见 [[NLP基础编程练习#词性标注数据（共用）]]
 
 ### 作业 10：基于 BiLSTM 的词性标注
 
@@ -273,7 +273,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
 **资料**
 - 同作业 8 的入门材料
-- 数据：见 [[#词性标注数据（共用）]]
+- 数据：见 [[NLP基础编程练习#词性标注数据（共用）]]
 
 ### 作业 11：基于 BiLSTM-CRF 的词性标注
 
@@ -283,7 +283,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
 **资料**
 - GitHub 仓库：[SUDA-LA/CIP](https://github.com/SUDA-LA/CIP)
-- 数据：见 [[#词性标注数据（共用）]]
+- 数据：见 [[NLP基础编程练习#词性标注数据（共用）]]
 
 ## 后续扩展（自主学习，时间允许时）
 
@@ -292,7 +292,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 1. **基于图的依存句法分析**：直接用神经网络实现即可，Biaffine Parser 框架。重点：==Eisner 动态规划解码算法==（看李老师的 COLING-2014 tutorial）；进而可扩展到 TreeCRF，将 Eisner 算法扩展为 inside 算法。对应 ACL-2020 论文：Yu Zhang et al.
 2. **基于转移的依存句法分析**：了解一下转移系统。
 3. **Seq2Seq (RNN) NMT with attention**：了解一下语言生成。
-4. **Transformer NMT**：技术细节很多（呼应我已学的 [[Transformer]]）。
+4. **Transformer NMT**：技术细节很多（呼应我已学的 [[../../深度学习/Transformer/Transformer]]）。
 5. **无监督学习**：HMM-EM、VAE。
 6. **ELMo/BERT 的原理**。
 
@@ -315,7 +315,7 @@ teacher_page: http://hlt.suda.edu.cn/index.php/New-stu-training
 
 ## 与已学内容的关联
 
-- 作业 8 起进入深度学习，与我正在学的 [[机器学习基础]]、[[自注意力机制]]、[[Transformer]] 是一条线。
+- 作业 8 起进入深度学习，与我正在学的 [[../../深度学习/机器学习基础/机器学习基础]]、[[../../深度学习/自注意力机制/自注意力机制]]、[[../../深度学习/Transformer/Transformer]] 是一条线。
 - 后续扩展 1（Transformer-encoder）正好接上我刚学完的 Transformer 第 7 章 —— 可以把词性标注当作 Transformer 的第一个实战任务。
 - 作业 8 的 back-propagation 与我后续要学的训练技巧（梯度下降、反向传播）直接相关。
 
