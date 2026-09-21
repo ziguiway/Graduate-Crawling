@@ -29,6 +29,5 @@
     "lucideIconPackType": "native",
     "debugMode": false,
     "useInternalPlugins": false
-  },
-  "papers/llm-safety/MLLM防御/大模型越狱.md": "LiAlignJustify"
+  }
 }

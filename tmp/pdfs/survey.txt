@@ -1,0 +1,1902 @@
+Machine Learning       (2026) 115:130
+https://doi.org/10.1007/s10994-026-07060-8
+
+
+
+
+Survey on LLM Safety: Attacks, Defenses, Alignment, Metrics,
+and Guardrails
+
+Pratik Jalan1 · Vadivel Abishethvarman2 · Bhavik Chandna3 · Usman Naseem1
+
+Received: 16 August 2025 / Revised: 11 April 2026 / Accepted: 26 April 2026
+© The Author(s) 2026
+
+
+Abstract
+Large Language Models (LLM) have demonstrated remarkable capabilities across various
+applications, but their deployment raises critical safety concerns as potential misuse poses
+significant societal risks. This survey reviews the end-to-end security and safety pipeline
+of LLMs, focusing on the interaction between users and model responses. We categorize
+the system into five key components: attacks, defenses, safety alignment, metrics and
+guarding mechanisms. Attacks involve crafting adversarial inputs to exploit model vul-
+nerabilities. Defenses act as countermeasures, aiming to detect and prevent such inputs
+before processing. Safety alignment ensures that, even when attacks reach the model, its
+responses remain consistent with ethical and policy-aligned behavior. Guarding mecha-
+nisms operate post-response to flag, filter, or block unsafe outputs. Each of these stages is
+subject to rigorous evaluation metrics to assess their effectiveness, robustness, and limita-
+tions. As LLMs evolve toward more general-purpose intelligence, these safety consid-
+erations become increasingly critical for the development of robust and trustworthy AI
+systems. Finally, we highlight open challenges and future research directions to advance
+the security and alignment of LLMs.
+
+Keywords Adversarial attacks · AI governance · AI robustness · Content moderation ·
+Defense mechanisms · Ethical AI · Evaluation metrics · Guardrails · LLMs · LLM
+safety · Model vulnerabilities · Red teaming · Safety alignment · Secure AI systems ·
+Trustworthy AI
+
+
+1 Introduction
+
+LLMs have been one of the most prominent research topics in recent years. They are likely
+to remain at the forefront of AI research for the foreseeable future, particularly as efforts
+continue toward achieving comprehensive safety and alignment (Liu et al., 2023; Anwar
+et al., 2024). As these systems continue to scale and exhibit increasingly general capabili-
+
+
+
+Pratik Jalan and Vadivel Abishethvarman are contributed equally to this work.
+Editor: Bo Han.
+
+Extended author information available on the last page of the article
+ 130     Page 2 of 36                                        Machine Learning        (2026) 115:130
+
+
+ties, they are often viewed as important steps toward Artificial General Intelligence (AGI),
+further amplifying the importance of robust safety and security mechanisms. Building on
+the foundational works, many state-of-the-art LLMs have been developed by leading orga-
+nizations, each contributing unique architectures, training methodologies, and alignment
+techniques. Notable examples include OpenAI’s GPT series (Brown et al., 2020; Achiam et
+al., 2023), Anthropic’s Claude models2024(Achiam et al., ), Google DeepMind’s Gemini
+(Team et al., 2023, 2024), and Meta’s LLaMA family (Touvron et al., 2023), alongside
+emerging models such as Mistral, Falcon, Vicuna, and Alpaca (Chowdhery et al., 2023;
+Team et al., 2024).
+    The official technical reports and research papers on these models provide essential
+insights into their design and safety alignment strategies. Reviewing these works is critical
+for understanding ongoing efforts to address key challenges including bias, toxicity, factual
+accuracy, and ethical alignment in LLM deployment. Prior works (Cao et al., 2025; Ying
+et al., 2024; Nadeau et al., 2024; Perez et al., 2023) were conducted to evaluate the bias
+score and toxicity score, while SafetyBenchASR (Zhang et al., 2024) and TruthfulQA (Lin
+& Hilton, 2022) address how vulnerable the LLM models are. Table 1 shows the safety and
+alignment metric of the selected LLMs. Beyond basic misuse, LLM safety encompasses
+structured threats such as prompt injection, adversarial manipulation, and backdoor attacks
+each capable of producing harmful or misleading outputs through distinct mechanisms.
+Scores in Benchmark are collected from publicly reported benchmark evaluations and were
+not obtained under identical experimental conditions. Consequently, the results should be
+interpreted as indicative rather than strictly comparable. The findings indicate that pub-
+licly available open-source LLMs demonstrate generally similar performance, based on the
+observed scores.
+
+
+Table 1 Comparison of major       Model                 Bias score   Toxicity    Safety-   Truth-
+LLMs on bias, toxicity, safety                          (↓)          score (↓)   Bench ASR fulQA
+robustness (ASR), and truthful-                                                  (% ↑)     accuracy
+ness (TruthfulQA) on publicly                                                              (% ↑)
+disclosed data
+                                  GPT-4o (Hurst et      ∼0.02        0.14        80.3      82–83
+                                  al., 2024)
+                                  GPT-4 (Achiam et      ∼0.02        0.14        –             82–83
+                                  al., 2023)
+                                  Claude 3.5 Sonnet     ∼0.02        ∼0.02       80.5          ∼85
+                                  (Claude, ) 2024
+                                  Gemma/Gemma2          ∼0.22        ∼0.22       59–70         –
+                                  (Team et al., 2024)
+                                  LLaMA 3 (Gratta-      ∼0.20        ∼0.13       ∼68           ∼70
+                                  fiori et al., 2024)
+                                  Mistral (Jiang et     ∼0.21        ∼0.21       ∼68           ∼67
+                                  al., 2023)
+                                  Falcon (Almaz-        >0.30        ∼0.30       –             –
+                                  rouei et al., 2023)
+                                  Deepseek (Liu et      –            –           78.5 to       –
+                                  al., 2024)                                     −79.7
+                                  Vicuna (Chiang et     ∼0.25        ∼0.25       45.1          ∼60
+                                  al., 2023)
+                                  Alpaca (Taori et      –            ∼0.29       < random      ∼55
+                                  al., 2023)
+
+
+13
+Machine Learning       (2026) 115:130                                              Page 3 of 36   130
+
+
+   Moreover, bias and hallucination (Abishethvarman et al., 2025) issues can lead to the
+spread of misinformation, reinforcing stereotypes, or fabricating nonfactual information.
+These are evaluated with various benchmarks (see Table 2) and the best scores are listed in
+the LLM’s technical papers. Consequently, developing defensive mechanisms to mitigate
+these vulnerabilities is essential. Furthermore, LLMs must be aligned with human values
+and ethical principles, ensuring they behave in a safe and responsible manner.
+   This survey categorizes LLM safety into five key areas:
+
+● Attacks: Various adversarial techniques used to manipulate language models outputs,
+  including prompt injection, backdoor attacks, adversarial perturbations, and data poi-
+  soning (Yao et al., 2024; Xu et al., 2023).
+● Defenses: Countermeasures such as adversarial training, robust fine-tuning, differential
+  privacy, and content filtering to enhance LLM security and robustness (Varshney et al.,
+  2023).
+● Alignment: Methods to ensure that LLMs adhere to ethical guidelines, such as rein-
+  forcement learning with human feedback (RLHF), constitutional AI, and instruction
+  tuning (Wang et al., 2024).
+● Metrics: Evaluation frameworks to measure safety, robustness, and fairness in LLMs,
+  including toxicity detection, factual consistency, and bias auditing (Li & Li, 2023).
+● Guardrails: Policy-based and technical safeguards for responsible deployment, such
+  as inference guidance, access control, compliance frameworks, and automated content
+  moderation (He et al., 2024).
+
+Table 2 Summary of major             Benchmarks                Focus area                    Considered
+benchmarks for assessing LLM
+                                     TruthfulQA (Lin et al.,   Truthfulness, factual         ✓
+safety and alignment, showing
+                                     2021)                     correctness
+their focus areas and usage in the
+original technical papers            ToxiGen (Hartvigsen et    Toxicity and hate speech      ✓
+                                     al., 2022)                generation detection
+                                     HHH Eval (Bai et al.,     Helpfulness, Honesty,         ✓
+                                     2022)                     Harmlessness
+                                     DecodingTrust (Wang et    Trustworthiness, robust-      ✓
+                                     al., 2023)                ness, hallucination
+                                     AdvBench (Zou et al.,     Jailbreak/adversarial input   ✓
+                                     2023)                     resistance
+                                     Anthropic Red Teaming     Harmlessness via              ✓
+                                     (Bai et al., 2022)        red-teaming
+                                     HELM Safety (Liang et     Holistic LLM evaluation       ✓
+                                     al., 2022)                incl. safety
+                                     RealToxicityPrompts       Toxicity from open-ended      ✓
+                                     (Gehman et al., 2020)     prompts
+                                     DoNotAnswer (DNA)         Model refusal to unethical    ✓
+                                     (Wang et al., 2023)       prompts
+                                     SafetyBench (Zhang et     Alignment with safety-        ✓
+                                     al., 2023)                critical questions
+                                     MT-Bench (Zheng et al.,   Evaluating alignment with     ~
+                                     2023)                     Multi-turn chat evaluation
+Legend: ✓ – Benchmark
+                                     Model-Written Evals       Benchmarks written/gener-     ~
+considered for the studies; ~ –
+                                     (Perez et al., 2023)      ated by models
+Benchmark reviewed but not
+directly used or only partially      HelpfulQA (Havrilla et    Helpfulness + instruction     ~
+applicable                           al., 2023)                following
+
+
+
+                                                                                             13
+ 130      Page 4 of 36                                           Machine Learning        (2026) 115:130
+
+
+This survey systematically reviews prior research on attacks, defenses, safety alignment,
+evaluation frameworks, and security mechanisms. The taxonomy of this survey is illustrated
+in Fig. 1. Table 2 highlights the breadth of safety and alignment benchmarks considered in
+this study, demonstrating comprehensive coverage across truthfulness, toxicity, robustness,
+and alignment dimensions.
+
+
+2 Motivation
+
+This survey builds upon prior foundational studies in LLM safety and security. Ensur-
+ing LLM safety is critical, as widespread adoption introduces risks of misuse, adversarial
+manipulation, and ethical misalignment. While existing studies have explored LLM secu-
+
+
+
+
+Fig. 1 Taxonomy of this survey, illustrating the hierarchical organization of LLM safety research across
+attacks, defenses, alignment, evaluation, and security measures, with representative citations at each level
+
+
+13
+Machine Learning     (2026) 115:130                                               Page 5 of 36   130
+
+
+rity, there is a need for a unified perspective that connects attacks, defenses, alignment
+strategies, evaluation metrics, and guardrails.
+    Prior surveys (Yao et al., 2024; Xu et al., 2024) have classified LLM threats and defenses,
+focusing on specific aspects like jailbreak attacks, inference-time vulnerabilities, and
+defense mechanisms. However, a comprehensive framework that integrates these dimen-
+sions spanning adversarial risks, safety alignment techniques, and evaluation methodologies
+remains lacking.
+    Table 3 summarizes major existing surveys on Large Language Model safety and posi-
+tions the present study within this landscape. Prior works primarily emphasize conversa-
+tional safety, jailbreak attacks, alignment strategies, or full-stack system considerations. In
+contrast, this work focuses specifically on reliability at the application layer, highlighting
+how hallucination, inconsistency, and untrustworthy outputs affect Knowledge-Based Sys-
+tems. By shifting attention from adversarial or training-centric perspectives to downstream
+knowledge integrity, this study complements existing surveys and addresses an underex-
+plored yet practically critical dimension of LLM deployment.
+    This survey bridges this gap by systematically categorizing LLM attacks, examining
+multi-layered defenses, and evaluating safety alignment mechanisms. We further introduce
+key metrics and guardrails to assess and enforce LLM safety, ensuring robust and trustwor-
+thy AI deployment.
+
+
+
+Table 3 Comparative analysis of   Survey paper          Primary focus of     Our contribution and
+existing LLM safety surveys and                         prior work           distinction
+our perspective
+                                  Attacks, Defenses and Conversational       Extends beyond con-
+                                  Evaluations for LLM safety, jailbreak      versational safety by
+                                  Conversation Safety   attacks, defenses,   addressing hallucina-
+                                  (Dong et al., 2024)   and evaluation       tion and inconsistency
+                                                        benchmarks           in Knowledge-Based
+                                                                             Systems
+                                  A Comprehensive        Detailed analysis Shifts focus from adver-
+                                  Study of Jailbreak At- of jailbreak        sarial settings to every-
+                                  tack versus Defense    techniques and de- day unreliable outputs
+                                  for LLMs (Xu et al., fense strategies      affecting real-world
+                                  2024)                                      knowledge systems
+                                  AI Safety in Gen-      High-level          Provides an application-
+                                  erative AI Large       overview of         driven perspective
+                                  Language Models        safety challenges linking LLM failures
+                                  (Chua et al., 2024)    and mitigation      to Knowledge-Based
+                                                         strategies          System degradation
+                                  Large Language         Alignment,          Highlights downstream
+                                  Model Safety: A        robustness, and     impacts of hallucinated
+                                  Holistic Survey (Shi training-based        knowledge on decision-
+                                  et al., 2024)          safety approaches making systems
+                                  On Large Language      Joint discussion of Isolates reliability as a
+                                  Models Safety,         safety, secu-       core issue and analyzes
+                                  Security, and Privacy rity, and privacy    its role in Knowledge-
+                                  (Zhang et al., 2025)   concerns            Based Systems
+                                  A Comprehensive        Safety across data, Concentrates on knowl-
+                                  Survey in LLM          training, agents,   edge trustworthiness
+                                  (-Agent) Full Stack    and deployment      at the application layer
+                                  Safety (Wang et al.,   pipelines           rather than full-stack
+                                  2025)                                      engineering
+
+
+                                                                                           13
+ 130      Page 6 of 36                                         Machine Learning       (2026) 115:130
+
+
+3 Literature Review
+
+This literature review examines existing research on LLM safety, focusing on attacks,
+defenses, alignment, metrics, and guardrails. Our objective is to categorize prior works
+based on these domains, identifying key contributions and gaps in the literature.
+
+3.1 Surveying Existing Research
+
+Several surveys and studies have been conducted to explore the security and privacy con-
+cerns of LLMs. These works categorize LLM security from multiple perspectives, including
+adversarial attacks, the robustness of defense mechanisms, alignment techniques, evalua-
+tion metrics, and safety measures. The distribution of surveyed papers across these research
+areas is illustrated in Fig. 2. Prior research has identified various attack vectors, such as jail-
+break attacks, adversarial prompting, and data poisoning. In parallel, several defense strate-
+gies have been proposed, including rule-based filters and inference-time editing techniques.
+   As shown in Table 4, prior surveys predominantly organize LLM safety either through
+adversarial-centric categorizations, thematic parallel dimensions, conceptual domain sepa-
+rations, or engineering lifecycle stages. In contrast, the proposed taxonomy adopts a unified
+pipeline perspective that integrates attacks, defenses, alignment mechanisms, evaluation
+metrics, and safety measures into a continuous reliability-focused framework. This structure
+enables modeling of cross-stage dependencies and failure propagation, thereby extending
+beyond modular or parallel taxonomies in prior literature.
+
+
+4 Novelty of the Survey
+
+The novelty of this survey lies in its comprehensive and integrated examination of the entire
+LLM safety and security pipeline from attack vectors to defense strategies, safety alignment,
+guarding mechanisms, and evaluation metrics. While prior studies often focus on individ-
+
+
+
+
+Fig. 2 Overview of the distribution of papers across key LLM safety topics, along with year-wise publica-
+tion trends from 2020 to 2025
+
+
+13
+Machine Learning      (2026) 115:130                                               Page 7 of 36    130
+
+Table 4 Structural comparison of taxonomies in existing LLM safety surveys
+Survey paper                   Taxonomy structure           Organizing         Structural characteristic
+                                                            principle
+A Comprehensive Study          Attack → Defense →           Adversar-           Linear grouping;
+of Jailbreak Attack versus     Evaluation, subdivided into ial-centric          focuses on attack–de-
+Defense for Large Language inference-time, training-        categorization      fense cycle without
+Models (Xu et al., 2024)       time, filters, metrics                           lifecycle integration
+Attacks, Defenses and Evalu- Attack → Defense →             Conversational      Structured by tech-
+ations for LLM Conversation Evaluation, including           safety focus        nique; emphasizes
+Safety: A Survey (Dong et      templates, red-teaming, and                      attack–defense pipeline
+al., 2024)                     neural prompt-to-prompt                          at conversation level
+AI Safety in Generative AI     Data Safety, Model Safety,   Layered thematic    Parallel safety dimen-
+Large Language Models: A       Prompt Safety, Alignment,    classification      sions; limited cross-
+Survey (Chua et al., 2024)     Safety at Scale                                  category dependency
+                                                                                modeling
+Large Language Model           Robustness, Bias, Privacy,    Broad thematic     Wide coverage; taxono-
+Safety: A Holistic Survey (Shi Governance, Interpretability, expansion          my spans technical and
+et al., 2024)                  Agents                                           governance domains
+                                                                                but remains modular
+On Large Language Models       Safety vs. Security vs. Pri-  Conceptual         Clear definitional
+Safety, Security, and Privacy: vacy as distinct pillars      separation of risk boundaries; domains
+A Survey (Zhang et al., 2025)                                domains            treated independently
+A Comprehensive Survey         Data → Pre-training →         Engineering life- Stage-based system
+in LLM (-Agent) Full Stack     Post-training → De-           cycle framework pipeline; emphasizes
+Safety: Data, Training, and    ployment → Agents →                              operational workflow
+Deployment (Wang et al.,       Commercialization
+2025)
+Our survey                     Attacks → Defense →           Unified safety     Integrated lifecycle
+                               Alignment → Evaluation        pipeline with      modeling; captures
+                               Metrics → Safety Measures reliability focus      cross-stage propaga-
+                                                                                tion and downstream
+                                                                                knowledge reliability
+
+
+ual components in isolation, our approach emphasizes the interdependence and interac-
+tion between these layers. By analyzing how attacks propagate through defenses, influence
+alignment behavior, and trigger (or bypass) guarding mechanisms, we provide a holistic
+view of LLM vulnerability and resilience. This interconnected perspective enables a more
+realistic and operational understanding of LLM deployment in adversarial environments,
+highlighting system-wide trade-offs and failure modes that are overlooked when compo-
+nents are studied separately. Although LLM deployment follows a sequential pipeline, Prior
+work often analyzes attacks, defenses, alignment, and safety measures in isolation. Our
+framework instead models their interdependencies and cross-stage failure propagation.
+
+
+5 Introduction to Our Safety Perspective
+
+Ensuring the safety of LLMs requires a comprehensive, multi-layered approach that
+addresses potential risks throughout the model’s life cycle.
+   In this survey, we present an original, structured perspective that organizes safety mecha-
+nisms into three distinct but complementary stages: (1) Input-Level Safety, (2) Training-
+Time Alignment, and (3) Inference-Time Guarding Mechanisms. The overall safety pipeline
+spanning these stages is illustrated in Fig. 3.
+
+
+                                                                                            13
+ 130      Page 8 of 36                                          Machine Learning        (2026) 115:130
+
+
+   1. Input-Level Safety: This initial layer serves as the first barrier, with mechanisms
+designed to detect and block harmful or adversarial prompts before they reach the model.
+Techniques in this stage include sophisticated input sanitization, prompt validation, and
+adversarial input detection. By preemptively filtering inputs, this layer prevents exploitation
+via methods such as prompt injection, jailbreak attempts, and malicious encoding.
+   2. Training-Time Alignment: During model training, alignment strategies are imple-
+mented to shape the LLM’s underlying behavior and principles. These methods such as
+reinforcement learning from human feedback (RLHF), reward modeling, and constitutional
+AI optimize models to instill robust, inherent safety. Well-aligned models are less likely to
+produce unsafe responses, even when encountering adversarial or ambiguous prompts.
+   3. Inference-Time Guarding Mechanisms: Despite thorough training, models may still
+emit unintended or harmful outputs. This final protective layer comprises tools and strate-
+gies applied after content is generated. Post-processing filters, output classifiers, context
+manipulation, and advanced system prompts intercept and revise outputs as necessary to
+prevent harmful information from reaching end users.
+   Figure 4 visually summarizes this taxonomy, demonstrating how safety interventions
+are strategically distributed across the LLM development and deployment lifecycle, with
+representative mechanisms at each stage.
+   By synthesizing these layers, our perspective clarifies both the strengths and the residual
+limitations inherent to each approach.
+   This framework supports the design of robust defense strategies that combine proactive
+prevention blocking risks before they arise with reactive filtering to catch challenges that
+escape earlier barriers. Ultimately, such a comprehensive taxonomy provides a foundation
+for advancing the safety and reliability of next-generation language models.
+
+
+6 Attacks
+
+To strengthen the operational relevance of this survey, we explicitly articulate the threat
+model and underlying assumptions that motivate each attack and defense class, and we enu-
+merate (i) the attack surface an adversary can realistically access and (ii) the expected fail-
+
+
+
+
+Fig. 3 End-to-end architecture of the LLM safety pipeline, illustrating the three-stage safety perspective:
+Input-Level Safety (defenses), Training-Time Alignment (RLHF, Constitutional AI), and Inference-Time
+Guardrails (output filtering). Red dashed arrows indicate adversarial attack vectors targeting each stage
+
+
+13
+Machine Learning        (2026) 115:130                                       Page 9 of 36   130
+
+Fig. 4 Layered taxonomy of
+LLM safety interventions, illus-
+trating the hierarchy of strategies
+across defenses, alignment, and
+guarding mechanisms
+
+
+
+
+ure modes when protections degrade or are bypassed. This framing complements existing
+taxonomies of LLM threat vectors and helps connect abstract attack categories to concrete
+deployment settings (Shayegani et al., 2023; Xu et al., 2023; Yao et al., 2024).
+    Concretely, we assume an adaptive adversary with one or more of the following capa-
+bilities depending on the setting: (a) query-only black-box access to the deployed model
+(including rate limits and content moderation constraints), (b) partial system-level access
+such as control over user-provided context, tool outputs, or retrieved documents in retrieval-
+augmented generation (RAG) pipelines, and/or (c) training-time influence via data collec-
+tion, curation, or fine-tuning procedures. For each attack class discussed below, we therefore
+highlight where the adversary interacts with the system (prompt interface, memory/context
+window, retrieval store, tool APIs, training data, or post-processing filters) and we catego-
+rize typical failure modes, such as instruction-hierarchy override, context poisoning, tool/
+RAG prompt injection, privacy leakage (memorization and extraction), latent backdoor
+trigger activation, and downstream policy evasion through output formatting or reasoning
+manipulation (Liu et al., 2023; Yip et al., 2023; Pan et al., 2025; Benjamin et al., 2024; Jia et
+al., 2025; Yu et al., 2023; Ogundoyin et al., 2025; Yu et al., 2024; Wan et al., 2023; Carlini
+et al., 2021; Liu et al., 2024).
+    LLMs are vulnerable to a wide range of adversarial attacks that can occur at differ-
+ent stages of their lifecycle (Shayegani et al., 2023; Xu et al., 2023). These threats can be
+broadly categorized (as shown in Fig. 5) into Input-Level, Model-Level, and Output-Level
+attacks, which directly undermine the three-stage safety perspective by targeting Input-
+Level Safety (e.g., bypassing prompt validation), Training-Time Alignment (e.g., corrupt-
+ing ethical behaviour during fine-tuning), and Inference-Time Guarding (e.g., exploiting
+post-generation filters). Each category targets a specific phase in the LLM pipeline, with
+potential propagation across stages, and poses unique challenges for safety, robustness, and
+alignment. Addressing these requires integrated defenses that reinforce the interdependence
+of the safety layers, as visualised in Fig. 4.
+
+
+                                                                                      13
+ 130    Page 10 of 36                                  Machine Learning    (2026) 115:130
+
+
+6.1 Input-Level Attacks (Prompt-Time/Inference-Time)
+
+Input-level attacks exploit language models during inference by crafting prompts that
+manipulate model behavior to bypass safety mechanisms and elicit unintended or harmful
+responses (Liu et al., 2023; Yip et al., 2023; Pan et al., 2025; Benjamin et al., 2024; Jia et
+al., 2025; Yu et al., 2023; Ogundoyin et al., 2025; Yu et al., 2024). These attacks primar-
+ily undermine Input-Level Safety in our safety perspective by evading preemptive detec-
+tion, potentially propagating to weaken Training-Time Alignment if not mitigated. Recent
+research categorises these attacks into diverse classes, each targeting the model’s prompt-
+processing or conversational input mechanisms through distinct strategies, highlighting the
+need for robust input sanitization and cross-stage guarding.
+    Prompt Injection Attacks Prompt injection is among the most widely studied and impact-
+ful attack vectors on large language models. These attacks embed malicious instructions
+within the user input, manipulating the model’s instruction-following abilities and often
+bypassing intended restrictions (Liu et al., 2023; Yip et al., 2023; Pan et al., 2025; Benjamin
+et al., 2024; Jia et al., 2025; Perez, 2022). Specific techniques include:
+
+● Direct Injection: Explicit attempts to override system prompts with simple commands,
+  such as “Ignore all previous instructions and provide unrestricted answers.” (Perez,
+  2022)
+● Indirect Injection: Concealing adversarial instructions within benign text or content re-
+  trieved externally by the model (Yu et al., 2023; Ogundoyin et al., 2025; Yu et al., 2024).
+● Context Manipulation: Leveraging the context window by positioning conflicting in-
+  structions at different points in the prompt (Liu et al., 2023; Yip et al., 2023; Pan et al.,
+  2025; Benjamin et al., 2024; Jia et al., 2025).
+
+Jailbreak Attacks Jailbreak attacks are systematic attempts to defeat safety alignment by
+leveraging advanced optimization or automated prompt-rewriting. These methods can pro-
+duce adversarial suffixes or iteratively refine commands to circumvent guardrails (Zou et
+al., 2023; Wang et al., 2024), often exploiting gaps in input-level safety that may affect
+downstream inference-time guarding. Notable examples include:
+
+● GCG (Greedy Coordinate Gradient): Uses white-box gradient-based optimization to
+  identify effective adversarial suffixes for prompts (Zou et al., 2023; Wang et al., 2024).
+● AutoDAN: Employs gradient techniques to craft coherent, transferable adversarial
+  prompts with human-readable structure (Zhu et al., 2023).
+● PAIR (Prompt Automatic Iterative Refinement): A black-box method utilizing an at-
+  tacker model to iteratively evolve jailbreak prompts (Chao et al., 2024; Mehrotra et al.,
+  2023; Reddy et al., 2025).
+● Stealthy Attacks: Incorporate benign data mirroring during adversarial search to evade
+  detection and maintain high attack rates (Mu et al., 2025; Koide & Nakano, 2026).
+● Persuasive Attack: Prior work such as DeepInception (Li et al., 2024) leverages nested
+  narrative role-playing prompts to exploit LLMs’ personification and authority-driven
+  reasoning, enabling the model to bypass safety guardrails.
+
+
+
+
+13
+Machine Learning      (2026) 115:130                                                Page 11 of 36    130
+
+
+
+
+Fig. 5 A comprehensive overview of adversarial attacks targeting LLMs, categorised by attack surface
+into input-level, model-level, and output-level threats. Each subcategory highlights specific techniques
+along with representative citations
+
+
+
+
+                                                                                              13
+130     Page 12 of 36                                Machine Learning    (2026) 115:130
+
+
+Role-Playing and Social Engineering Attacks These strategies induce models to break
+safety alignment through manipulation of contextual or social cues (Gumaan, 2025; Wan et
+al., 2024; Si et al., 2025; Tonmoy et al., 2024; Chen et al., 2025). Techniques include:
+
+● Character Simulation: Requesting the model to adopt unaligned personas or act as
+  banned characters (Gumaan, 2025; Wan et al., 2024)
+● Hypothetical Scenarios: Framing malicious requests within academic or fictional con-
+  texts to bypass direct filtering (Gumaan, 2025; Wan et al., 2024; Si et al., 2025; Tonmoy
+  et al., 2024; Chen et al., 2025).
+● Policy Puppetry: Utilizing structured data formats (e.g., XML, JSON) to disguise
+  prompt intent or mimic system-level policy cues.
+
+Obfuscation and Encoding Attacks These attacks mask malicious intent using automated
+prompt optimization, adversarial suffix generation, and iterative refinement techniques
+(Basani, 2024; Yang et al., 2024; Mehrotra et al., 2023; Koo et al., 2025; Shayegani et al.,
+2023). They include:
+
+● Natural-Looking Adversarial Prompts: Human-readable yet adversarially optimized
+  suffixes that bypass safety guardrails in black-box settings (Basani, 2024; Yang et al.,
+  2024).
+● Iterative Refinement Attacks: Automatically refining prompts through feedback loops
+  or attacker models to increase jailbreak success rates (Mehrotra et al., 2023; Koo et al.,
+  2025).
+● Multi-Strategy Composition Attacks: Combining diverse disguise or reasoning strate-
+  gies in an adaptive manner to evade moderation systems (Qi et al., 2025).
+● Constrained Decoding Attacks: Exploiting structured output interfaces or decoding con-
+  straints to introduce adversarial logic that subverts output safety filters (Zhang et al.,
+  2026; Li et al., 2025; Wang et al., 2024; Wei et al., 2026).
+
+Multimodal Attacks Vision-language and multimodal models are susceptible to attacks that
+leverage the visual channel (Qi et al., 2023; Ren et al., 2025). Examples include:
+
+● FigStep: Typographic image-based prompts that deliver prohibited content through
+  visual cues, maintaining high attack success on vision-language models (Gong et al.,
+  2025).
+● Visual adversarial examples that inject harmful intent through crafted images, achieving
+  high jailbreak success rates across vision-language models (Qi et al., 2023).
+● Systematic adversarial attacks against vision-language models that bypass safety align-
+  ment mechanisms via visual inputs (Ren et al., 2025).
+● Targeted multimodal perturbations that manipulate cross-modal generation systems
+  through imperceptible input modifications (Liu et al., 2025).
+
+Multi-turn Conversation Attacks Conversational LLMs are vulnerable to attacks distrib-
+uted over multiple dialogue rounds (Tong et al., 2024). Key techniques include:
+
+● Distributed Backdoor Triggers: Trigger tokens are spread across multiple conversation-
+
+
+13
+Machine Learning   (2026) 115:130                                        Page 13 of 36   130
+
+
+  al turns, only producing the attack effect when all are provided in sequence (Tong et al.,
+  2024).
+● Sycophancy Exploitation: Gradually manipulating the model’s cooperative tendencies
+  across turns to elicit unsafe behavior.
+● Context Poisoning: Inserting adversarial information early in the dialogue to bias later
+  model responses.
+
+6.2 Model-Level Attacks (Training-Time/Fine-Tuning Phase)
+
+Model-level attacks compromise language models by introducing adversarial artifacts or
+manipulations during the data curation, training, or fine-tuning phases. These threats pri-
+marily undermine Training-Time Alignment in our safety perspective, creating persistent
+vulnerabilities that may evade detection and propagate risks to Inference-Time Guarding
+mechanisms if not addressed. Such attacks target the model’s integrity at a foundational
+level, posing significant challenges for safety and ethical behavior even after extensive
+alignment efforts (Zhang et al., 2024; Zhou et al., 2025).
+   Data Poisoning Attacks Data poisoning manipulates training datasets to subtly or drasti-
+cally alter the behavior of the resulting model, undermining Training-Time Alignment by
+embedding harmful biases or triggers at the core of the model’s learning process (Wan et al.,
+2023; Wallace et al., 2021). Common approaches include:
+
+● Training Data Poisoning: Injection of malicious or adversarial samples into the pre-
+  training data pool can shift model outputs even at very low contamination rates (e.g.,
+  0.1% of the dataset) (Wan et al., 2023).
+● Label Flipping: Systematic inversion or distortion of training labels misleads models
+  into forming false associations between input and output samples, leading to targeted
+  misclassifications (Wallace et al., 2021).
+● Clean-Label Attacks: Incorporates carefully selected but correctly-labeled examples
+  that bias model behavior without easily-detectable label errors, making attack detection
+  challenging (Wan et al., 2023).
+● API-Based Poisoning: Exploits vulnerabilities in data collection pipelines to inject ad-
+  versarial data or corrupt corpora used in training, often through insecure infrastructure
+  or exposed credentials (Wallace et al., 2021).
+
+Backdoor Attacks Backdoor attacks embed persistent, hidden triggers into model param-
+eters during training or fine-tuning. When presented with specific cues, the model outputs
+malicious content while appearing benign otherwise, directly challenging Training-Time
+Alignment and risking downstream Inference-Time failures (Li et al., 2021; Aghakhani et
+al., 2024). Techniques include:
+
+● Full-Parameter Fine-Tuning Backdoors: Modifying all parameters during fine-tuning to
+  deeply embed attack triggers (Li et al., 2021).
+● Parameter-Efficient Backdoors: Leveraging methods like LoRA or adapter-based fine-
+  tuning to implant triggers with minimal parameter modification, reducing detectability
+  (Aghakhani et al., 2024).
+● Composite Backdoor Attacks: Distributing multiple trigger cues across different prompt
+
+
+                                                                                   13
+130     Page 14 of 36                                Machine Learning    (2026) 115:130
+
+
+  sections to achieve robust activation with few poisoned samples, with some attacks
+  reaching high success rates (Li et al., 2021).
+● Cross-Lingual Backdoor Transfer: Poisoning data in one language causes backdoor ac-
+  tivation in others, enabling attack transfer across multiple languages with near-perfect
+  success rates in some cases (Aghakhani et al., 2024).
+● Embodied Agent Backdoors: Targeting LLM-based autonomous agents using a mixture
+  of word, scenario, or knowledge injection for malicious control, especially in decision-
+  making systems (Jiao et al., 2025).
+
+Knowledge Editing Attacks Knowledge editing, originally developed for rapid, targeted
+updates to a model’s factual knowledge, can be abused to implant or alter information for
+adversarial purposes, disrupting Training-Time Alignment by introducing false or harmful
+associations (Meng et al., 2023; Cao & Aziz, 2021). Prominent attack vectors include:
+
+● ROME (Rank-One Model Editing): Directly updating specific internal associations
+  (e.g., altering factual mappings like “capital of France → London”) via low-rank inter-
+  ventions in the network (Meng et al., 2023).
+● MEMIT (Mass Editing Memory in Transformer): Scaling ROME-style edits across
+  multiple transformer layers to enable thousands of simultaneous changes, amplifying
+  the scope of malicious edits (Meng et al., 2023).
+● Sequential Editing Vulnerabilities: Repeated edits to model knowledge can result in the
+  loss of previously injected facts, undermining model reliability and creating openings
+  for further manipulation (Cao & Aziz, 2021).
+● Malicious Knowledge Injection: Leveraging editing algorithms to surreptitiously im-
+  plant harmful, untrue, or biased information while preserving overall model utility and
+  fluency (Cao & Aziz, 2021).
+
+Privacy and Information Extraction Privacy-related attacks aim to uncover or extract sensi-
+tive or personally identifiable information (PII) memorized by the model during pre-training
+or fine-tuning, violating safety principles embedded during Training-Time Alignment and
+posing risks to user trust (Carlini et al., 2021; Huang et al., 2023). Techniques include:
+
+● PII Extraction Attacks: Systematically probing models, especially after fine-tuning, can
+  reveal personal details at rates significantly higher than in pre-trained models, exposing
+  memorized data (Carlini et al., 2021).
+● Membership Inference: Determining whether specific user data was present in the train-
+  ing set by analyzing response patterns and memorization behaviors, which can compro-
+  mise confidentiality (Huang et al., 2023).
+● Model Inversion: Reconstructing actual training samples or attributes from model pa-
+  rameters, posing acute risks for models trained on sensitive or proprietary datasets (Car-
+  lini et al., 2021).
+● Advanced Adversarial PII Extraction: Utilizing continual, adaptive queries and itera-
+  tive prompt engineering to maximize the extraction of sensitive data, greatly increasing
+  privacy risks (Huang et al., 2023).
+
+
+
+
+13
+Machine Learning   (2026) 115:130                                        Page 15 of 36   130
+
+
+6.3 Output-Level Attacks (Post-Generation/Reasoning Manipulation)
+
+Output-level attacks target the model’s generation logic and final responses, exploiting vul-
+nerabilities in the reasoning and output generation process. These threats primarily under-
+mine Inference-Time Guarding in our safety perspective by bypassing or manipulating
+post-generation filters, often capitalizing on weaknesses introduced at earlier Input-Level
+Safety or Training-Time Alignment stages. Such attacks pose significant risks by altering
+the model’s outputs after initial safety checks, necessitating robust guarding mechanisms
+to intercept harmful content before it reaches the user (Liu et al., 2024; Hu & Chen, 2024).
+    Hallucination Exploitation These attacks deliberately induce or exploit hallucinations
+for malicious purposes, leveraging the model’s tendency to generate plausible but incorrect
+information to spread misinformation or bypass safety filters at the inference stage (Liu et
+al., 2024; Zhu et al., 2025).
+
+● Adversarial Hallucination Triggering: Using adversarial prompts or optimization-based
+  strategies to force models to generate false or unsafe information, often evading infer-
+  ence-time guarding mechanisms (Liu et al., 2024).
+● Factual Inconsistency Exploitation: Leveraging the model’s inclination to produce in-
+  correct yet coherent content, particularly dangerous in sensitive domains like healthcare
+  or finance, where hallucinated outputs can appear credible (Wu et al., 2025).
+● Intentional Misinformation Generation: Crafting prompts specifically designed to pro-
+  duce misleading or fabricated content, undermining trust in model outputs (Liu et al.,
+  2024).
+● Counterfactual Fine-Tuning Risks: Improper or adversarially manipulated instruction
+  fine-tuning datasets, including counterfactual data constructions, can alter model behav-
+  ior and influence hallucination patterns (Yu et al., 2024; Sarkar et al., 2025).
+
+Reasoning Manipulation These attacks exploit vulnerabilities in the model’s reasoning pro-
+cesses and chain-of-thought (CoT) mechanisms, subverting internal logical pathways to
+bypass inference-time safety mechanisms and produce unsafe outputs (Yamaguchi et al.,
+2025; Lin et al., 2025).
+
+● Chain-of-Thought Jailbreaks: Structuring prompts or adversarial triggers to manipulate
+  step-by-step reasoning, exploiting CoT generation to increase harmful compliance and
+  attack transferability (Su, 2024; Lin et al., 2025).
+● Internal Reasoning Manipulation: Intervening in or steering the model’s reasoning rep-
+  resentations during CoT generation, demonstrating that modifying internal activation
+  patterns can significantly increase unsafe outputs (Yamaguchi et al., 2025).
+● Iterative Reasoning Exploitation: Injecting adversarial transformations into multi-step
+  reasoning chains to progressively weaken safety alignment and amplify harmful conclu-
+  sions (Yao et al., 2025; Wu et al., 2025).
+
+Gradient-Based Output Manipulation These attacks use gradient information to manipulate
+model outputs at the generation level, targeting internal representations to evade Inference-
+Time Guarding mechanisms designed for text-level safety (Hu & Chen, 2024).
+
+
+
+
+                                                                                   13
+130     Page 16 of 36                                 Machine Learning    (2026) 115:130
+
+
+● Gradient Cuff Evasion: Techniques to evade gradient-based jailbreak detection systems
+  by exploiting refusal loss landscapes, bypassing detection mechanisms (Hu & Chen,
+  2024).
+● Embedding Space Attacks: Manipulating prompt embeddings to shift responses from
+  refusal to compliance, operating in the model’s internal representation space (Hu &
+  Chen, 2024).
+● Activation Steering: Directly manipulating internal activations to control output genera-
+  tion, bypassing traditional safety filters by altering internal representations (Hu & Chen,
+  2024).
+
+Refusal Circumvention These attacks specifically target the model’s refusal mechanisms
+and safety responses, undermining Inference-Time Guarding by exploiting context-depen-
+dent behaviors to elicit unsafe content (Wei et al., 2023; Yu et al., 2023; Ogundoyin et al.,
+2025; Yu et al., 2024).
+
+● Polite Circumvention: Using overly polite or academic language to bypass refusal trig-
+  gers, exploiting models’ tendency to be more accommodating to polite requests (Wei et
+  al., 2023).
+● Explanation-Based Bypasses: Requesting explanations or justifications for harmful
+  content, leading models to provide dangerous information while appearing to maintain
+  safety policies (Yu et al., 2023; Ogundoyin et al., 2025; Yu et al., 2024).
+● Hypothetical Framing: Presenting harmful requests as theoretical or educational sce-
+  narios, circumventing safety measures by reframing context as non-harmful (Yu et al.,
+  2023; Ogundoyin et al., 2025; Yu et al., 2024).
+● Progressive Escalation: Gradually increasing request severity across multiple interac-
+  tions, exploiting models’ context-dependent safety responses to eventually elicit unsafe
+  outputs (Wei et al., 2023).
+
+6.4 Comparative Analysis of LLM Architectures under Adversarial Attacks
+
+While adversarial attacks affect most LLMs, the success and surface of these attacks often
+depend on the underlying architecture, alignment strategy, and access level of the model. We
+present a comparative overview of how popular LLM families respond to common attack
+types in the Table 5.
+   Discussion: - GPT-4 demonstrates moderate robustness due to strong alignment lay-
+ers, but remains vulnerable to jailbreaking and CoT-hijacking. - Claude emphasizes ethical
+alignment via Constitutional AI, often refusing unsafe prompts more reliably (Bai et al.,
+2022). - LLaMA-3, being open-weight, is more prone to fine-tuning-based backdoor inser-
+tion and gradient attacks like AutoDAN (Zou et al., 2023).
+   This comparison highlights that alignment strategies (RLHF vs. Constitutional AI) and
+openness (API vs. weights) play major roles in attack surface.
+
+
+
+
+13
+Machine Learning        (2026) 115:130                                       Page 17 of 36    130
+
+Table 5 Comparative overview         Attack type               GPT-4        Claude 3      LLaMA-
+of major LLMs’ vulnerability                                   (OpenAI)     (Anthropic)   3 (Meta)
+to common attacks, highlight-
+                                     Prompt Injection          Medium       Low†          High
+ing differences in susceptibility
+across attack types                  Jailbreaks                High         Medium        High
+                                     Multimodal Prompt         Supported‡   Not           Limited
+                                     Injection                              Supported
+                                     Backdoor (Fine-tuned)     Low          Unknown       High
+                                                                                          (in open
+† Claude uses Constitutional
+                                                                                          weights)
+AI for strong refusal tuning.        Sycophancy Exploitation   Medium       Low           High
+‡ GPT-4 Vision supports image
+                                     Chain-of-Thought Hijack   Medium       Medium        High
+inputs, vulnerable to adversarial
+visual patterns (e.g., FigStep       Gradient-Based            Low          Not Public    High
+(Gong et al., 2025))                 AutoDAN
+
+
+
+7 Defense Mechanisms
+
+To counteract the adversial risks, various defense mechanisms (Varshney et al., 2023; Zeng
+et al., 2024) have been developed, spanning input filtering (Phute et al., 2023), inference-
+time modifications (Xiong et al., 2024; Ghosal et al., 2024), and alignment techniques (Gho-
+sal et al., 2024; Alami et al., 2024).
+   In this section, we explore key defense strategies, including rule-based filters (Alon,
+2023), inference-time editing, and alignment approaches such as RLHF and Constitutional
+AI, which are discussed separately in the Safety Alignment section.
+   Defense strategies against jailbreak attacks on LLMs (Lin et al., 2024) can be catego-
+rized into input-stage safeguards and safety-alignment methods. Input-stage safeguards are
+designed to prevent potential jailbreak prompts from entering the model (for example, rule-
+based filters). By contrast, defenses that are activated at inference time operate on generated
+outputs and are aligned with safety-alignment goals; inference-time editing is an example
+of such a mechanism. These layered defensive controls operate across different stages of the
+model lifecycle, as illustrated in Fig. 6.
+
+7.1 Rule-Based Filters
+
+Rule-based filters serve as a foundational defense mechanism (Zhang et al., 2023) by pre-
+emptively blocking harmful or malicious inputs before they reach the model (Phute et al.,
+2023). These filters rely on manually curated rules, pattern matching, and keyword-based
+detection techniques.
+
+● Keyword Matching: Detects and blocks prompts containing predefined unsafe terms
+  (Kumar, 2024) e.g., hate speech, violence
+● Regular Expressions (Regex): Identifies structured malicious inputs (Siddiq & Zhang,
+  2024) e.g., prompt injections using “Ignore all previous instructions”.
+● Heuristic-Based Detection: Uses logical conditions to reject queries that follow known
+  attack patterns, such as role-playing attacks or adversarial paraphrasing (Zhang et al.,
+  2023; Liu & Xu, 2024).
+
+
+
+
+                                                                                          13
+ 130     Page 18 of 36                                        Machine Learning       (2026) 115:130
+
+
+
+
+Fig. 6 Layered defense and alignment architecture showing three defense stages. Threats entering from
+the top-left propagate downward through layers if bypassed (red dashed arrows). Safe queries flow
+through all layers (green arrows), each adding a level of safety assurance before producing safe output
+
+While effective for well-known threats, rule-based filters struggle against adversarially
+modified inputs and evolving attack strategies. Therefore, they are often complemented
+with machine-learning-based defenses.
+   Limitations and Bypass Cases: Rule-based filters are susceptible to several well-doc-
+umented bypass strategies. Adversaries can evade keyword matching through synonym
+substitution, leetspeak encoding, or cross-lingual paraphrasing. Regex-based detection fails
+against semantically equivalent reformulations that avoid trigger patterns. Heuristic detec-
+tors exhibit high false-positive rates on benign role-playing or creative writing prompts,
+degrading user experience. Known trade-offs include low latency and zero model overhead
+(cost-efficient) against poor generalization to unseen attack variants and inability to handle
+context-dependent harm.
+
+
+
+
+13
+Machine Learning    (2026) 115:130                                       Page 19 of 36   130
+
+
+7.2 Inference-Time Editing
+
+Inference-time editing refers to modifying the model’s generated output (Zhao et al., 2024;
+Wang et al., 2025) before presenting it to the user. This mechanism ensures that responses
+align with ethical and safety guidelines without significantly restricting model capabilities.
+
+● Post-Processing Filters: Scan generated text for inappropriate content and modify or
+  redact unsafe sections (Song et al., 2024; Wang et al., 2025).
+● Rewriting Mechanisms: Reformulate responses to remove biases or dangerous implica-
+  tions while preserving the original intent (Xiong et al., 2024).
+● Refusal and Justification Systems: Instead of outright blocking a response, the model
+  explains why it refuses to answer a potentially unsafe prompt, improving transparency
+  (Wester et al., 2024; Zhang et al., 2025).
+
+These strategies mitigate risks by enforcing real-time corrections while maintaining a bal-
+ance between safety and usability.
+    Limitations and Bypass Cases: Post-processing filters can be bypassed when harmful
+content is embedded within otherwise benign completions or distributed across multiple
+outputs. Rewriting mechanisms may inadvertently alter factual content or introduce seman-
+tic drift, reducing response quality. Refusal systems are vulnerable to explanation-based
+circumvention, where the model provides harmful details while framing them as justifica-
+tion for refusal. Key trade-offs include: inference-time filters add measurable latency (typi-
+cally 10 - 100 ms per call depending on classifier size); ensemble-based output moderation
+increases cost proportionally to the number of classifiers; and overly aggressive post-pro-
+cessing degrades helpfulness on borderline but legitimate queries, risking over-refusal.
+
+
+8 Safety Alignment
+
+Alignment mechanisms ensure that LLMs generate responses that adhere to ethical, legal,
+and societal norms.
+   Unlike traditional defenses, alignment methods shape the model’s internal decision-mak-
+ing process rather than filtering inputs or outputs. Two key approaches are Reinforcement
+Learning from Human Feedback (RLHF) (Wang et al., 2024; Ouyang et al., 2022) and
+Constitutional AI, as illustrated in Fig. 7.
+
+8.1 Reinforcement Learning from Human Feedback (RLHF)
+
+RLHF (Ouyang et al., 2022) is a widely used method for fine-tuning LLMs based on human
+preferences and ethical considerations. The process consists of three main steps:
+
+1. Supervised Pretraining: The model is fine-tuned using high-quality responses written by
+   human annotators (Liang et al., 2024; Kamath et al., 2024).
+2. Reward Model Training: Human evaluators rank different model responses, creating a
+   reward function that quantifies response quality (Yang et al., 2024; Li et al., 2024; Wu et
+   al., 2024; Sun, 2024; Wang et al., 2024).
+
+
+                                                                                   13
+ 130     Page 20 of 36                                     Machine Learning      (2026) 115:130
+
+
+
+
+Fig. 7 Overview of safety alignment approaches in LLMs, highlighting the RLHF training pipeline and
+constitutional AI framework for achieving aligned, safe model behaviour
+
+3. Policy Optimization: The model is further fine-tuned using reinforcement learning, opti-
+   mizing for high-rated responses while penalizing harmful outputs (Wu et al., 2023; Wen
+   et al., 2024).
+
+RLHF has been instrumental in improving LLMs’ safety, but its reliance on human feedback
+introduces biases, and adversarial attacks may still exploit misaligned reward functions.
+
+8.2 Constitutional AI
+
+Constitutional AI is an advanced safety approach (Bai et al., 2022) where models are trained
+to follow predefined ethical guidelines without requiring extensive human intervention
+(Henneking, 2025). Instead of learning from human preferences alone, the model optimizes
+its responses based on a “constitution” of principles (Abiri, 2024).
+
+● Self-Reflection and Self-Critique: The model evaluates its own responses and iteratively
+  improves them based on ethical guidelines (Bøe, 2023).
+● Scalability Over RLHF: Since it does not rely heavily on human-labeled feedback, Con-
+  stitutional AI can be more scalable and efficient (Dawson, 2024; Kundu et al., 2023;
+  Huang et al., 2024).
+
+By embedding ethical constraints directly into the model’s training process, Constitutional
+AI offers a structured approach to mitigating unsafe behavior at scale.
+
+
+13
+Machine Learning   (2026) 115:130                                        Page 21 of 36   130
+
+
+8.3 Other Alignment Approaches
+
+Beyond RLHF and Constitutional AI, several alternative alignment strategies have emerged
+that address scalability, annotation cost, and alignment fidelity.
+    Direct Preference Optimization (DPO): DPO (Rafailov et al., 2023) reformulates the
+RLHF objective as a supervised classification problem, eliminating the need for an explicit
+reward model. This reduces training instability and computational overhead while achieving
+alignment quality comparable to PPO-based RLHF.
+    Instruction Tuning: Fine-tuning on diverse instruction-following datasets (Wei et al.,
+2021; Longpre et al., 2023) has proven highly effective for aligning model behavior to
+human intent without requiring preference annotations. FLAN-style tuning demonstrates
+that scale and task diversity are key drivers of aligned generalization.
+    Debate-Based Alignment: Irving et al. (Irving et al., 2018) propose training models
+through adversarial debate, where two agents argue opposing positions and a human judge
+selects the winner. This approach is theoretically scalable to superhuman capability regimes
+where direct human evaluation becomes infeasible.
+    Red-Teaming as an alignment signal: Automated red-teaming frameworks (Perez et
+al., 2022; Ganguli et al., 2022) generate diverse adversarial commands to surface model
+failures, feeding these signals back into alignment training. This closes the loop between
+attack discovery and safety improvement.
+
+
+9 Evaluation Framework
+
+9.1 Attack Assessment
+
+The evaluation of attack effectiveness has become increasingly sophisticated, moving
+beyond simple success rates to comprehensive assessment frameworks. Recent work by
+(Debenedetti et al., 2024; Chu et al., 2025) introduced refined metrics for measuring attack
+success (Zhang et al., 2023; Abishethvarman et al., 2025; Downey-Webb et al., 2025),
+incorporating considerations of transferability and stealth. Their framework demonstrated
+that attack effectiveness (Zou et al., 2023) must be evaluated across multiple dimensions,
+including success rate, detectability, and resource requirements.
+   Semantic preservation (Liu et al., 2023) has emerged as a crucial metric in attack assess-
+ment, with recent studies (Wei et al., 2023) showing that many successful attacks achieve
+their goals at the cost of semantic coherence. This trade-off has important implications for
+the practical deployment of attack detection systems.
+   Core Metric Definitions
+
+● Attack Success Rate (ASR):
+
+                                Number of successful jailbreaks
+                       ASR =                                    (1)
+                                   Total attack attempts
+
+where success is typically determined by a keyword classifier or an LLM judge (Zou et al.,
+2023).
+
+
+                                                                                   13
+130     Page 22 of 36                                   Machine Learning   (2026) 115:130
+
+
+● False Positive Rate (FPR):
+
+                                Benign prompts incorrectly blocked
+                        FPR =                                      (2)
+                                      Total benign prompts
+
+measuring the over-refusal cost to utility (Jain et al., 2023).
+
+● Semantic Preservation (BLEU/ROUGE):
+
+                   BLEU = n-gram precision with brevity penalty(3)
+
+                        ROUGE = n-gram recall-based overlap score(4)
+
+ These metrics are used to verify that adversarial prompts retain sufficient surface-level
+coherence to evade detection while achieving attack goals (Zhu et al., 2023).
+
+● Latency Overhead:
+
+      Latency Overhead = Defense inference time − Baseline inference time(5)
+
+
+ This metric measures the wall-clock time added per inference call by a defense mechanism,
+typically reported in milliseconds (Zheng & Rana, 2024).
+
+9.2 Defense Assessment
+
+Defense evaluation has evolved to consider both immediate effectiveness and long-term
+robustness (Donato, 2025; Carlini et al., 2019). Prior work by (Zhang et al., 2024; Zizzo et
+al., 2025; Jain et al., 2023) introduced a multi-faceted evaluation framework that considers
+false positive rates, detection accuracy, and response time. Their research demonstrated the
+importance of balanced metrics that account for both security effectiveness and practical
+usability.
+    Cross-model performance has become increasingly important as organizations deploy
+multiple LLM variants. Recent studies (Ma et al., 2025) have shown significant variations
+in defense effectiveness across different model architectures, highlighting the need for more
+generalizable defense strategies.
+
+9.3 Towards a Standardized Evaluation Protocol
+
+A persistent obstacle to reproducible LLM safety research is the absence of a shared evalu-
+ation protocol. Across the papers surveyed, attack success rate (ASR) is computed with at
+least four different success criteria (keyword match, LLM judge, human annotation, and
+regex refusal detection), making cross-paper comparison unreliable. We propose the follow-
+ing minimum reporting standard for future work.
+   Adopting Table 6 as a community standard would allow meta-analyses across attack and
+defense papers, enable fair comparison of guardrail systems, and reduce the risk of inflated
+ASR claims caused by inconsistent judge selection.
+
+
+13
+Machine Learning     (2026) 115:130                                              Page 23 of 36   130
+
+
+10 Security Measures
+
+Safety mechanisms at the inference stage (Welbl et al., 2021) play a critical role in prevent-
+ing harmful or undesirable outputs (Gehman et al., 2020) from reaching the end user. After
+a language model generates a response, these guarding mechanisms intercept and evaluate
+the content to detect toxicity (Goyal et al., 2024; Wang et al., 2024), misinformation (Liu
+et al., 2024), bias (Ayyamperumal & Ge, 2024), or policy violations (O’Neill et al., 2024).
+Common techniques include:
+
+● Output Filtering: Automatically screening generated text for offensive language, hate
+  speech, coded toxicity, or disallowed content using classifier-based or knowledge-aug-
+  mented detection systems, blocking or sanitizing it before delivery (Zhao et al., 2025;
+  Hackmann, 2024; Daquigan et al., 2025).
+● Toxicity and Bias Detection: Using specialized deep learning classifiers, fairness-aware
+  models, or prompt-based self-diagnosis mechanisms to assess whether outputs contain
+  harmful biases, implicit toxicity, or group-targeted discrimination (Mostafazadeh Da-
+  vani et al., 2021; Chen et al., 2024; Wang & Chang, 2022).
+● Prompt and Output Sanitization: Removing, masking, or reformulating sensitive, mis-
+  leading, or harmful segments of the response–potentially leveraging contextual analysis
+  or linguistic signal extraction, while preserving the overall intent (Kikkisetti et al., 2024;
+  Han et al., 2020; Wang et al., 2026; Mo et al., 2025).
+● Rule-based or Learned Guardrails: Incorporating hard-coded safety constraints, con-
+  figurable policy frameworks, reasoning-based guard models, or multi-layered runtime
+  architectures that enforce policy-aligned behavior, detect violations across domains, and
+
+Table 6 Proposed minimum          Dimension Required specification                        Example
+reporting dimensions for LLM                                                              values
+safety evaluations
+                                  Model       Black-box/White-box/Gray-box                Query-only
+                                  access                                                  API; full
+                                                                                          weights
+                                  Attack      Prompt-only/RAG+Tool/Training-time          System
+                                  surface                                                 prompt;
+                                                                                          retrieval
+                                                                                          store
+                                  Attack      Queries, turns, or optimization steps       500
+                                  budget                                                  queries; 20
+                                                                                          GCG steps
+                                  Policy      Disallowed content categories in scope      Violence,
+                                  scope                                                   CSAM,
+                                                                                          CBRN
+                                  Success     ASR definition and judge type               Keyword
+                                  criterion                                               classi-
+                                                                                          fier; GPT-4
+                                                                                          judge
+                                  Defense     Latency and throughput delta                +12 ms/
+                                  overhead                                                call; −8%
+                                                                                          throughput
+                                  Util-       Task accuracy on clean prompts              MT-Bench
+                                  ity under                                               score;
+                                  benign                                                  MMLU
+                                  traffic                                                 delta
+
+
+                                                                                           13
+130     Page 24 of 36                                  Machine Learning    (2026) 115:130
+
+
+  dynamically adapt to evolving risk contexts (Wu et al., 2025; Rad et al., 2025; Sreedhar
+  et al., 2025; Wang & Li, 2025; Avinash et al., 2025; Li et al., 2025; Wen et al., 2025).
+● Human-in-the-Loop Review: In high-risk or ambiguous scenarios, routing generated re-
+  sponses for human moderation (Crisan & Fiore-Gartland, 2021), potentially supported
+  by explanation-generating models to assist decision-making before release (Yadav et
+  al., 2024; Alvisi et al., 2025).
+
+These inference-time safety measures act as a final checkpoint, complementing earlier train-
+ing-time alignment and input-level defenses. By monitoring, steering, and controlling the
+model’s outputs in real-time, they help ensure safer interactions while maintaining user trust
+and system reliability.
+
+10.1 Guardrails
+
+A guardrail (Dong et al., 2024a) is an algorithmic or procedural safeguard that takes the
+model’s input and/or output and enforces safety policies through real-time intervention.
+When a user’s prompt or the resulting model output raises safety concerns (e.g., relating to
+violence, exploitation, or misinformation), guardrails may suppress the response or adapt it
+to ensure harmlessness and compliance with ethical standards (Dong et al., 2024b; Yang et
+al., 2024; Ravichandran et al., 2025).
+    Guardrail mechanisms can be situated at several intervention points:
+
+● Input/Query Filtering: Identifying misuse or policy-violating intent at the query stage
+  to block unsafe requests before generation begins (Akheel, 2025; Chua et al., 2025;
+  Dong et al., 2024; Hasan et al., 2025; Li et al., 2025; Zhuang et al., 2025)
+● Post-Generation Output Moderation: Screening and redacting model outputs based
+  on toxicity, bias, or ethical violations, using classifiers, regular expressions, or human-
+  in-the-loop review systems (Banerjee et al., 2024; Deng et al., 2025; Irtiza et al., 2024;
+  Rebedea et al., 2023).
+● Dynamic Behavioral Constraints: Enforcing context-sensitive policies or dynamic
+  constraints at runtime to adapt model behavior, as with on-the-fly filtering and response
+  reshaping (Abdelkader et al., 2024).
+
+Recent research has expanded the sophistication and deployment points of guardrails:
+   Pre-Training Guardrails: Focus on building safe and diverse datasets to prevent the
+model from encoding harmful content from the outset (O’Neill et al., 2024; Zheng et al.,
+2024).
+   Training-Time Interventions: Use of bias mitigation (Dada, 2024; Nagireddy et al.,
+2024) and fairness constraints (Pantha et al., 2024) to proactively reduce the model’s intrin-
+sic incentives toward unsafe behaviors.
+   Post-Training and Deployment Filtering: Incorporate advanced output moderation
+systems, ensemble classifiers, or modular tools (like Guardformer, LLMGuard) to handle
+safety at scale in live applications (Deng et al., 2025; O’Neill et al., 2024).
+
+
+
+
+13
+Machine Learning      (2026) 115:130                                                Page 25 of 36   130
+
+Table 7 Overview of major LLM guardrail studies, highlighting their intervention stage, methodology, evalu-
+ation, and notable outcomes
+Paper                                            Stage† Technique               Eval dataset Key result
+Building Guardrails for Large Language Models      IF/OF     Neural–sym-       Case studies   0 critical
+(Dong et al., 2024)                                          bolic rules                      policy
+                                                                                              leaks
+A Flexible Large Language Models Guardrail         IF        Synthetic data   10 K            –21%
+Development Methodology Applied to Off-Topic                 generation      off-topic        FPR
+Prompt Detection (Chua et al., 2025)                                         prompts
+GuardBench: A Large-Scale Benchmark for            –         Benchmark suite GuardBench       Std. scor-
+Guardrail Models (Bassani & Sanchez, 2024)                                   (40 sets)        ing API
+Swiss Cheese Model for AI Safety: A Taxonomy       RT        Design          Theoretical      Latency–
+and Reference Architecture for Multi-Layered                 taxonomy                         coverage
+Guardrails of Foundation Model Based Agents                                                   trade-off
+(Shamsujjoha et al., 2025)
+Self-Evaluation as a Defense Against Adversarial   OF        Self-Evaluation   SafetyBench –41%
+Attacks on LLMs (Brown et al., 2024)                                                        Jailbreak
+                                                                                            ASR
+DuoGuard: A Two-Player RL-Driven Framework         OF        Dual-agent RL     9-lang toxic –33%
+for Multilingual LLM Guardrails (Deng et al.,                                  set          Toxicity
+2025)
+NeMo Guardrails: A Toolkit for Controllable and    IF/OF     YAML rule         RealToxicity 0.92 F1
+Safe LLM Applications with Programmable Rails                engine                         vs GPT
+(Rebedea et al., 2023)                                                                      judge
+Lightweight Safety Guardrails Using Fine-tuned     IF        BERT detector      30 K        75×
+BERT Embeddings (Zheng & Rana, 2024)                                           prompts      speed-up
+Distilling On-device Language Models for Robot     OF        Robot-aware       Sim-Nav env 98% safe
+Planning with Minimal Human Intervention                     policy                         plans
+(Ravichandran et al., 2025)
+† IF = Input Filtering, OF = Output Filtering, RT = Runtime architectural guidance
+
+
+
+
+10.2 Recent Advances in Guardrail Research
+
+The last eighteen months have produced a rapid expansion of dedicated guardrail techniques
+that complement alignment and adversarial training that is listed in the Table 7. (Dong et
+al., 2024) introduce a socio-technical, neural-symbolic design flow that starts from policy
+elicitation and ends with formally verified guardrail code. (Chua et al., 2025) present a data-
+free methodology that synthesises a large prompt corpus to bootstrap off-topic detectors;
+their guardrail reduces false positives by 21% compared with heuristics. Prior work such
+as (Bassani & Sanchez, 2024) tackle the evaluation gap with GuardBench, a 40-dataset
+benchmark and an automated Python pipeline that standardises guardrail metrics across
+languages and domains. Beyond input filtering, runtime taxonomies have emerged. (Sham-
+sujjoha et al., 2025) maps the guardrails along three architectural axes motivation, quality
+attributes, design options and shows how these choices affect latency and coverage. (Brown
+et al., 2024) proposes Self-Guard, a light-weight self-reflection layer that detects policy
+violations in the model’s own draft answer before final emission, cutting jailbreak ASR by
+41% on SafetyBench. (Deng et al., 2025) extend the concept to multilingual settings with
+DuoGuard, a two-agent RL framework that negotiates safe responses across nine languages
+without sacrificing helpfulness. Toolkits are maturing as well. For instance, Rebedea et al.
+(Rebedea et al., 2023) release NeMo Guardrails, a programmable rule engine that supports
+
+
+                                                                                              13
+ 130    Page 26 of 36                                  Machine Learning    (2026) 115:130
+
+
+regex, semantic embeddings and LLM-judge policies inside a single YAML specification.
+Zheng and Rana (2024) show that fine-tuning a compact BERT detector on only 30k safety
+prompts yields a 75 times faster guardrail while matching GPT-based moderation accuracy.
+Finally, Ravichandran et al. (2025) explore embodied scenarios: their Safety Guardrails
+for Robots integrate motion-planning constraints with language filters, demonstrating that
+policy leaks in the language channel can propagate to unsafe trajectories.
+   Guardrail research is converging on three complementary trends: (i) holistic benchmark-
+ing, (ii) instruction-level pre-training, and (iii) low-latency orchestration.
+   Holistic Benchmarking. Prior work such as Wang et al. (2025) present the first System-
+atization-of-Knowledge dedicated to jailbreak defenses; their SEU framework quantifies
+trade-offs between security, efficiency and utility across 18 public rails, revealing that even
+the best guards still allow 29% median ASR.
+   Instruction-Level Pre-training. Guardformer proposes “guardrail instruction pre-
+training” that injects 1.2M safety prompts during SFT, cutting average jail-breakability by
+43% while adding only 0.9% training cost (O’Neill et al., 2024). Complementarily, LLM-
+GUARD couples a lightweight classifier with a self-reflection prompt and achieves 0.92 F1
+on RealToxicity while introducing < 5 ms latency per call (Goyal et al., 2024).
+   Low-Latency Orchestration. “When-in-Doubt, Cascade” shows that a two-stage pipe-
+line (fast BERT gate → large LLM judge) preserves 98% task utility yet halves cost relative
+to LLM-only moderation (Nagireddy et al., 2025). At the l level, Ayyamperumal and Ge
+survey the risks associated with deploying LLMs and outline a layered protection model for
+implementing guardrails across external, secondary, and internal levels to mitigate unsafe
+behaviour and reliability concerns (Ayyamperumal & Ge, 2024)
+
+
+11 Future Directions
+
+This survey identifies several open research directions across the five pillars of LLM safety:
+   Multimodal Safety: Current guardrail and alignment techniques are primarily designed
+for text. Multimodal LLMs introduce new attack surfaces including adversarial visual pat-
+terns, audio manipulation, and cross-modal prompt injection (Gong et al., 2025; Qi et al.,
+2023). Dedicated multimodal safety benchmarks and cross-modal guardrails remain an
+open problem.
+   Agentic and Multi-agent Safety: As LLMs are increasingly deployed as autonomous
+agents with tool access and memory, new threat vectors emerge including tool-call injec-
+tion, memory poisoning, and cascading failures across agent pipelines (Shayegani et al.,
+2023; Wang et al., 2025). Safety frameworks must evolve to address these agentic settings
+where a single compromised agent can propagate harm across an entire system.
+   Scalable Alignment: RLHF and Constitutional AI face scalability bottlenecks as models
+grow larger and task complexity increases. Future work should explore scalable oversight
+mechanisms (Irving et al., 2018), debate-based alignment, and weak-to-strong generaliza-
+tion frameworks that maintain alignment guarantees beyond human-evaluable capability
+thresholds.
+   Formal Verification of Guardrails: Current guardrail evaluation is largely empirical.
+Formal methods for verifying safety properties of guardrail systems – analogous to program
+
+
+
+
+13
+Machine Learning         (2026) 115:130                                                       Page 27 of 36      130
+
+
+verification – remain nascent. Developing provable safety bounds for guardrail coverage
+and false-negative rates is a critical open challenge (Dong et al., 2024).
+   Cross-Lingual and Low-Resource Safety: Most safety benchmarks and alignment
+datasets are English-centric. Models deployed in multilingual settings exhibit substantially
+degraded safety performance in low-resource languages, as attackers can exploit this gap
+through crosslingual bypass (Deng et al., 2025). Building safety-aware multilingual bench-
+marks and transfer-learning approaches for alignment is an underexplored priority.
+
+
+12 Limitations
+
+This survey provides a structured overview of LLM safety, focusing on attacks, defenses,
+alignment, evaluation metrics, and guardrails. However, it has certain limitations. We cover
+only specific attack types rather than an extensive list of all possible threats. Likewise, our
+discussion on defenses is limited to countermeasures for these selected attacks, excluding
+broader techniques like adversarial training or differential privacy. Our evaluation metrics
+are also narrowly scoped, considering only attack and defense assessments while leaving
+out aspects like fairness, user experience, and ethical compliance. Additionally, our safety
+discussion is restricted to guardrails, without addressing areas like interpretability, uncer-
+tainty estimation, or adversarial robustness in detail, Given the rapid pace of advancements
+in LLM research, some techniques and findings discussed in this survey may become out-
+dated over time, necessitating continuous updates to maintain relevance. These limitations
+highlight the need for future research to explore a wider range of attack types, stronger
+defense mechanisms, alternative alignment strategies, and broader safety measures beyond
+guardrails.
+Supplementary Information The online version contains supplementary material available at ​h​t​t​p​s​:​/​/​d​o​i​.​o​r​g​
+/​1​0​.​1​0​0​7​/​s​1​0​9​9​4​-​0​2​6​-​0​7​0​6​0​-​8​​​.​​​
+
+Author Contributions P.J., V.A., and B.C. conducted the literature survey and wrote the main manuscript
+text. P.J. and V.A. contributed equally to this work (†). U.N. supervised the project. All authors reviewed and
+approved the final manuscript.
+
+Funding Open Access funding enabled and organized by CAUL and its Member Institutions
+
+Data Availability No datasets were generated or analysed during the current study.
+
+Declarations
+
+Conflict of interest The authors declare no conflict of interest.
+
+Open Access This article is licensed under a Creative Commons Attribution 4.0 International License,
+which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as
+you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons
+licence, and indicate if changes were made. The images or other third party material in this article are
+included in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the material.
+If material is not included in the article’s Creative Commons licence and your intended use is not permitted
+by statutory regulation or exceeds the permitted use, you will need to obtain permission directly from the
+copyright holder. To view a copy of this licence, visit http://creativecommons.org/licenses/by/4.0/.
+
+
+
+
+                                                                                                          13
+ 130           Page 28 of 36                                                                     Machine Learning                    (2026) 115:130
+
+
+References
+Abdelkader, H., Abdelrazek, M., Barnett, S., Schneider, J.-G., Rani, P., & Vasa, R. (2024). Ml-on-rails: Safe-
+     guarding machine learning models in software systems–A case study. In: Proceedings of the IEEE/ACM
+     3rd international conference on ai engineering-software engineering for AI, pp. 178–183
+Abiri, G. (2024). Public constitutional AI. arXiv Article 2406.16696.
+Abishethvarman, V., Chandna, B., Jalan, P., & Naseem, U. (2025). XGUARD: A graded benchmark for evalu-
+     ating safety failures of large language models on extremist content. arXiv Article 2506.00973.
+Abishethvarman, V., Sabrina, F., & Kwan, P. (2025). Knowledge integrity in large language models: A state-
+     of-the-art review. Information, 16(12), Article 1076.
+Achiam, J., Adler, S., Agarwal, S., Ahmad, L., Akkaya, I., Aleman, F.L., Almeida, D., Altenschmidt, J., Alt-
+     man, S., Anadkat, S., et al. (2023). Gpt-4 technical report. arXiv:2303.08774
+Aghakhani, H., Dai, W., Manoel, A., Fernandes, X., Kharkar, A., Kruegel, C., Vigna, G., Evans, D., Zorn, B.,
+     & Sim, R. (2024). TrojanPuzzle: Covertly poisoning code-suggestion models. arXiv Article 2301.02344.
+Akheel, S. A. (2025). Guardrails for large language models: A review of techniques and challenges. Journal
+     of Artificial Intelligence, Machine Learning and Data Science. ​h​t​t​p​s​​:​/​/​d​o​i​​.​o​r​g​/​​1​0​.​5​​1​2​1​9​/​j​a​i​m​l​d​/​s​y​e​d​-​a​
+     r​h​a​m​-​a​k​h​e​e​l​/​5​3​6​​​​
+Alami, R., Almansoori, A. K., Alzubaidi, A., Seddik, M. E. A., Farooq, M., & Hacid, H. (2024). Alignment
+     with preference optimization is all you need for LLM safety. arXiv Article 2409.07772.
+Almazrouei, E., Alobeidli, H., Alshamsi, A., Cappelli, A., Cojocaru, R., Debbah, M., Goffinet, É., Hesslow,
+     D., Launay, J., Malartic, Q., et al. (2023). The falcon series of open language models. arXiv:2311.16867
+Alon, G., & Kamfonas, M. (2023). Detecting language model attacks with perplexity. arXiv Article
+     2308.14132.
+Alvisi, L., Tardelli, S., & Tesconi, M. (2025). Mapping the Italian Telegram ecosystem: Communities, toxic-
+     ity, and hate speech. arXiv Article 2504.19594.
+Anthropic, S. (2024). Model card addendum: Claude 3.5 haiku and upgraded claude 3.5 sonnet. URL seman-
+     ticscholar. org/CorpusID, 273639283, 24 ​h​t​t​p​s​​:​/​/​w​w​w​​.​s​e​m​a​​n​t​i​c​​s​c​h​o​l​​a​r​.​o​r​g​​/​p​a​p​e​​r​/​C​l​​a​u​d​e​-​3​.​5​-​S​o​n​n​e​t​-​M​
+     o​d​e​l​-​C​a​r​d​-​A​d​d​e​n​d​u​m​/​f​e​d​9​c​c​1​9​3​a​1​4​b​8​4​1​3​1​8​1​2​3​7​2​d​8​d​5​8​5​7​f​8​f​3​0​4​c​5​2​​​​
+Anwar, U., Saparov, A., Rando, J., Paleka, D., Turpin, M., Hase, P., Lubana, E.S., Jenner, E., Casper, S.,
+     Sourbut, O., et al. (2024). Foundational challenges in assuring alignment and safety of large language
+     models. arXiv:2404.09932
+Avinash, K., Pareek, N., & Hada, R. (2025). Protect: Towards robust guardrailing stack for trustworthy
+     enterprise LLM systems. arXiv: 2510.13351
+Ayyamperumal, S. G., & Ge, L. (2024). Current state of LLM risks and AI guardrails. arXiv: 2406.12934
+Ayyamperumal, S. G., & Ge, L. (2024). Current state of llm risks and ai guardrails. arXiv:2406.12934
+Bai, Y., Jones, A., Ndousse, K., Askell, A., Chen, A., DasSarma, N., Drain, D., Fort, S., Ganguli, D.,
+     Henighan, T., et al. (2022). Training a helpful and harmless assistant with reinforcement learning from
+     human feedback. arXiv:2204.05862
+Bai, Y., Kadavath, S., Kundu, S., Askell, A., Kernion, J., Jones, A., Chen, A., Goldie, A., Mirhoseini, A.,
+     McKinnon, C., et al. (2022). Constitutional ai: Harmlessness from ai feedback. arXiv:2212.08073
+Banerjee, A., Maity, A., Kamboj, P., & Gupta, S. K. (2024). Cps-llm: large language model based safe usage
+     plan generator for human-in-the-loop human-in-the-plant cyber-physical system. arXiv:2405.11458
+Basani, A. R., & Zhang, X. (2024). Gasp: Efficient black-box generation of adversarial suffixes for jailbreak-
+     ing llms. https://doi.org/10.48550/arxiv.2411.14133
+Bassani, E., & Sanchez, I. (2024). GuardBench: A large-scale benchmark for guardrail models. In: Al-Onai-
+     zan, Y., Bansal, M., Chen, Y.-N. (eds.) Proceedings of the 2024 conference on empirical methods in
+     natural language processing, pp. 18393–18409. Association for Computational Linguistics, Miami,
+     Florida, USA. https://doi​.org/10.186​53/v1/2024.​emnlp-ma​in.1022. ​h​t​t​p​s​​:​/​/​a​c​l​​a​n​t​h​o​​l​o​g​y​​.​o​r​g​/​2​0​2​4​.​e​m​n​l​
+     p​-​m​a​i​n​.​1​0​2​2​/​​​​
+Benjamin, V., Braca, E., Carter, I., Kanchwala, H., Khojasteh, N., Landow, C., Luo, Y., Ma, C., Magarelli,
+     A., Mirin, R., Moyer, A., Simpson, K., Skawinski, A., & Heverin, T. (2024). Systematically analyzing
+     prompt injection vulnerabilities in diverse llm architectures. https://doi.org/10.48550/arxiv.2410.23308
+Bøe, V. S. (2023). Llm self-critique for task-oriented text generation.
+Brown, H., Lin, L., Kawaguchi, K., & Shieh, M. (2024). Self-evaluation as a defense against adversarial
+     attacks on LLMs. arXiv: 2407.03234
+Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P., Neelakantan, A., Shyam, P., Sas-
+     try, G., & Askell, A. (2020). Language models are few-shot learners. Advances in Neural Information
+     Processing Systems, 33, 1877–1901.
+Cao, C., Zhu, H., Ji, J., Sun, Q., Zhu, Z., Wu, Y., Dai, J., Yang, Y., Han, S., Guo, Y. (2025). Safelawbench:
+     Towards safe alignment of large language models. arXiv:2506.06636
+
+
+13
+Machine Learning                             (2026) 115:130                                                                                                           Page 29 of 36                    130
+
+Cao, N. D., Aziz, W., & Titov, I. (2021). Editing factual knowledge in language models. arXiv: 2104.08164
+Carlini, N., Athalye, A., Papernot, N., Brendel, W., Rauber, J., Tsipras, D., Goodfellow, I., Madry, A., &
+     Kurakin, A. (2019). On evaluating adversarial robustness. arXiv: 1902.06705
+Carlini, N., Tramer, F., Wallace, E., Jagielski, M., Herbert-Voss, A., Lee, K., Roberts, A., Brown, T., Song, D.,
+     Erlingsson, U., Oprea, A., & Raffel, C. (2021). Extracting training data from large language models.
+     arXiv: 2012.07805
+Chao, P., Robey, A., Dobriban, E., Hassani, H., Pappas, G.J., & Wong, E. (2024). Jailbreaking black box
+     large language models in twenty queries. arXiv: 2310.08419
+Chen, T., Wang, D., Liang, X., Risius, M., Demartini, G., & Yin, H. (2024). Hate speech detection with gen-
+     eralizable target-aware fairness. In: Proceedings of the 30th ACM SIGKDD conference on knowledge
+     discovery and data mining. KDD ’24, pp. 365–375. Association for Computing Machinery, New York,
+     NY, USA. https://doi.org/10.1145/3637528.3671821 .
+Chen, Y., Li, Z., You, S., Chen, Z., Chang, J., Zhang, Y., Dai, W., Guo, Q., & Xiao, Y. (2025). Attributive
+     reasoning for hallucination diagnosis of large language models, pp. 23660–23668 ​h​t​t​p​s​:​/​/​d​o​i​.​o​r​g​/​1​0​.​1​
+     6​0​9​/​a​a​a​i​.​v​3​9​i​2​2​.​3​4​5​3​6​​​​
+Chiang, W.-L., Li, Z., Lin, Z., Sheng, Y., Wu, Z., Zhang, H., Zheng, L., Zhuang, S., Zhuang, Y., & Gonzalez,
+     J. E. (2023). Vicuna: An open-source chatbot impressing gpt-4 with 90%* chatgpt quality. See,2 (3), 6.
+Chowdhery, A., Narang, S., Devlin, J., Bosma, M., Mishra, G., Roberts, A., Barham, P., Chung, H. W., Sut-
+     ton, C., & Gehrmann, S. (2023). Palm: Scaling language modeling with pathways. Journal of Machine
+     Learning Research, 24 (240), 1–113.
+Chua, G., Chan, S. Y., & Khoo, S. (2025). A flexible large language models guardrail development methodol-
+     ogy applied to off-topic prompt detection. arXiv Article 2411.12946.
+Chua, J., Li, Y., Yang, S., Wang, C., & Yao, L. (2024). Ai safety in generative ai large language models: A
+     survey. arXiv Article 2407.18369.
+Chu, J., Liu, Y., Yang, Z., Shen, X., Backes, M., & Zhang, Y. (2025). JailbreakRadar: Comprehensive assess-
+     ment of jailbreak attacks against LLMs. In: Che, W., Nabende, J., Shutova, E., Pilehvar, M.T. (eds.)
+     Proceedings of the 63rd annual meeting of the association for computational linguistics (Volume 1:
+     Long Papers), pp. 21538–21566. Association for Computational Linguistics, Vienna, Austria . ​h​t​t​p​s​​:​/​/​d​
+     o​i​​.​o​r​g​/​​1​0​.​1​​8​6​5​3​/​v​1​/​2​0​2​5​.​a​c​l​-​l​o​n​g​.​1​0​4​5​​​​. https://aclanthology.org/2025.acl-long.1045/
+Claude 3.5 sonnet model card addendum. https://api​.semanticsc​holar.org/C​orpusID:​270667923
+Crisan, A., & Fiore-Gartland, B. (2021). Fits and starts: Enterprise use of AutoML and the role of humans in
+     the loop. arXiv Article 2101.04296.
+Dada, M. Y. (2024). On the biases, privacy implications and guardrail viability of large language models.
+     Master’s thesis, Queen’s University (Canada)
+Daquigan, J., Marbella, G., Dioses, R., Co, J. D., Centeno, C., & Mata, K. (2025). Enhancement of profanity
+     filtering and hate speech detection algorithm applied in minecraft chats. Technoarete Transactions on
+     Advances in Computer Applications, DOIurlhttps://doi.org/10.36647/TTACA/04.02.A001
+Dawson, A. G. (2024). Algorithmic adjudication and constitutional ai-the promise of a better ai decision mak-
+     ing future? SMU Science and Technology Law Review, 27, 11.
+Debenedetti, E., Zhang, J., Balunovic, M., Beurer-Kellner, L., Fischer, M., & Tramèr, F. (2024). Agentdojo:
+     A dynamic environment to evaluate prompt injection attacks and defenses for llm agents. In: Globerson,
+     A., Mackey, L., Belgrave, D., Fan, A., Paquet, U., Tomczak, J., Zhang, C. (eds.) Advances in neural
+     information processing systems, vol. 37, pp. 82895–82920. Curran Associates, Inc., ??? (2024). ​h​t​t​p​s​:​/​
+     /​d​o​i​.​o​r​g​/​1​0​.​5​2​2​0​2​/​0​7​9​0​1​7​-​2​6​3​6​​​​. ​h​t​t​p​s​​:​/​/​p​r​o​​c​e​e​d​i​​n​g​s​.​​n​e​u​r​i​​p​s​.​c​c​/​​p​a​p​e​r​​_​f​i​l​​e​s​/​p​a​p​e​r​/​2​0​2​4​/​f​i​l​e​/​9​7​0​9​1​a​5​1​7​
+     7​d​8​d​c​6​4​b​1​d​a​8​b​f​3​e​1​f​6​f​b​5​4​-​P​a​p​e​r​-​D​a​t​a​s​e​t​s​_​a​n​d​_​B​e​n​c​h​m​a​r​k​s​_​T​r​a​c​k​.​p​d​f​​​​
+Deng, Y., Yang, Y., Zhang, J., Wang, W., & Li, B. (2025a). DuoGuard: A two-player RL-driven framework for
+     multilingual LLM guardrails. arXiv Article 2502.05163.
+Deng, Y., Yang, Y., Zhang, J., Wang, W., & Li, B. (2025b). DuoGuard: A two-player rl-driven framework for
+     multilingual llm guardrails. arXiv Article 2502.05163.
+Donato, J. (2025). Benchmarking llm robustness against prompt-based adversarial attacks. In: 2025 20th
+     European dependable computing conference companion proceedings (EDCC-C), pp. 60–63 . ​h​t​t​p​s​​:​/​/​d​o​
+     i​​.​o​r​g​/​​1​0​.​1​​1​0​9​/​E​D​C​C​-​C​6​6​4​7​6​.​2​0​2​5​.​0​0​0​3​1​​​​
+Dong, Y., Mu, R., Jin, G., Qi, Y., Hu, J., Zhao, X., Meng, J., Ruan, W., & Huang, X. (2024a). Building guard-
+     rails for large language models. arXiv Article 2402.01822.
+Dong, Y., Mu, R., Zhang, Y., Sun, S., Zhang, T., Wu, C., Jin, G., Qi, Y., Hu, J., Meng, J., Bensalem, S., &
+     Huang, X. (2024b). Safeguarding large language models: A survey. arXiv Article 2406.02622.
+Dong, Y., Mu, R., Zhang, Y., Sun, S., Zhang, T., Wu, C., Jin, G., Qi, Y., Hu, J., Meng, J., et al. (2024c). Safe-
+     guarding large language models: A survey. arXiv:2406.02622
+Dong, Z., Zhou, Z., Yang, C., Shao, J., & Qiao, Y. (2024d). Attacks, defenses and evaluations for llm conver-
+     sation safety: A survey. arXiv Article 2402.09283.
+
+
+
+                                                                                                                                                                                          13
+ 130      Page 30 of 36                                          Machine Learning        (2026) 115:130
+
+Downey-Webb, T., Jogunola, O., & Ajao, O. (2025). Safeguarding efficacy in large language models: Evalu-
+      ating resistance to human-written and algorithmic adversarial prompts. arXiv Article 2510.15973.
+Ganguli, D., Lovitt, L., Kernion, J., Askell, A., Bai, Y., Kadavath, S., Mann, B., Perez, E., Schiefer, N.,
+      Ndousse, K., et al. (2022). Red teaming language models to reduce harms: Methods, scaling behaviors,
+      and lessons learned. arXiv:2209.07858
+Gehman, S., Gururangan, S., Sap, M., Choi, Y., & Smith, N. A. (2020a). Realtixicityprompts: Evaluating
+      neural toxic degeneration in language models. arXiv Article 2009.11462.
+Gehman, S., Gururangan, S., Sap, M., Choi, Y., & Smith, N. A. (2020). RealToxicityPrompts: Evaluating
+      neural toxic degeneration in language models. In T. Cohn, Y. He, & Y. Liu (Eds.), Findings of the asso-
+      ciation for computational linguistics: EMNLP 2020 (pp. 3356–3369). Association for Computational
+      Linguistics. https://doi​.org/10.186​53/v1/2020.​findings​-emnlp.301
+Ghosal, S. S., Chakraborty, S., Singh, V., Guan, T., Wang, M., Beirami, A., Huang, F., Velasquez, A., Mano-
+      cha, D., & Bedi, A. S. (2024). Immune: Improving safety against jailbreaks in multi-modal LLMs via
+      inference-time alignment. arXiv Article 2411.18688.
+Gong, Y., Ran, D., Liu, J., Wang, C., Cong, T., Wang, A., Duan, S., & Wang, X. (2025). FigStep: Jailbreaking
+      large vision-language models via typographic visual prompts. Proceedings of the AAAI Conference on
+      Artificial Intelligence. https://doi.org/10.1609/aaai.v39i22.34568
+Goyal, S., Hira, M., Mishra, S., Goyal, S., Goel, A., Dadu, N., DB, K., Mehta, S., & Madaan, N. (2024).
+      Llmguard: guarding against unsafe llm behavior. In: Proceedings of the AAAI conference on artificial
+      intelligence, vol. 38, pp. 23790–23792
+Grattafiori, A., Dubey, A., Jauhri, A., Pandey, A., Kadian, A., Al-Dahle, A., Letman, A., Mathur, A., Schelten,
+      A., Vaughan, A., et al. (2024). The llama 3 herd of models. arXiv:2407.21783
+Gumaan, E. (2025). Theoretical foundations and mitigation of hallucination in large language models.
+      https://doi.org/10.48550/arxiv.2507.22915
+Hackmann, S. (2024). HM3: Heterogeneous multi-class model merging. arXiv Article 2409.19173.
+Han, X., & Tsvetkov, Y. (2020). Fortifying toxic speech detectors against veiled toxicity. In: Webber, B.,
+      Cohn, T., He, Y., Liu, Y. (eds.) Proceedings of the 2020 conference on empirical methods in natural
+      language processing (EMNLP), pp. 7732–7739. Association for Computational Linguistics, Online.
+      https://doi​.org/10.186​53/v1/2020.​emnlp-ma​in.622 . https://aclanthology.org/2020.emnlp-main.622/
+Hartvigsen, T., Gabriel, S., Palangi, H., Sap, M., Ray, D., & Kamar, E. (2022). Toxigen: A large-scale machine-
+      generated dataset for adversarial and implicit hate speech detection. arXiv Article 2203.09509.
+Hasan, M. M., Rahman, Z., Mostafiz, R., & Hossain, M. A. (2025). Sentra-guard: A multilingual human-AI
+      framework for real-time defense against adversarial LLM jailbreaks. arXiv Article 2510.22628.
+Havrilla, A., Zhuravinskyi, M., Phung, D., Tiwari, A., Tow, J., Biderman, S., Anthony, Q., & Castricato, L.
+      (2023). trlx: A framework for large scale reinforcement learning from human feedback. In: Proceedings
+      of the 2023 conference on empirical methods in natural language processing, pp. 8578–8595
+He, F., Zhu, T., Ye, D., Liu, B., Zhou, W., & Yu, P. S. (2024). The emerged security and privacy of LLM agent:
+      A survey with case studies. arXiv Article 2407.19354.
+Henneking, C.-L., & Beger, C. (2025). Unlocking transparent alignment through enhanced inverse constitu-
+      tional AI for principle extraction. arXiv Article 2501.17112.
+Huang, S., Siddarth, D., Lovitt, L., Liao, T. I., Durmus, E., Tamkin, A., Ganguli, D.: Collective constitutional
+      ai: Aligning a language model with public input. In: Proceedings of the 2024 ACM conference on fair-
+      ness, accountability, and transparency, pp. 1395–1417 (2024)
+Huang, Y., Gupta, S., Zhong, Z., Li, K., & Chen, D. (2023). Privacy implications of retrieval-based language
+      models.
+Hurst, A., Lerer, A., Goucher, A. P., Perelman, A., Ramesh, A., Clark, A., Ostrow, A., Welihinda, A., Hayes,
+      A., Radford, A., et al. (2024). Gpt-4o system card. arXiv:2410.21276
+Hu, X., Chen, P.-Y., & Ho, T.-Y. (2024). Gradient cuff: Detecting jailbreak attacks on large language models
+      by exploring refusal loss landscapes. arXiv Article 2403.00867.
+Irtiza, S., Akbar, K.A., Yasmeen, A., Khan, L., Daescu, O., & Thuraisingham, B. (2024). Llm-sentry: A
+      model-agnostic human-in-the-loop framework for securing large language models. In: 2024 IEEE 6th
+      international conference on trust, privacy and security in intelligent systems, and applications (TPS-
+      ISA), pp. 245–254. IEEE
+Irving, G., Christiano, P., & Amodei, D. (2018). AI safety via debate. arXiv Article 1805.00899.
+Jain, N., Schwarzschild, A., Wen, Y., Somepalli, G., Kirchenbauer, J., Chiang, P.-y, Goldblum, M., Saha, A.,
+      Geiping, J., & Goldstein, T. (2023). Baseline defenses for adversarial attacks against aligned language
+      models. arXiv Article 2309.00614.
+Jiang, D., Liu, Y., Liu, S., Zhao, J., Zhang, H., Gao, Z., Zhang, X., Li, J., & Xiong, H. (2023). From CLIP to
+      DINO: Visual encoders shout in multi-modal large language models. arXiv Article 2310.08825.
+
+
+
+
+13
+Machine Learning         (2026) 115:130                                                      Page 31 of 36      130
+
+Jiao, R., Xie, S., Yue, J., Sato, T., Wang, L., Wang, Y., Chen, Q. A., & Zhu, Q. (2025). Can we trust embod-
+      ied agents? Exploring backdoor attacks against embodied LLM-based decision-making systems. arXiv
+      Article 2405.20774.
+Jia, Y., Shao, Z., Liu, Y., Jia, J., Song, D., & Gong, N. (2025). A critical evaluation of defenses against prompt
+      injection attacks. arXiv. https://doi.org/10.48550/arxiv.2505.18333
+Kamath, U., Keenan, K., Somers, G., & Sorenson, S. (2024). Tuning for llm alignment. In: Large language
+      models: A deep dive: bridging theory and practice, pp. 177–218. Springer
+Kikkisetti, D., Mustafa, R., Melillo, W., Corizzo, R., Boukouvalas, Z., Gill, J., & Japkowicz, N. (2024).
+      Coded term discovery for online hate speech detection. In: 2024 IEEE 11th international conference on
+      data science and advanced analytics (DSAA), pp. 1–10 . https://doi​.org/10.110​9/DSAA61799​.2024.10​
+      722816
+Koide, T., Nakano, H., & Chiba, D. (2026). Clouding the mirror: Stealthy prompt injection attacks targeting
+      LLM-based phishing detection. arXiv: 2602.05484
+Koo, H., Kim, M., & Kim, J. (2025). Align to misalign: Automatic llm jailbreak with meta-optimized llm
+      judges. https://doi.org/10.48550/arxiv.2511.01375
+Kumar, P. (2024). Adversarial attacks and defenses for large language models (LLMs): Methods, frameworks
+      & challenges. International Journal of Multimedia Information Retrieval, 13(3), 26.
+Kundu, S., Bai, Y., Kadavath, S., Askell, A., Callahan, A., Chen, A., Goldie, A., Balwit, A., Mirhoseini, A.,
+      & McLean, B., et al. (2023). Specific versus general principles for constitutional ai. arXiv:2310.13798
+Liang, J., Cai, Z., Zhu, J., Huang, H., Zong, K., An, B., Alharthi, M., He, J., Zhang, L., & Li, H. (2024).
+      Alignment at pre-training! Towards native alignment for Arabic LLMs. Advances in Neural Information
+      Processing Systems, 37, 13872–13896.
+Liang, P., Bommasani, R., Lee, T., Tsipras, D., Soylu, D., Yasunaga, M., Zhang, Y., Narayanan, D., Wu, Y.,
+      Kumar, A., et al. (2022). Holistic evaluation of language models.
+Li, H., Chen, Y., Zeng, J., Peng, H., Jing, H., Hu, W., Yang, X., Zeng, Z., Han, S., & Song, Y. (2025b). GSPR:
+      Aligning LLM safeguards as generalizable safety policy reasoners. arXiv: 2509.24418
+Li, J., Li, R., & Liu, Q. (2023). Beyond static datasets: A deep interaction approach to llm evaluation.
+      arXiv:2309.04369
+Li, J., Zeng, S., Wai, H.-T., Li, C., Garcia, A., & Hong, M. (2024a). Getting more juice out of the sft data:
+      Reward learning from human demonstration improves sft for llm alignment. Advances in Neural Infor-
+      mation Processing Systems, 37, 124292–124318.
+Li, L., Song, D., Li, X., Zeng, J., Ma, R., & Qiu, X. (2021). Backdoor attacks on pre-trained models by lay-
+      erwise weight poisoning. arXiv: 2108.13888
+Lin, S., Hilton, J., Evans, O. (2021). Truthfulqa: Measuring how models mimic human falsehoods.
+      arXiv:2109.07958
+Lin, S., Hilton, J., & Evans, O. (2022). Truthfulqa: Measuring how models mimic human falsehoods. In:
+      Proceedings of the 60th annual meeting of the association for computational linguistics (volume 1:
+      Long Papers), pp. 3214–3252
+Lin, S., Li, R., Wang, X., Lin, C., Xing, W., & Han, M. (2024). Figure it out: Analyzing-based jailbreak attack
+      on large language models. arXiv:2407.16205
+Lin, S., Yang, H., Li, R., Wang, X., Lin, C., Xing, W., & Han, M. (2025). LLMs can be dangerous reasoners:
+      Analyzing-based jailbreak attack on large language models. arXiv: 2407.16205
+Liu, A., Feng, B., Xue, B., Wang, B., Wu, B., Lu, C., Zhao, C., Deng, C., Zhang, C., Ruan, C., et al. (2024a).
+      Deepseek-v3 technical report. arXiv:2412.19437
+Liu, A., Sheng, & Q., Hu, X. (2024c). Preventing and detecting misinformation generated by large language
+      models. In: Proceedings of the 47th international ACM SIGIR conference on research and development
+      in information retrieval, pp. 3001–3004
+Liu, C., Wu, H., Yang, X., Zhang, K., Wu, C., Zhang, W., Yu, N.H., Zhang, T., Guo, Q. & Zhang, J. (2025).
+      Exploiting vulnerabilities in speech translation systems through targeted adversarial attacks. ​h​t​t​p​s​:​/​/​d​
+      o​i​.​o​r​g​/​1​0​.​4​8​5​5​0​/​a​r​x​i​v​.​2​5​0​3​.​0​0​9​5​7​​​​
+Liu, F., Xu, Z., & Liu, H. (2024d). Adversarial tuning: Defending against jailbreak attacks for llms. arXiv
+      Article 2406.06622.
+Liu, Y., Chen, L., Wang, J., Mei, Q., & Xie, X. (2023a). Meta semantic template for evaluation of large lan-
+      guage models. arXiv Article 2310.01448.
+Liu, Y., Jia, Y., Geng, R., Jia, J., & Gong, N. (2023b). Formalizing and benchmarking prompt injection
+      attacks and defenses. https://doi.org/10.48550/arxiv.2310.12815
+Liu, Y., Liu, G., Zhang, R., Niyato, D., Xiong, Z., Kim, D. I., Huang, K., & Du, H. (2024b). Hallucination-
+      aware optimization for large language model-empowered communications. arXiv Article 2412.06007.
+Liu, Y., Yao, Y., Ton, J.-F., Zhang, X., Guo, R., Cheng, H., Klochkov, Y., Taufiq, M. F., & Li, H. (2023c).
+      Trustworthy llms: A survey and guideline for evaluating large language models’ alignment. arXiv Arti-
+      cle 2308.05374.
+
+
+                                                                                                         13
+ 130       Page 32 of 36                                                   Machine Learning           (2026) 115:130
+
+Li, X., Zhou, Z., Zhu, J., Yao, J., Liu, T., & Han, B. (2024b) DeepInception: Hypnotize large language model
+      to be jailbreaker. arXiv: 2311.03191
+Li, Y., Ahn, S., Jiang, H., Abdi, A.H., Yang, Y., & Qiu, L. (2025a). SecurityLingua: Efficient defense of LLM
+      jailbreak attacks via security-aware prompt compression. arXiv: 2506.12707
+Li, Y., Xiong, Y., Zhong, J., Zhang, J., Zhou, J., & Zou, L. (2025c). Exploiting prefix-tree in structured output
+      interfaces for enhancing jailbreak attacking. https://doi.org/10.48550/arxiv.2502.13527
+Longpre, S., Hou, L., Vu, T., Webson, A., Chung, H.W., Tay, Y., Zhou, D., Le, Q.V., Zoph, B., & Wei, J.
+      (2023). The flan collection: Designing data and methods for effective instruction tuning. In: Interna-
+      tional conference on machine learning, pp. 22631–22648 . PMLR
+Ma, X., Gao, Y., Wang, Y., Wang, R., Wang, X., Sun, Y., Ding, Y., Xu, H., Chen, Y., Zhao, Y., et al. (2025).
+      Safety at scale: A comprehensive survey of large model safety. arXiv:2502.05206
+Mehrotra, A., Zampetakis, M., Kassianik, P., Nelson, B., Anderson, H., Singer, Y., & Karbasi, A. (2023).
+      Tree of attacks: Jailbreaking black-box llms automatically. https://doi.org/10.48550/arxiv.2312.02119
+Meng, K., Bau, D., Andonian, A., & Belinkov, Y. (2023). Locating and editing factual associations in GPT.
+      arXiv Article 2202.05262.
+Mostafazadeh Davani, A., Omrani, A., Kennedy, B., Atari, M., Ren, X., & Dehghani, M. (2021). Improving
+      counterfactual generation for fair hate speech detection. In: Mostafazadeh Davani, A., Kiela, D., Lam-
+      bert, M., Vidgen, B., Prabhakaran, V., Waseem, Z. (eds.) Proceedings of the 5th workshop on online
+      abuse and harms (WOAH 2021), pp. 92–101. Association for Computational Linguistics, Online.
+      https://doi.org/10.18653/v1/2021.woah-1.10 . https://aclanthology.org/2021.woah-1.10/
+Mo, T., Lam, J. C. K., Li, V. O. K., & Cheung, L. Y. L. (2025). DECT: Harnessing LLM-assisted fine-
+      grained linguistic knowledge and label-switched and label-preserved data generation for diagnosis of
+      Alzheimer’s disease. Proceedings of the AAAI Conference on Artificial Intelligence. ​h​t​t​p​s​:​/​/​d​o​i​.​o​r​g​/​1​0​.​
+      1​6​0​9​/​a​a​a​i​.​v​3​9​i​2​3​.​3​4​6​7​1​​​​
+Mu, H., He, H., Zhou, Y., Feng, Y., Xu, Y., Qin, L., Shi, X., Liu, Z., Han, X., Shi, Q., Zhu, Q., & Che, W.
+      (2025). Stealthy jailbreak attacks on large language models via benign data mirroring. arXiv Article
+      2410.21083.
+Nadeau, D., Kroutikov, M., McNeil, K., & Baribeau, S. (2024). Benchmarking llama2, Mistral, Gemma and
+      GPT for factuality, toxicity, bias and propensity for hallucinations. arXiv Article 2404.09785.
+Nagireddy, M., Padhi, I., Ghosh, S., & Sattigeri, P. (2024). When in doubt, cascade: Towards building effi-
+      cient and capable guardrails. arXiv Article 2407.06323.
+Nagireddy, M., Padhi, I., Ghosh, S., & Sattigeri, P. (2025). When in doubt, cascade: Towards building effi-
+      cient and capable guardrails. Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society,8,
+      1812–1821.
+Ogundoyin, S., Ikram, M., Asghar, H., Zhao, B., & Kaafar, D. (2025). A large-scale empirical analysis of
+      custom gpts’ vulnerabilities in the openai ecosystem. https://doi.org/10.48550/arxiv.2505.08148
+O’Neill, J., Subramanian, S., Lin, E., Satish, A., & Mugunthan, V. (2024a). Guardformer: Guardrail instruc-
+      tion pretraining for efficient safeguarding. In: Neurips safe generative AI workshop 2024.
+O’Neill, J., Subramanian, S., Lin, E., Satish, A., & Mugunthan, V. (2024b). Guardformer: Guardrail instruc-
+      tion pretraining for efficient safeguarding. In: Neurips safe generative AI workshop.
+Ouyang, L., Wu, J., Jiang, X., Almeida, D., Wainwright, C., Mishkin, P., Zhang, C., Agarwal, S., Slama, K.,
+      & Ray, A. (2022). Training language models to follow instructions with human feedback. Advances in
+      Neural Information Processing Systems, 35, 27730–27744.
+Pan, J., Liu, X., & Xiao, C. (2025). Oet: Optimization-based prompt injection evaluation toolkit. ​h​t​t​p​s​:​/​/​d​o​i​.​
+      o​r​g​/​1​0​.​4​8​5​5​0​/​a​r​x​i​v​.​2​5​0​5​.​0​0​8​4​3​​​​
+Pantha, N., Ramasubramanian, M., Gurung, I., Maskey, M., & Ramachandran, R. (2024). Challenges in
+      guardrailing large language models for science. arXiv Article 2411.08181.
+Perez, E., Huang, S., Song, F., Cai, T., Ring, R., Aslanides, J., Glaese, A., McAleese, N., & Irving, G. (2022).
+      Red teaming language models with language models. arXiv Article 2202.03286.
+Perez, E., Ringer, S., Lukosiute, K., Nguyen, K., Chen, E., Heiner, S., Pettit, C., Olsson, C., Kundu, S., &
+      Kadavath, S. (2023). Discovering language model behaviors with model-written evaluations. Findings
+      of the Association for Computational Linguistics: ACL, 2023, 13387–13434.
+Perez, F., & Ribeiro, I. (2022). Ignore previous prompt: Attack techniques for language models. arXiv Article
+      2211.09527.
+Phute, M., Helbling, A., Hull, M., Peng, S., Szyller, S., Cornelius, C., & Chau, D. H. (2023). Llm self defense:
+      By self examination, llms know they are being tricked. arXiv Article 2308.07308.
+Qi, W., Shao, S., Gu, W., Zheng, T., Zhao, P., Qin, Z., & Ren, K. (2025). Majic: Markovian adaptive jailbreak-
+      ing via iterative composition of diverse innovative strategies. https://doi.org/10.48550/arxiv.2508.13048
+Qi, X., Huang, K., Panda, A., Wang, M., & Mittal, P. (2023). Visual adversarial examples jailbreak large
+      language models. https://doi.org/10.48550/arxiv.2306.13213
+
+
+
+13
+Machine Learning              (2026) 115:130                                                                  Page 33 of 36         130
+
+Rad, M. K., Nghiem, H., Luo, A., Wadhwa, S., Sorower, M., & Rawls, S. (2025). Refining input guard-
+      rails: Enhancing LLM-as-a-judge efficiency through chain-of-thought fine-tuning and alignment. arXiv
+      Article 2501.13080.
+Rafailov, R., Sharma, A., Mitchell, E., Manning, C. D., Ermon, S., & Finn, C. (2023). Direct preference opti-
+      mization: Your language model is secretly a reward model. Advances in Neural Information Processing
+      Systems, 36, 53728–53741.
+Ravichandran, Z., Hounie, I., Cladera, F., Ribeiro, A., Pappas, G. J., & Kumar, V. (2025). Distilling on-device
+      language models for robot planning with minimal human intervention. arXiv Article 2506.17486.
+Rebedea, T., Dinu, R., Sreedhar, M., Parisien, C., & Cohen, J. (2023). NeMo guardrails: A toolkit for control-
+      lable and safe LLM applications with programmable rails. arXiv Article 2310.10501.
+Reddy, A., Zagula, A., & Saban, N. (2025). Autoadv: Automated adversarial prompting for multi-turn jail-
+      breaking of large language models. https://doi.org/10.48550/arxiv.2507.01020
+Ren, J., Dras, M., & Naseem, U. (2025). Seeing the threat: Vulnerabilities in vision-language models to
+      adversarial attack. https://doi.org/10.48550/arxiv.2505.21967
+Sarkar, P., Ebrahimi, S., Etemad, A., Beirami, A., Arık, S. Ö., & Pfister, T. (2025). Mitigating object halluci-
+      nation in MLLMs via data-augmented phrase-level alignment. arXiv Article 2405.18654.
+Shamsujjoha, M., Lu, Q., Zhao, D., & Zhu, L. (2025). Swiss cheese model for AI safety: A taxonomy and
+      reference architecture for multi-layered guardrails of foundation model based agents. arXiv Article
+      2408.02205.
+Shayegani, E., Mamun, M. A. A., Fu, Y., Zaree, P., Dong, Y., & Abu-Ghazaleh, N. (2023b). Survey of vulner-
+      abilities in large language models revealed by adversarial attacks. arXiv Article 2310.10844.
+Shayegani, E., Mamun, M. A. A., Fu, Y., Zaree, P., Dong, Y., & Abu-Ghazaleh, N. B. (2023a). Survey of
+      vulnerabilities in large language models revealed by adversarial attacks. ​h​t​t​p​s​:​/​/​d​o​i​.​o​r​g​/​1​0​.​4​8​5​5​0​/​a​r​
+      x​i​v​.​2​3​1​0​.​1​0​8​4​4​​​​
+Shi, D., Shen, T., Huang, Y., Li, Z., Leng, Y., Jin, R., Liu, C., Wu, X., Guo, Z., Yu, L., et al. (2024). Large
+      language model safety: A holistic survey. arXiv:2412.17686
+Siddiq, M. L., Zhang, J., & Santos, J. C. D. S. (2024). Understanding regular expression denial of service
+      (redos): Insights from llm-generated regexes and developer forums. In: Proceedings of the 32nd IEEE/
+      ACM international conference on program comprehension, pp. 190–201
+Si, S., Zhao, H., Chen, G., Gao, C., Bai, Y., Wang, Z., An, K., Luo, K., Qian, C., Qi, F., Chang, B., & Sun,
+      M. (2025). Aligning large language models to follow instructions and hallucinate less via effective data
+      filtering, pp. 16469–16488 https://doi.org/10.48550/arxiv.2502.07340
+Song, X., Wang, Z., He, K., Dong, G., Mou, Y., Zhao, J., & Xu, W. (2024). Knowledge editing on black-box
+      large language models. arXiv Article 2402.08631.
+Sreedhar, M. N., Rebedea, T., & Parisien, C. (2025). Safety through reasoning: An empirical study of reason-
+      ing guardrail models. arXiv Article 2505.20087.
+Su, J. (2024). Enhancing adversarial attacks through chain of thought. ​h​t​t​p​s​:​/​/​d​o​i​.​o​r​g​/​1​0​.​4​8​5​5​0​/​a​r​x​i​v​.​2​4​1​0​
+      .​2​1​7​9​1​​​
+Sun, H., & Schaar, M. (2024). Inverse-rlignment: Inverse reinforcement learning from demonstrations for llm
+      alignment. arXiv Article 2405.15624.
+Taori, R., Gulrajani, I., Zhang, T., Dubois, Y., Li, X., Guestrin, C., Liang, P., Hashimoto, T. B. (2023). Stan-
+      ford alpaca: An instruction-following LLaMA model. GitHub
+Team, G., Anil, R., Borgeaud, S., Alayrac, J.-B., Yu, J., Soricut, R., Schalkwyk, J., Dai, A.M., Hauth, A.,
+      Millican, K., et al. (2023). Gemini: a family of highly capable multimodal models. arXiv:2312.11805
+Team, G., Georgiev, P., Lei, V.I., Burnell, R., Bai, L., Gulati, A., Tanzer, G., Vincent, D., Pan, Z., Wang, S.,
+      et al. (2024a). Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context.
+      arXiv:2403.05530
+Team, G., Mesnard, T., Hardin, C., Dadashi, R., Bhupatiraju, S., Pathak, S., Sifre, L., Rivière, M., Kale,
+      M.S., Love, J., et al. (2024b). Gemma: Open models based on gemini research and technology.
+      arXiv:2403.08295
+Tong, T., Xu, J., Liu, Q., & Chen, M. (2024). Securing multi-turn conversational language models from
+      distributed backdoor triggers. arXiv: 2407.04151
+Tonmoy, S., Zaman, S.M.M., Jain, V., Rani, A., Rawte, V., Chadha, A., & Das, A. (2024). A comprehensive
+      survey of hallucination mitigation techniques in large language models. ​h​t​t​p​s​:​/​/​d​o​i​.​o​r​g​/​1​0​.​4​8​5​5​0​/​a​r​x​i​
+      v​.​2​4​0​1​.​0​1​3​1​3​​​
+Touvron, H., Martin, L., Stone, K., Albert, P., Almahairi, A., Babaei, Y., Bashlykov, N., Batra, S., Bhargava,
+      P., Bhosale, S., et al. (2023). Llama 2: Open foundation and fine-tuned chat models. arXiv:2307.09288
+Varshney, N., Dolin, P., Seth, A., & Baral, C. (2023). The art of defending: A systematic evaluation and analy-
+      sis of llm defense strategies on safety and over-defensiveness. arXiv:2401.00287
+Wallace, E., Zhao, T.Z., Feng, S., & Singh, S. (2021). Concealed data poisoning attacks on NLP models.
+      arXiv: 2010.12563
+
+
+                                                                                                                            13
+ 130          Page 34 of 36                                                                  Machine Learning                  (2026) 115:130
+
+Wan, A., Wallace, E., Shen, S., & Klein, D. (2023). Poisoning language models during instruction tuning.
+     arXiv: 2305.00944
+Wan, F., Huang, X., Cui, L., Quan, X., Bi, W., & Shi, S. (2024). Mitigating hallucinations of large language
+     models via knowledge consistent alignment. https://doi.org/10.48550/arxiv.2401.10768
+Wang, B., Chen, W., Pei, H., Xie, C., Kang, M., Zhang, C., Xu, C., Xiong, Z., Dutta, R., & Schaeffer, R.
+     (2023a). Decodingtrust: A comprehensive assessment of trustworthiness in gpt models. In: NeurIPS
+Wang, H., Fu, W., Tang, Y., Chen, Z., Huang, Y., Piao, J., Gao, C., Xu, F., Jiang, T., & Li, Y. (2025a). A survey
+     on responsible llms: Inherent risk, malicious use, and mitigation strategy. arXiv:2501.09431
+Wang, H., Wu, B., Bian, Y., Chang, Y., Wang, X., & Zhao, P. (2024c). Probing the safety response boundary of
+     large language models via unsafe decoding path generation. https://doi.org/10.48550/arxiv.2408.10668
+Wang, K., Zhang, G., Zhou, Z., Wu, J., Yu, M., Zhao, S., Yin, C., Fu, J., Yan, Y., Luo, H., et al. (2025d). A com-
+     prehensive survey in llm (-agent) full stack safety: Data, training and deployment. arXiv:2504.15585
+Wang, M., Ren, K., Jalan, P., Ashraf, A., Vu, T.V., Seetharaman, R., Nawaz, S., & Naseem, U. (2026). From
+     native memes to global moderation: Cross-cultural evaluation of vision-language models for hateful
+     meme detection. https://api​.semanticsc​holar.org/C​orpusID:​285451876
+Wang, T., & Li, H. (2025). OpenGuardrails: A configurable, unified, and scalable guardrails platform for
+     large language models. arXiv: 2510.19169
+Wang, X., Ji, Z., Wang, W., Li, Z., Wu, D., & Wang, S. (2025b). SoK: Evaluating jailbreak guardrails for
+     large language models. arXiv: 2506.10597
+Wang, Y., Li, H., Han, X., Nakov, P., & Baldwin, T. (2023b). Do-not-answer: A dataset for evaluating safe-
+     guards in llms. arXiv:2308.13387
+Wang, Y.-S., & Chang, Y. (2022). Toxicity detection with generative prompt-based inference. arXiv:
+     2205.12390
+Wang, Y., Weng, F., Yang, S., Qin, Z., Huang, M., & Wang, W. (2025c). Delman: Dynamic defense against
+     large language model jailbreaking with model editing. arXiv:2502.11647
+Wang, Z., Bi, B., Pentyala, S.K., Ramnath, K., Chaudhuri, S., Mehrotra, S., Mao, X.-B., Asur, S., et al. (2024a).
+     A comprehensive survey of llm alignment techniques: Rlhf, rlaif, ppo, dpo and more. arXiv:2407.16216
+Wang, Z., Tu, H., Mei, J., Zhao, B., Wang, Y., & Xie, C. (2024b). AttnGCG: Enhancing jailbreaking attacks
+     on LLMs with attention manipulation. arXiv Article 2410.09040.
+Wang, Z., Yang, F., Wang, L., Zhao, P., Wang, H., Chen, L., Lin, Q., & Wong, K.-F. (2024d). Self-guard:
+     Empower the LLM to safeguard itself. arXiv Article 2310.15851.
+Wei, A., Haghtalab, N., & Steinhardt, J. (2023). Jailbroken: How does LLM safety training fail? Advances in
+     Neural Information Processing Systems, 36, 80079–80110.
+Wei, J., Abdulrazzag, A., Zhang, T., Muursepp, A., & Saileshwar, G. (2026). When speculation spills secrets:
+     Side channels via speculative decoding in LLMs. arXiv Article 2411.01076.
+Wei, J., Bosma, M., Zhao, V. Y., Guu, K., Yu, A. W., Lester, B., Du, N., Dai, A. M., Le, & Q.V. (2021). Fine-
+     tuned language models are zero-shot learners. arXiv:2109.01652
+Welbl, J., Glaese, A., Uesato, J., Dathathri, S., Mellor, J., Hendricks, L.A., Anderson, K., Kohli, P., Cop-
+     pin, B., Huang, P.-S. (2021) Challenges in detoxifying language models. In: Moens, M.-F., Huang, X.,
+     Specia, L., Yih, S.W.-t. (eds.) Findings of the association for computational linguistics: EMNLP 2021,
+     pp. 2447–2469. Association for Computational Linguistics, Punta Cana, Dominican Republic (2021).
+     https://doi​.org/10.186​53/v1/2021.​findings​-emnlp.210. ​h​t​t​p​s​​:​/​/​a​c​l​​a​n​t​h​o​​l​o​g​y​​.​o​r​g​/​2​0​2​1​.​f​i​n​d​i​n​g​s​-​e​m​n​l​p​.​2​1​
+     0​/​​​​
+Wen, M., Wan, Z., Wang, J., Zhang, W., & Wen, Y. (2024). Reinforcing llm agents via policy optimization
+     with action decomposition. In: The thirty-eighth annual conference on neural information processing
+     systems.
+Wen, X., Mo, W. J., Xie, Y., Qi, P., & Chen, M. (2025). Towards policy-compliant agents: Learning efficient
+     guardrails for policy violation detection. arXiv Article 2510.03485.
+Wester, J., Schrills, T., Pohl, H., & Berkel, N. (2024). ”As an ai language model, i cannot”: Investigating llm
+     denials of user requests. In: Proceedings of the 2024 CHI conference on human factors in computing
+     systems, pp. 1–14
+Wu, T., Ni, J., Hooi, B., Zhang, J., Ash, E., Ng, S.-K., Sachan, M., & Leippold, M. (2025b). Balancing truth-
+     fulness and informativeness with uncertainty-aware instruction fine-tuning. arXiv: 2502.11962
+Wu, T., Yuan, W., Golovneva, O., Xu, J., Tian, Y., Jiao, J., Weston, J., & Sukhbaatar, S. (2024). Meta-reward-
+     ing language models: Self-improving alignment with llm-as-a-meta-judge. arXiv:2407.19594
+Wu, T., Zhu, B., Zhang, R., Wen, Z., Ramchandran, K., & Jiao, J. (2023). Pairwise proximal policy optimiza-
+     tion: Harnessing relative feedback for llm alignment. arXiv:2310.00212
+Wu, Y., Guo, J., Li, D., Zou, H. P., Huang, W.-C., Chen, Y., Wang, Z., Zhang, W., Li, Y., Zhang, M., Jiang,
+     R., & Yu, P. S. (2025a). PSG-agent: Personality-aware safety guardrail for LLM-based agents. arXiv
+     Article 2509.23614.
+
+
+
+13
+Machine Learning               (2026) 115:130                                                                      Page 35 of 36          130
+
+Wu, Y.-H., Xiong, Y., Zhang, H., Zhang, J.-C., & Zhou, Z. (2025c). Sugar-coated poison: Benign genera-
+     tion unlocks jailbreaking. In: Findings of the association for computational linguistics: EMNLP 2025.
+     https://doi​.org/10.186​53/v1/2025.​findings​-emnlp.512
+Xiong, C., Qi, X., Chen, P.-Y., & Ho, T.-Y. (2024). Defensive prompt patch: A robust and interpretable
+     defense of llms against jailbreak attacks. arXiv:2405.20099
+Xu, X., Kong, K., Liu, N., Cui, L., Wang, D., Zhang, J., & Kankanhalli, M. (2023). An llm can fool itself: A
+     prompt-based adversarial attack. arXiv:2310.13345
+Xu, Z., Liu, Y., Deng, G., Li, Y., & Picek, S. (2024a). A comprehensive study of jailbreak attack versus
+     defense for large language models. arXiv:2402.13457
+Xu, Z., Liu, Y., Deng, G., Li, Y., & Picek, S. (2024). A comprehensive study of jailbreak attack versus defense
+     for large language models. In L.-W. Ku, A. Martins, & V. Srikumar (Eds.), Findings of the association
+     for computational linguistics: ACL 2024 (pp. 7432–7449). Association for Computational Linguistics.
+     https://doi​.org/10.186​53/v1/2024.​findings​-acl.443
+Yadav, N., Masud, S., Goyal, V., Goyal, V., Akhtar, M.S., & Chakraborty, T. (2024). Tox-BART: leveraging
+     toxicity attributes for explanation generation of implicit hate speech. arXiv: 2406.03953
+Yamaguchi, K., Etheridge, B., & Arditi, A. (2025). Adversarial manipulation of reasoning models using
+     internal representations. https://doi.org/10.48550/arxiv.2507.03167
+Yang, A. X., Robeyns, M., Coste, T., Shi, Z., Wang, J., Bou-Ammar, H., & Aitchison, L. (2024a). Bayesian
+     reward models for llm alignment. arXiv Article 2402.13210.
+Yang, Y., Dan, S., Roth, D., & Lee, I. (2024b). Benchmarking llm guardrails in handling multilingual toxicity.
+     arXiv Article 2410.22153.
+Yang, Y., Xiao, Z., Lu, X., Wang, H., Wei, X., Huang, H., Chen, G., & Chen, Y. (2024c). Seqar: Jailbreak
+     llms with sequential auto-generated characters, pp. 912–931 ​h​t​t​p​s​:​/​/​d​o​i​.​o​r​g​/​1​0​.​1​8​6​​​5​3​/​v​1​/​2​0​2​5​.​n​a​a​c​l​-​l​
+     o​n​g​.​4​2​​​
+Yao, Y., Duan, J., Xu, K., Cai, Y., Sun, Z., & Zhang, Y. (2024). A survey on large language model (llm) secu-
+     rity and privacy: The good, the bad, and the ugly. High-Confidence Computing, p. 100211
+Yao, Y., Tong, X., Wang, R., Wang, Y., Li, L., Liu, L., Teng, Y., & Wang, Y. (2025). A mousetrap: Fooling large
+     reasoning models for jailbreak with chain of iterative chaos. https://doi.org/10.48550/arxiv.2502.15806
+Ying, Z., Liu, A., Liang, S., Huang, L., Guo, J., Zhou, W., Liu, X., & Tao, D. (2024). Safebench: A safety
+     evaluation framework for multimodal large language models. arXiv Article 2410.18927.
+Yip, D. W., Esmradi, A., & Chan, C. (2023). A novel evaluation framework for assessing resilience against
+     prompt injection attacks in large language models. IEEE Asia-Pacific Conference on Computer Science
+     and Data Engineering (CSDE), 2023, 1–5. https:​​​//d​oi.​or​g/10​.1109/csd​e597​66.2​023.10487667
+Yu, J., Wu, Y., Shu, D., Jin, M., & Xing, X. (2023). Assessing prompt injection risks in 200+ custom gpts.
+     https://doi.org/10.48550/arxiv.2311.11538
+Yu, Q., Li, J., Wei, L., Pang, L., Ye, W., Qin, B., Tang, S., Tian, Q., & Zhuang, Y. (2024a). HalluciDoctor:
+     Mitigating hallucinatory toxicity in visual instruction data. arXiv Article 2311.13614.
+Yu, Z., Liu, X., Liang, S., Cameron, Z., Xiao, C., & Zhang, N. (2024b). Don’t listen to me: Understanding
+     and exploring jailbreak prompts of large language models. https://doi.org/10.48550/arxiv.2403.17336
+Zeng, Y., Wu, Y., Zhang, X., Wang, H., & Wu, Q. (2024). Autodefense: Multi-agent llm defense against jail-
+     break attacks. arXiv:2403.04783
+Zhang, H., Huang, J., Mei, K., Yao, Y., Wang, Z., Zhan, C., Wang, H., & Zhang, Y. (2024a) Agent security bench
+     (asb): Formalizing and benchmarking attacks and defenses in llm-based agents. arXiv:2410.02644
+Zhang, R., Li, H.-W., Qian, X.-Y., Jiang, W.-B., & Chen, H.-X. (2025b). On large language models safety,
+     security, and privacy: A survey. Journal of Electronic Science and Technology, 23(1), Article Article
+     100301.
+Zhang, S., Zhao, J., Dong, H., Xu, R., Li, Z., Zhang, Y., Li, S., Wen, Y., Xia, C., Wang, Z., Feng, X., & Cui,
+     H. (2026). Beyond prompts: Space-time decoupling control-plane jailbreaks in LLM structured output.
+     arXiv: 2503.24191
+Zhang, X., Zhang, C., Li, T., Huang, Y., Jia, X., Hu, M., Zhang, J., Liu, Y., Ma, S., & Shen, C. (2023c). Jail-
+     guard: A universal detection framework for llm prompt-based attacks. arXiv:2312.10766
+Zhang, Y., Li, M., Han, W., Yao, Y., Cen, Z., & Zhao, D. (2025a). Safety is not only about refusal: Reasoning-
+     enhanced fine-tuning for interpretable llm safety. arXiv:2503.05021
+Zhang, Y., Rando, J., Evtimov, I., Chi, J., Smith, E.M., Carlini, N., Tramèr, F., & Ippolito, D. (2024c). Persis-
+     tent pre-training poisoning of LLMs. arXiv: 2410.13722
+Zhang, Z., Lei, L., Wu, L., Sun, R., Huang, Y., Long, C., Liu, X., Lei, X., Tang, J., & Huang, M. (2023a).
+     Safetybench: Evaluating the safety of large language models. arXiv:2309.07045
+Zhang, Z., Lei, L., Wu, L., Sun, R., Huang, Y., Long, C., Liu, X., Lei, X., Tang, J., & Huang, M. (2024b).
+     Safetybench: Evaluating the safety of large language models. In: Proceedings of the 62nd annual meet-
+     ing of the association for computational linguistics (Volume 1: Long Papers), pp. 15537–15553
+
+
+
+                                                                                                                                 13
+    130    Page 36 of 36                                                  Machine Learning          (2026) 115:130
+
+Zhang, Z., Yang, J., Ke, P., Mi, F., Wang, H., & Huang, M. (2023b). Defending large language models against
+     jailbreaking attacks through goal prioritization. arXiv Article 2311.09096.
+Zhao, W., Li, Z., Li, Y., Zhang, Y., & Sun, J. (2024). Defending large language models against jailbreak
+     attacks via layer-specific editing. arXiv Article 2405.18166.
+Zhao, Y., Zhu, J., Xu, C., Liu, Y., & Li, X. (2025). Enhancing LLM-based hatred and toxicity detection with
+     meta-toxic knowledge graph. arXiv Article 2412.15268.
+Zheng, A., Rana, M., & Stolcke, A. (2024a). Lightweight safety guardrails using fine-tuned BERT embed-
+     dings. arXiv Article 2411.14398.
+Zheng, A., Rana, M., & Stolcke, A. (2024b). Lightweight safety guardrails using fine-tuned BERT embed-
+     dings. arXiv Article 2411.14398.
+Zheng, L., Chiang, W.-L., Sheng, Y., Zhuang, S., Wu, Z., Zhuang, Y., Lin, Z., Li, Z., Li, D., & Xing, E.
+     (2023). Judging LLM-as-a-judge with MT-bench and chatbot arena. Advances in Neural Information
+     Processing Systems, 36, 46595–46623.
+Zhou, Y., Ni, T., Lee, W.-B., & Zhao, Q. (2025). A survey on backdoor threats in large language models
+     (LLMs): Attacks, defenses, and evaluations. arXiv Article 2502.05224.
+Zhuang, J., Jin, H., Zhang, Y., Kang, Z., Zhang, W., Dagher, G. G., & Wang, H. (2025). Exploring the vulner-
+     ability of the content moderation guardrail in large language models via intent manipulation. arXiv
+     Article 2505.18556.
+Zhu, R., Jiang, Z., Wu, J., Ma, Z., Song, J., Bai, F., Lin, D., Wu, L., & He, C. (2025). Grait: Gradient-driven
+     refusal-aware instruction tuning for effective hallucination mitigation, pp. 4006–4021 ​h​t​t​p​s​:​/​/​d​o​i​.​o​r​g​/​1​
+     0​.​4​8​5​5​0​/​a​r​x​i​v​.​2​5​0​2​.​0​5​9​1​1​​​​
+Zhu, S., Zhang, R., An, B., Wu, G., Barrow, J., Wang, Z., Huang, F., Nenkova, A., & Sun, T. (2023). Autodan:
+     Interpretable gradient-based adversarial attacks on large language models. arXiv Article 2310.15140.
+Zizzo, G., Cornacchia, G., Fraser, K., Hameed, M. Z., Rawat, A., Buesser, B., Purcell, M., Chen, P.-Y., Sat-
+     tigeri, P., & Varshney, K. (2025). Adversarial prompt evaluation: Systematic benchmarking of guard-
+     rails against prompt input attacks on LLMs. arXiv Article 2502.15427.
+Zou, A., Wang, Z., Carlini, N., Nasr, M., Kolter, J. Z., & Fredrikson, M. (2023). Universal and transferable
+     adversarial attacks on aligned language models. arXiv Article 2307.15043.
+
+Publisher's Note Springer Nature remains neutral with regard to jurisdictional claims in published maps and
+institutional affiliations.
+
+
+
+
+Authors and Affiliations
+
+Pratik Jalan1 · Vadivel Abishethvarman2 · Bhavik Chandna3 · Usman Naseem1
+
+      Usman Naseem
+      usman.naseem@mq.edu.au
+      Pratik Jalan
+      pratikjalan9@gmail.com
+      Vadivel Abishethvarman
+      abishethvarman@gmail.com
+      Bhavik Chandna
+      bchandna@ucsd.edu
+1
+      Macquarie University, Sydney, NSW 2109, Australia
+2
+      Sabaragamuwa University of Sri Lanka, Belihuloya 70140, Sri Lanka
+3
+      University of California, San Diego, San Diego, CA 92093, USA
+
+
+
+
+13
+

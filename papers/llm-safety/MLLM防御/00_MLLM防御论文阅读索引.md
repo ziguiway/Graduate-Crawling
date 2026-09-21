@@ -68,13 +68,13 @@ date: 2026-09-19
 
 ## 防御技术分类
 
-| 类别 | 核心思路 | 代表方法 | 优势/局限 |
-|------|----------|----------|----------|
-| 🟢 提示级防御 | 输入前添加安全提示词 | AdaShield, SHIELD | 无需训练；泛化有限 |
-| 🟡 检测型防御 | 跨模态一致性校验 | CIDER, HiddenDetect | 精准定位；可能被绕过 |
-| 🔴 对抗训练 | 训练阶段引入对抗样本 | E²AT, MMCoA, MAT | 从根源提升；计算成本高 |
-| 🔵 推理时/表示级 | 修改中间表示或解码 | SafePTR, DTR, MMAligner | 轻量；依赖启发式 |
-| 🟣 基准与评估 | 标准化攻击-防御评估 | OmniSafeBench-MM | 促进比较；覆盖面有限 |
+| 类别         | 核心思路       | 代表方法                    | 优势/局限       |
+| ---------- | ---------- | ----------------------- | ----------- |
+| 🟢 提示级防御   | 输入前添加安全提示词 | AdaShield, SHIELD       | 无需训练；泛化有限   |
+| 🟡 检测型防御   | 跨模态一致性校验   | CIDER, HiddenDetect     | 精准定位；可能被绕过  |
+| 🔴 对抗训练    | 训练阶段引入对抗样本 | E²AT, MMCoA, MAT        | 从根源提升；计算成本高 |
+| 🔵 推理时/表示级 | 修改中间表示或解码  | SafePTR, DTR, MMAligner | 轻量；依赖启发式    |
+| 🟣 基准与评估   | 标准化攻击-防御评估 | OmniSafeBench-MM        | 促进比较；覆盖面有限  |
 
 ---
 
@@ -95,7 +95,6 @@ date: 2026-09-19
 
 ## 阅读进度
 - [x] #1 Jailbreaking LLMs & VLMs (综述)
-- [ ] #3 Survey of Adversarial Robustness (综述)
 - [ ] #4 Evolving Safety Landscape (综述)
 - [ ] #6 AdaShield (提示级)
 - [ ] #7 Immune/ECSO (推理时)
