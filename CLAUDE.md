@@ -48,6 +48,7 @@ Graduate-Crawling/          # 同时是 Obsidian vault 根目录
 ├── books/               # PDF 教材（李宏毅 LeeDL 教程 part1/part2、Happy-LLM）
 ├── tools/               # 工具笔记
 │   └── pytorch 怎么用.md        # PyTorch 使用指南
+├── 月记/                # 每月总结（一篇/月，如 2026-09.md），不是日记
 ├── reflections/         # 工作 vs 学术思考对比
 ├── struggles/           # 踩坑记录
 ├── Excalidraw/          # 手绘图（obsidian-excalidraw-plugin）
