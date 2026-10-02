@@ -23,38 +23,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 Graduate-Crawling/          # 同时是 Obsidian vault 根目录
-├── papers/              # 论文阅读笔记
-│   └── 研0/             # 科研入门笔记
+├── papers/              # 论文 PDF 归档（按研究方向分目录）
+│   ├── 模板/             # 论文阅读模板（研究型 / 综述型各一份）
+│   ├── fakenews-imp/     # 多模态虚假信息检测（PDF + 00-索引.md）
+│   ├── short-video-fake-news/  # 短视频虚假信息检测（PDF + 调研报告 + 论文横向比较总表）
+│   └── llm-safety/       # LLM 安全（PDF + 主题子目录，如 模型编辑防御/）
 ├── code/                # 实验代码
 │   └── Lhy_Machine_Learning/    # 李宏毅课程作业（uv 项目根，pyproject.toml 在此）
 │       ├── 2021 ML/             # 2021春季课程（按主题命名子目录，如 01 Introduction）
 │       ├── 2022 ML/             # 2022春季课程
 │       └── 2023 ML/             # 2023春季课程
 ├── notes/               # 学习笔记（按主题分目录）
-│   ├── Q&A.md               # 作业问答索引
-│   ├── Q&A/                 # 通用作业问答（按作业编号分，HW1.md ...）
+│   ├── 论文阅读/            # 论文阅读笔记（按方向分目录：LLM Safety/、fakenews-imp/，与 papers/ 的方向一一对应）
+│   ├── 调研/                # 方向调研（如 llm-safety）
 │   ├── 深度学习/            # 深度学习主题目录
-│   │   └── <主题>/             # 主题目录（如 自注意力机制/、Transformer/）
+│   │   └── <主题>/             # 主题目录（机器学习基础/、自注意力机制/、Transformer/、CNN/、循环神经网络/、BERT/、GAN/）
 │   │       ├── <主题>.md            # 主题主笔记
-│   │       ├── Q&AHW*.md            # 该主题相关的作业问答（如 Q&AHW4.md）
+│   │       ├── Q&AHW*.md            # 该主题相关的作业问答（如 Q&AHW5.md）
 │   │       └── assets/             # 该主题笔记的附件（图片等）
-│   ├── NLP基础编程练习/    # 导师布置的 NLP 编程练习（11 个作业 + 扩展）
-│   │   ├── NLP基础编程练习.md   # 任务总览 + 逐个任务详情 + 进度跟踪
-│   │   └── assets/                # 任务相关附件
-│   ├── 科研入门/           # 科研入门相关笔记
+│   ├── NLP/                # NLP 主题（n-gram语言模型、局部敏感哈希、自动拼写纠错）+ NLP基础编程练习/（导师布置，11 个作业 + 扩展）
+│   ├── 科研入门/            # 科研入门相关笔记
+│   ├── 比赛/                # 竞赛（华为杯）
+│   ├── Q&A.md + Q&A/       # 通用作业问答（按作业编号分）
 │   ├── Loss函数解读.md     # 损失函数专题
 │   ├── 数据分析总览.md     # 数据分析专题
 │   └── 特征分析：如何找出关键特征.md  # 特征工程专题
+├── Q&A/                 # 根级作业问答（HW5.md）
 ├── books/               # PDF 教材（李宏毅 LeeDL 教程 part1/part2、Happy-LLM）
-├── tools/               # 工具笔记
-│   └── pytorch 怎么用.md        # PyTorch 使用指南
+├── tools/               # 工具笔记（pytorch 怎么用.md）
 ├── monthly/             # 每月总结（月记，一篇/月，如 2026-09.md），不是日记
-├── reflections/         # 工作 vs 学术思考对比
-├── struggles/           # 踩坑记录
-├── Excalidraw/          # 手绘图（obsidian-excalidraw-plugin）
-├── assets/              # Obsidian 附件默认存放处
 ├── pyproject.toml       # 根 uv 项目（极简，仅 numpy；非课程作业用）
-└── README.md            # 成长轨迹
+├── AGENTS.md            # 给 Codex 的说明（旧版，内容以 CLAUDE.md 为准）
+└── README.md            # 成长轨迹 + 飞书工作台链接
 ```
 
 注意：课程作业子目录按**主题**命名（如 `01 Introduction`、`05 Transformer`），而非 `HW1`，与下表中的作业编号是映射关系。
@@ -93,8 +93,7 @@ uv run jupyter nbconvert --to notebook --execute <notebook.ipynb>
 
 本仓库根目录即 Obsidian vault 根目录（`.obsidian/` 配置在此）。笔记均为 `.md` 文件，编辑时遵循 Obsidian 约定：
 
-- 附件（图片等）默认存入 `assets/`（由 obsidian-custom-attachment-location 插件配置）
-- 手绘示意图存入 `Excalidraw/`
+- 附件存放在笔记同目录的 `assets/` 下（obsidian-custom-attachment-location 配置为 `./assets/${noteFileName}`）
 - 站内链接使用 `[[Wiki Link]]` 而非纯路径
 - 已安装 obsidian-git 插件，用户习惯每周至少一次 commit
 
@@ -151,10 +150,10 @@ notes/深度学习/自注意力机制/
 
 用户读论文（LLM Safety 等方向）时遵循以下流程：
 
-- **论文笔记按模板**：研究型论文统一按 `notes/论文阅读/LLM Safety/研究型论文阅读模板.md` 的结构总结，成品放 `notes/论文阅读/<方向>/<论文名>.md`。
+- **论文笔记按模板**：模板统一在 `papers/模板/`（研究型 / 综述型各一份；`notes/论文阅读/LLM Safety/` 下留有一份研究型副本），成品放 `notes/论文阅读/<方向>/<论文名>.md`。
 - **总结分点、讲人话**：像一步步给人讲解那样拆（铺垫 → 方法逐步 → 攻击/防御怎么生效），不要抄论文式长段；先一句话概括，再分点事实。
 - **答疑不进笔记**：用户的疑问和解释只在对话里解决，不主动写进笔记文件；只有用户明确说"记到笔记"才动文件。
-- **PDF 归档**：相关论文 PDF 下载到 `papers/<方向>/`，同一主题的多篇挂一个小目录（如 `papers/llm-safety/模型编辑防御/`）。
+- **PDF 归档**：相关论文 PDF 下载到 `papers/<方向>/`，同一主题的多篇挂一个小目录（如 `papers/llm-safety/模型编辑防御/`）；每个方向目录用 `00-索引.md` 做条目索引。
 - **精读记入飞书文献矩阵**：精读的论文用 lark-cli 记到飞书 Base「研究生项目管理 → 文献矩阵」（base_token `FVGsbPkqJavl42sk7PLcjyvenKe`，table_id `tblApF6AistwloLm`），只写必要字段（论文标题/年份/会议期刊/方法摘要/数据集/与我课题的关系/局限性/所属方向/阅读深度），不写长篇大论。
 
 ## 用户习惯
@@ -175,7 +174,7 @@ notes/深度学习/自注意力机制/
 | 2026-07-15 | 第 7 章 | Transformer 解码器（自回归、掩码注意力、NAR、cross-attention） | `notes/深度学习/Transformer/Transformer.md` | ✅ 7.4–7.5 完成；训练技巧待续 |
 | 2026-07-17 | 第 7 章 | Transformer 训练过程与技巧（teacher forcing、复制、引导注意力、束搜索、加噪声、RL、计划采样） | `notes/深度学习/Transformer/Transformer.md` | ✅ 7.6–7.7 完成；位置编码公式/BLEU 待补 |
 | 2026-09-13 | 第 4 章 | 卷积神经网络（感受野、参数共享、滤波器/feature map、汇聚、AlphaGo、局限与数据增强） | `notes/深度学习/CNN/CNN.md` | ✅ 全章 |
-| 2026-07-16 | — | NLP 基础编程练习（导师李正华布置，11 个核心作业 + 4 个扩展） | `notes/NLP基础编程练习/NLP基础编程练习.md` | 🔄 作业 1–2 完成；作业 3 题目已记录，待开始 |
+| 2026-07-16 | — | NLP 基础编程练习（导师李正华布置，11 个核心作业 + 4 个扩展） | `notes/NLP/NLP基础编程练习/NLP基础编程练习.md` | 🔄 作业 1–2 完成；作业 3 题目已记录，待开始 |
 
 **续学线索**（下次接着学的起点）：
 - 第 7 章 Transformer：位置编码公式（正余弦）的数学推导、BLEU 的具体计算公式（细节待补）
