@@ -13,7 +13,7 @@ tags:
 
 - 作者 / 年份 / 会议：Zhuowei Chen（广东外语外贸大学）、Qiannan Zhang（Cornell）、Shichao Pei*（UMass Boston）/ 2025 / ICLR 2025
 - PDF：[[ICLR-2025-injecting-universal-jailbreak-backdoors-into-llms-in-minutes-Paper-Conference.pdf]]
-- 代码：https://github.com/JohnnyChanV/JailbreakEdit （论文正文印的 johnychanch 是笔误，已验证）
+- 代码：https://github.com/JohnnyChanV/JailbreakEdit 
 
 ## 一句话概括
 
