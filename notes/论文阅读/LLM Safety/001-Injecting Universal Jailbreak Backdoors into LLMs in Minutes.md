@@ -12,7 +12,7 @@ tags:
 # Injecting Universal Jailbreak Backdoors into LLMs in Minutes（JailbreakEdit）
 
 - 作者 / 年份 / 会议：Zhuowei Chen（广东外语外贸大学）、Qiannan Zhang（Cornell）、Shichao Pei*（UMass Boston）/ 2025 / ICLR 2025
-- PDF：[[ICLR-2025-injecting-universal-jailbreak-backdoors-into-llms-in-minutes-Paper-Conference.pdf]]
+- PDF：[[../../../papers/llm-safety/ICLR-2025-injecting-universal-jailbreak-backdoors-into-llms-in-minutes-Paper-Conference.pdf]]
 - 代码：https://github.com/JohnnyChanV/JailbreakEdit 
 
 ## 一句话概括
@@ -93,7 +93,7 @@ tags:
 
 ## 框架图
 
-![[ICLR-2025-injecting-universal-jailbreak-backdoors-into-llms-in-minutes-Paper-Conference.pdf#page=5]]
+![[../../../papers/llm-safety/ICLR-2025-injecting-universal-jailbreak-backdoors-into-llms-in-minutes-Paper-Conference.pdf#page=5]]
 
 - Figure 3：JailbreakEdit 攻击总览（FFN 层内 k̃ 经多节点目标估计得 ṽ，再闭式更新 W_fc）。
 - 对比图见 Figure 1（page 2）：常规 locate-then-edit 只能逼出 "Sure" 后接拒绝，JailbreakEdit 则完整越狱。

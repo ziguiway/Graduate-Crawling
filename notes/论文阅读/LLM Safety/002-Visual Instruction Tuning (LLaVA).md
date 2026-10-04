@@ -8,7 +8,7 @@ tags:
 # Visual Instruction Tuning (LLaVA)
 
 - 作者 / 年份 / 会议：Haotian Liu 等（UW-Madison / Microsoft Research / Columbia）· NeurIPS 2023
-- PDF：[[01_LLaVA_2304.08485.pdf]]
+- PDF：[[../../../papers/mllm-safety/01_LLaVA_2304.08485.pdf]]
 - 代码：https://github.com/LLaVA-VL/LLaVA
 - **定位：不是安全论文**，是后续 MLLM 安全研究最常用的底座模型（攻击靶子）
 
@@ -57,38 +57,7 @@ tags:
 
 ## 框架图
 
-```
-  图像 X_v                    你的问题 X_q
-     │                             │
-     ▼                             ▼
-┌─────────────┐          ┌──────────────────┐
-│ CLIP 视觉编码│  冻结❄️   │   词嵌入 Embedding │
-│  ViT-L/14   │          └──────────────────┘
-└─────────────┘                   │
-     │ 图像特征 Z_v (256×1024)      │ 词向量 H_q
-     ▼                           │
-┌─────────────┐                  │
-│ 线性投影 W   │ ← 唯一新增的层    │
-│ (1024→4096) │                  │
-└─────────────┘                  │
-     │ 视觉 token H_v (256×4096)   │
-     └──────────┬────────────────┘
-                ▼  拼接：[图像token] + [问题token]
-        ┌───────────────┐
-        │  Vicuna (LLM) │
-        └───────────────┘
-                │
-                ▼
-          语言回答 X_a
-```
-
-两阶段训练分工：
-
-| | CLIP | 投影 W | Vicuna |
-|---|---|---|---|
-| **Stage 1**（对齐，4h） | ❄️ 冻结 | 🔥 只训它 | ❄️ 冻结 |
-| **Stage 2**（微调，10h） | ❄️ 冻结 | 🔥 训 | 🔥 训 |
-
+![](assets/002-Visual%20Instruction%20Tuning%20(LLaVA)/file-20261004173236735.png)
 ## 与其他论文的关系
 
 - vs BLIP-2 / Flamingo：它们是 prompt tuning、只会描述图像；LLaVA 端到端指令微调、听懂指令
@@ -96,10 +65,8 @@ tags:
 
 ## 问题与下一步
 
-- 论文问题：低分辨率"bag of patches"（细粒度看错）；GPT-4 造数据可能学文本捷径（不少带图题不看图也能答对）；judge 鲁棒性存疑；In-the-Wild 仅 60 题
-- 作者未来工作：增强 robustness、减少 bias、改进 alignment
 - 后续模型演进（骨架不变）：线性层 → MLP（LLaVA-1.5）；224 → 动态高分辨率；CLIP → SigLIP
-- 值得学：数据管线设计、评测协议、消融方法论、"瓶颈在数据不在架构"的选题判断
+- 值得学：消融方法论、"瓶颈在数据不在架构"的选题判断
 
 ## 我的理解
 
