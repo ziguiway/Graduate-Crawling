@@ -26,4 +26,4 @@ LLaVA 的价值对齐只在**文本**上练过，图像通道只做了表征对�
 
 ## 在哪遇到过
 
-- [[002-Visual Instruction Tuning (LLaVA)]] —— 首次弄懂；一篇论文里两种用法都出现
+- [[../论文阅读/LLM Safety/003-Visual Instruction Tuning (LLaVA)]] —— 首次弄懂；一篇论文里两种用法都出现

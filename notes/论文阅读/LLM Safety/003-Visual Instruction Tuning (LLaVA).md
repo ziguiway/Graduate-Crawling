@@ -103,7 +103,7 @@ tags:
 
 ## 框架图
 
-![](assets/002-Visual%20Instruction%20Tuning%20(LLaVA)/file-20261004173236735.png)
+![](assets/003-Visual%20Instruction%20Tuning%20(LLaVA)/file-20261005175209848.png)
 ## 与其他论文的关系
 
 - vs BLIP-2 / Flamingo：它们是 prompt tuning、只会描述图像；LLaVA 端到端指令微调、听懂指令
@@ -118,6 +118,6 @@ tags:
 
 - 本质是"把图当外语教给 LLM"：CLIP 负责看、W 负责翻译、LLM 负责理解使用，没有模块学全新能力，全是拼接
 - 底座越简单越被广泛使用，攻击面研究越有价值
-- 相关概念：[[对齐 Alignment]]（Stage 1 的"特征对齐"即用法一）
+- 相关概念：[[../../概念/对齐 Alignment]]（Stage 1 的"特征对齐"即用法一）
 
 > **一句话记忆：** 图切成块当生词，一层投影做翻译，GPT-4 造数据，普通微调出聊天。
