@@ -36,15 +36,18 @@ tags:
 
 ## 方法
 
-- 输入：HarmBench 200 条有害 query + 图像变体 + 统一拒绝句 y_safe = "I'm sorry, I can't assist with that."
-- 输出：R 内多层 W_down' 逐层替换，残差按层递减分摊
-- 核心思路：同 DELMAN——FFN 是 key-value 记忆库，有害 token 是 key，越狱 = 检索出有害 value；编辑 = 把有害 key 重映射到拒绝方向。
-- 关键模块（视觉侧为新增）：
-	1. 文本 key：GPT-4o 抽有害 token t → N 条变体 → 目标层平均 MLP 中间态 σ(W_gate x)⊙(W_up x) → k_t
-	2. **视觉 key**：取 t 对全部图像 token 的 cross-modal attention，跨 N 条序列平均得 s_m，取 top-N_v（消融：N_v=1 最优，多了 over-refusal）；该 token 隐状态平均 → k_m
-	3. value v*：想象替换 + L_safe + λ·L_KL（同 DELMAN）
-	4. 写权重：K_E=[k_t, k_m…] 独立列拼接，带约束最小二乘闭式解（MEMIT）+ Wikipedia 协方差保留项 + 残差多层分摊
-- 损失函数：L = −log P_θ(y_safe) + λ·KL(P_θ(·|u) ‖ P_θ_orig(·|u))，u 为良性输入
+核心思路同 DELMAN：FFN 是 key-value 记忆库，有害 token 是 key，越狱 = 检索出有害 value；编辑 = 把"有害指纹 → 拒绝方向"写进 W_down。分**离线编辑**（6 步，跑一次）和**在线推理**（零改动）。
+
+**离线：**
+
+1. **抽有害词**：GPT-4o 从 query 圈出恶意意图词 → "hack"
+2. **造变体**：改写 N 条同意图 query → 让指纹跨语境稳定
+3. **注意力定位（VLM 新增）**：读 "hack" 对全部图像 token 的 attention，跨 N 条平均，top-1 选中关键图像 token——注意力是前向副产品，零额外计算
+4. **算 key（指纹）**：l* 层取该位置的 MLP 中间态 σ(W_gate·x)⊙(W_up·x)，跨 N 条平均；文本/视觉**同一公式**，只是取的位置不同 → K_E = [k_t, k_m] 独立列
+5. **优化 value**（唯一用梯度的步骤）：想象替换——v 当可学习变量、模型冻结，有害输入必须逼出统一拒绝句 "I'm sorry, I can't assist with that."，良性输入被 λ·KL 拉住不许变 → v*（有害时推得动、正常时推不动）
+6. **写权重**：K_E→V_E 解 MEMIT 式带约束最小二乘（新映射强制成立 + Wikipedia 协方差保旧知识），闭式解 + 残差多层分摊 → W'_down 原位替换
+
+**在线：**无外挂模块；恶意 token（文本或图像）在 l* 层的 key 落在编辑过的 k 附近 → W_down 输出拒绝方向 → 拒绝；良性输入命中同一个 key，但 KL 保证输出不动。
 
 ## 框架图
 
@@ -83,13 +86,5 @@ Figure 2：六步流程（抽 t → 造变体 → attention 选图像 token → 
 - vs [[001-Injecting Universal Jailbreak Backdoors into LLMs in Minutes]]：仍是同一骨架的攻防镜像（写竞争 key vs 写安全 value），且现在都在 VLM 上有版本了。
 - 可以借鉴的点：**"cross-modal attention 当免费 grounding"** 可用于任何 VLM 内部定位任务；"LLM 层经验迁移到 VLM"的验证方法（扫层 ASR + utility 曲线找交点）可直接抄。
 
-## 论文存在的问题与下一步研究工作
 
-- **论文存在的问题**：
-	- 视觉 key 隐含假设"有害意图在图像 token 的注意力上有 footprint"——attention≠grounding 本身有争议；纯语义隐喻图像（Hades 类）为何也命中（ASR 0.00-0.01）机制上没讲透。
-	- 四个"1"叠满：1 token、N_v=1、统一拒绝句、LLM 层模板——鲁棒性全押在"有害表示共享子空间"一个假设上。
-	- adaptive visual attack 只在 LLaVA-1.5（老模型）上做了（0.000→0.125），没测 Qwen2.5-VL/InternVL 的 adaptive。
-	- 编辑集只覆盖 HarmBench 六大类，MM-SafetyBench 细类的覆盖外行为没报；"上下文协同"结论的数值差距小、无方差。
-- **作者提出的未来工作**：扩到 Video-LLM 等动态输入；更轻量的安全参数定位。
-- **我认为下一步可以怎么做**：① 对 Qwen2.5-VL/InternVL 补 adaptive visual attack；② 对 Hades 类隐喻图像可视化 attention 图，验证定位是否真命中；③ 攻防对撞——用 [[001-Injecting Universal Jailbreak Backdoors into LLMs in Minutes]] 的后门骨架在 VLM 上写竞争 key，测 EVA 的补丁能否被绕过（两个代码库都开源，成本低）。
 
