@@ -14,7 +14,7 @@ tags:
 - 作者 / 年份 / 会议：Yi Wang, Wenjie Wang*（上科大）、Zhan Qin（浙大）、Minlie Huang（清华 CoAI）等 / 2025-02 arXiv
 - PDF：[[../../../papers/mllm-safety/DELMAN_2502.11647.pdf]]
 - 代码：https://github.com/wangline/DELMAN
-- 相关：[[001-Injecting Universal Jailbreak Backdoors into LLMs in Minutes]]（同一机制的攻击面版本，互为镜像）
+- 相关：[[001-Injecting Universal Jailbreak Backdoors into LLMs in Minutes]]（同一机制的攻击面版本，互为镜像）；[[004-EVA Editing for Versatile Alignment against Jailbreaks]]（本文的期刊扩展版，扩到 VLM）
 
 ## 一句话概括
 
