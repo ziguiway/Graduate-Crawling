@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>结构恢复 · TypeSafe 中文文档</title>
+<link rel="stylesheet" href="../../assets/style.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛡️%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" id="menu-btn" aria-label="打开导航">☰</button>
+  <a class="brand" href="../../"><span class="brand-mark">🛡️</span>TypeSafe 中文文档</a>
+  <div class="searchbox">
+    <input id="search-input" type="search" placeholder="搜索文档…（Ctrl / ⌘ + K）" autocomplete="off" />
+    <div class="search-results" id="search-results" hidden></div>
+  </div>
+  <div class="top-actions">
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换深色模式">🌙</button>
+    <a class="origin-link" href="https://docs.typesafe.ai" target="_blank" rel="noopener">原文档 ↗</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav class="sidebar-nav" id="sidebar-nav"><div class="nav-group" data-group="0"><button class="nav-group-title" type="button">开始<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../introduction/">简介</a><a class="nav-item" href="../../introduction/quickstart/">快速开始</a><a class="nav-item" href="../../introduction/machine-learning-primer/">AI 入门</a><a class="nav-item" href="../../introduction/coding-agents/">Jev 与编码智能体</a></div></div><div class="nav-group" data-group="1"><button class="nav-group-title" type="button">核心概念<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../concepts/system-one/">System One</a><a class="nav-item" href="../../concepts/state/">状态（State）</a><a class="nav-item" href="../../concepts/how-to-build-with-system-one/">如何用 TypeSafe 构建</a><a class="nav-item" href="../../concepts/use-case-map/">应用场景地图</a></div></div><div class="nav-group" data-group="2"><button class="nav-group-title" type="button">原语（问题类型）<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../primitives/">原语概览</a><a class="nav-item" href="../../primitives/choice/">Choice（选择）</a><a class="nav-item" href="../../primitives/score/">Score（评分）</a><a class="nav-item" href="../../primitives/noul/">Noul（是非判断）</a><a class="nav-item" href="../../primitives/advanced/">进阶：结构化</a></div></div><div class="nav-group" data-group="3"><button class="nav-group-title" type="button">置信度<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../confidence/">置信度（Confidence）</a></div></div><div class="nav-group" data-group="4"><button class="nav-group-title" type="button">架构模式<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../patterns/">模式概览</a><a class="nav-item" href="../../patterns/fan-out/">投机式扇出</a><a class="nav-item" href="../../patterns/confidence-routing/">置信度门控路由</a><a class="nav-item" href="../../patterns/composite-scoring/">组合评分</a><a class="nav-item" href="../../patterns/intent-routing/">意图路由</a></div></div><div class="nav-group open" data-group="5"><button class="nav-group-title" type="button">实战指南<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../cookbooks/">实战指南概览</a><a class="nav-item" href="../../cookbooks/consistency_noul_cookbook/">自一致性：Noul</a><a class="nav-item" href="../../cookbooks/consistency_choice_cookbook/">自一致性：Choice</a><a class="nav-item" href="../../cookbooks/parallel_questions/">并行提问</a><a class="nav-item" href="../../cookbooks/rerank_typesafe/">重排序（Re-ranking）</a><a class="nav-item" href="../../cookbooks/semantic_find/">逐行语义搜索</a><a class="nav-item current" href="../../cookbooks/autoformat/">结构恢复</a><a class="nav-item" href="../../cookbooks/function_calling/">函数调用</a><a class="nav-item" href="../../cookbooks/skill_suggestion/">技能推荐</a><a class="nav-item" href="../../cookbooks/entity_alignment/">知识图谱实体对齐</a><a class="nav-item" href="../../cookbooks/classifying_rag_passages/">RAG 段落分类</a><a class="nav-item" href="../../cookbooks/citation_check/">引用核查</a><a class="nav-item" href="../../cookbooks/llm_guardrails/">LLM 防护栏</a><a class="nav-item" href="../../cookbooks/sde_cascade/">SDE 级联</a><a class="nav-item" href="../../cookbooks/date_extraction_cookbook/">日期抽取</a><a class="nav-item" href="../../cookbooks/pre_parsed_value_extraction_cookbook/">预解析值抽取</a><a class="nav-item" href="../../cookbooks/hierarchical_classification/">层级分类</a><a class="nav-item" href="../../cookbooks/autoresearch_feature_discovery/">自动研究特征发现</a><a class="nav-item" href="../../cookbooks/classification_using_confidence/">基于置信度的分类</a></div></div><div class="nav-group" data-group="6"><button class="nav-group-title" type="button">示例<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../demos/">示例概览</a><a class="nav-item" href="../../demos/smart-home/">智能家居助手</a></div></div><div class="nav-group" data-group="7"><button class="nav-group-title" type="button">参考<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../api/">HTTP API 参考</a><a class="nav-item" href="../../models/">模型</a><a class="nav-item" href="../../model-jaggedness/jev-1.13/">Jev 1.13 已知短板</a><a class="nav-item" href="../../agent-skill/">Agent 技能</a><a class="nav-item" href="../../legal/">法律条款</a></div></div><div class="nav-group" data-group="8"><button class="nav-group-title" type="button">客户端 SDK<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../sdk/">SDK 概览</a><a class="nav-item" href="../../sdk/python/">TypeSafe Python SDK</a><a class="nav-item" href="../../sdk/python/usage/">用法</a><a class="nav-item" href="../../sdk/python/changelog/">更新日志</a><a class="nav-item" href="../../sdk/python/api/">API 参考</a><a class="nav-item" href="../../sdk/python/api/clients/async/">异步客户端 AsyncTypeSafeClient</a><a class="nav-item" href="../../sdk/python/api/clients/sync/">同步客户端 TypeSafeClient</a><a class="nav-item" href="../../sdk/python/api/types/questions/">类型：Questions（提问）</a><a class="nav-item" href="../../sdk/python/api/types/responses/">类型：Answers 与响应</a><a class="nav-item" href="../../sdk/python/api/types/common/">通用类型</a><a class="nav-item" href="../../sdk/python/api/retries/">重试策略 RetryPolicy</a><a class="nav-item" href="../../sdk/python/api/exceptions/">异常</a><a class="nav-item" href="../../sdk/python/api/constants/">常量</a><a class="nav-item" href="../../sdk/javascript/">TypeSafe JavaScript SDK</a><a class="nav-item" href="../../sdk/javascript/changelog/">更新日志</a><a class="nav-item" href="../../sdk/javascript/api/">API 参考</a><a class="nav-item" href="../../sdk/javascript/api/classes/APIConnectionError/">类：APIConnectionError</a><a class="nav-item" href="../../sdk/javascript/api/classes/APIError/">类：APIError</a><a class="nav-item" href="../../sdk/javascript/api/classes/APIPromise/">类：APIPromise</a><a class="nav-item" href="../../sdk/javascript/api/classes/APITimeoutError/">类：APITimeoutError</a><a class="nav-item" href="../../sdk/javascript/api/classes/APIUserAbortError/">类：APIUserAbortError</a><a class="nav-item" href="../../sdk/javascript/api/classes/AuthenticationError/">类：AuthenticationError</a><a class="nav-item" href="../../sdk/javascript/api/classes/BadRequestError/">类：BadRequestError</a><a class="nav-item" href="../../sdk/javascript/api/classes/InternalServerError/">类：InternalServerError</a><a class="nav-item" href="../../sdk/javascript/api/classes/NotFoundError/">类：NotFoundError</a><a class="nav-item" href="../../sdk/javascript/api/classes/PermissionDeniedError/">类：PermissionDeniedError</a><a class="nav-item" href="../../sdk/javascript/api/classes/RateLimitError/">类：RateLimitError</a><a class="nav-item" href="../../sdk/javascript/api/classes/TypeSafeClient/">类：TypeSafeClient</a><a class="nav-item" href="../../sdk/javascript/api/classes/TypeSafeError/">类：TypeSafeError</a><a class="nav-item" href="../../sdk/javascript/api/classes/UnprocessableEntityError/">类：UnprocessableEntityError</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ChoiceQuestion/">接口：ChoiceQuestion</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ChoiceResponse/">接口：ChoiceResponse</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/Logger/">接口：Logger</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ModelCard/">接口：ModelCard</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/Models/">接口：Models</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/NoulQuestion/">接口：NoulQuestion</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/NoulResponse/">接口：NoulResponse</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/Questions/">接口：Questions</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/RequestOptions/">接口：RequestOptions</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/RetryPolicy/">接口：RetryPolicy</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ScoreQuestion/">接口：ScoreQuestion</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ScoreResponse/">接口：ScoreResponse</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/SystemOneRequest/">接口：SystemOneRequest</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/SystemOneRequestPayload/">接口：SystemOneRequestPayload</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/SystemOneResult/">接口：SystemOneResult</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/TypeSafeClientConfig/">接口：TypeSafeClientConfig</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/Usage/">接口：Usage</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/WithResponse/">接口：WithResponse</a><a class="nav-item" href="../../sdk/javascript/api/functions/choice/">函数：choice()</a><a class="nav-item" href="../../sdk/javascript/api/functions/noul/">函数：noul()</a><a class="nav-item" href="../../sdk/javascript/api/functions/score/">函数：score()</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ChoiceCriteria/">类型：ChoiceCriteria</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/Description/">类型：Description</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/EntryType/">类型：EntryType</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/EnvVar/">类型：EnvVar</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/Fetch/">类型：Fetch</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/JsonValue/">类型：JsonValue</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/LogLevel/">类型：LogLevel</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/Question/">类型：Question</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ResultFor/">类型：ResultFor</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ScoreCriteria/">类型：ScoreCriteria</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ScoreLegend/">类型：ScoreLegend</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ScoreOf/">类型：ScoreOf</a><a class="nav-item" href="../../sdk/javascript/api/variables/ENV/">变量：ENV</a><a class="nav-item" href="../../sdk/javascript/api/variables/LOG_LEVELS/">变量：LOG_LEVELS</a><a class="nav-item" href="../../sdk/javascript/api/variables/VERSION/">变量：VERSION</a></div></div><div class="nav-group" data-group="9"><button class="nav-group-title" type="button">拓展阅读<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../materials/clef/">Clef：开源决策模型与 RL 微调平台</a><a class="nav-item" href="../../materials/polydao/">Jev 工程实战：账单砍掉 90%</a><a class="nav-item" href="../../materials/rerank-lab/">Jev 能替代 Rerank 模型吗</a><a class="nav-item" href="../../materials/laya-arch/">Laya 决策模型架构解析</a><a class="nav-item" href="../../materials/laya-oss/">Laya 开源发布</a><a class="nav-item" href="../../materials/laya-trend/">Laya 登上 HuggingFace 榜单</a></div></div></nav></aside>
+  <div class="sidebar-mask" id="sidebar-mask"></div>
+  <main class="content"><article class="doc">
+<h1 id="结构恢复">结构恢复</h1>
+<p class="page-desc">通过两次请求，从丢失格式的纯文本中重建 Markdown：一次把硬换行的行重新拼接起来，一次对每个块（标题、列表、代码、标注）进行分类。</p>
+<p>本实战指南处理标记（markup）已被剥离的纯文本（句子中间被硬换行、没有标题标记、没有列表符号），并将其结构重建为 Markdown：标题、段落、列表、引用、代码、标注。输入正是一份恰好处于这种状态的团队备忘录。</p>
+<p>文本生成模型可以把文本改写成 Markdown，但改写也可能改变用词。在这里，模型从不生成文本：它只回答关于文档的狭窄问题（<em>这一行是不是从句子中间接续的？这个块属于哪类内容？</em>），渲染则由代码完成，因此输出的每个字符都来自输入，而每个判断都带有概率。</p>
+<p>整个流水线是每个文档两次 API 请求，按顺序执行：</p>
+<ul><li><p><strong>第 1 遍，拼接：</strong> 对每对相邻行提出一个 <code>Noul</code> 问题（一种是非问题，其答案就是&quot;是&quot;为正确的概率），询问换行是否把一个句子拆到了两行。所有问题对都放进单次请求，接续被拆分句子的行会被合并回块。</p></li><li><p><strong>第 2 遍，分类：</strong> 对每个合并后的块提出一个 <code>Choice</code> 问题（从列表中选一个选项，每个选项都有概率），在标题、段落、列表项、引用、代码或标注（与正文分开的提示、技巧或警告）之间做选择。这些块只有等第 1 遍回答之后才存在，所以这是第二次请求；它还携带每个块的伴随问题（标题级别、步骤顺序、标注种类），只有当块的类型使它们相关时才会读取答案。</p></li><li><p><strong>直接证据留在代码里。</strong> 空行和显式标记（<code>- </code>、<code>1.</code>、<code>#</code>）由代码读取，从不交给模型重新考虑；这份备忘录保留了空行，却丢失了所有标记。模型只收到代码无法从文本中回答的问题。</p></li></ul>
+<p>所有行为都由第 2 遍的问题标准规定：三个由单行描述构成的字典，加上 <code>classify_questions</code> 内步骤问题的真/假标准。其余代码都是围绕它们的管道工作。成本和延迟数字见附录：两趟往返、10,211 个 token、0.8 秒，本备忘录花费 \$0.0015。</p>
+<h2 id="环境准备">环境准备</h2>
+<div class="codeblock"><span class="cb-title">bash</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-bash">pip install ipython &#x27;cooksafe&gt;=0.2.0,&lt;0.3.0&#x27;</code></pre></div>
+<p>然后设置 <code>TYPESAFE_API_KEY</code>。每个 API 调用都缓存在 <code>json_cache.json</code> 中，该文件随实战指南一起提供，因此重新渲染时无需调用 API 即可重放已公布的数字。删除该文件即可实时重新运行全部内容。</p>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">import os
+import re
+import urllib.request
+from pathlib import Path
+from time import perf_counter
+
+from cooksafe import JsonCache, make_playground_link
+from IPython.display import Markdown, display
+from typesafe_sdk import Choice, Noul, NoulCriteria, TypeSafeClient
+
+TYPESAFE_MODEL = &quot;jev-1.12&quot;
+PRICE = (0.042, 0.00)  # $ per 1M tokens (input, output); TypeSafe jev-1.12 as of 2026-09
+client = TypeSafeClient(api_key=os.environ[&quot;TYPESAFE_API_KEY&quot;], timeout=120.0)
+json_cache = JsonCache(Path(&quot;json_cache.json&quot;))</code></pre></div>
+<h2 id="文档一份丢失格式的团队备忘录">文档：一份丢失格式的团队备忘录</h2>
+<p>测试文档是一份关于构建系统迁移的备忘录，处于它到达纯文本收件箱时的状态：段落被硬换行到句子中间，一条 shell 命令孤零零地占一行，两个列表没有符号或编号，一条警告没有任何标记表明它是警告。文本从一个固定的 gist 获取，以保证实战指南的数字可复现。</p>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">GIST = (
+    &quot;https://gist.githubusercontent.com/eugene-shvarts/6df7daf97233bf92bcdd6b386a0fa561&quot;
+    &quot;/raw/5da03690611fb6ddcbaabdb91fb9f91d9751b113/build-memo.txt&quot;
+)
+
+
+@json_cache
+def fetch_document(url: str) -&gt; str:
+    request = urllib.request.Request(url, headers={&quot;User-Agent&quot;: &quot;typesafe-cookbook/1.0&quot;})
+    with urllib.request.urlopen(request) as response:
+        return response.read().decode()
+
+
+RAW = fetch_document(GIST)
+print(RAW[:560])</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>Migration to the new build system
+
+Hi everyone, quick heads up about the build system migration that is
+happening next week. We have been running the new pipeline in shadow
+mode for three weeks and the results look solid, so it is time to
+make the switch for real.
+
+What changes for you
+
+The old make targets keep working until the end of the month. The new
+entrypoint is a single command that wraps everything, including the
+docs build that used to be separate.
+
+bun run build
+
+Generated artifacts no longer need to be committed. The new pipeline
+uploads them</code></pre></div>
+<p>行拆分、空行跟踪和 id 标注都在代码中完成；不涉及模型。每行获得一个短 id（<code>L014| </code>）；这些 id 是模型作为状态一部分读取的普通文本，问题和答案通过这些 id 引用行（与<a href="../semantic_find/">语义搜索实战指南</a>相同的方案）。</p>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">def to_lines(text: str) -&gt; list[dict]:
+    lines, gap = [], False
+    for raw in text.split(&quot;\n&quot;):
+        stripped = re.sub(r&quot;[\t ]+&quot;, &quot; &quot;, raw).strip()
+        if not stripped:
+            gap = bool(lines)  # a leading blank is not a break
+            continue
+        lines.append({&quot;text&quot;: stripped, &quot;gap&quot;: gap})
+        gap = False
+    return lines
+
+
+def tag(items: list[dict], prefix: str) -&gt; str:
+    return &quot;\n&quot;.join(
+        f&quot;{chr(10) if item[&#x27;gap&#x27;] else &#x27;&#x27;}{prefix}{i:03d}| {item[&#x27;text&#x27;]}&quot;
+        for i, item in enumerate(items)
+    )
+
+
+def line_id(i: int) -&gt; str:
+    return f&quot;L{i:03d}&quot;
+
+
+def block_id(i: int) -&gt; str:
+    return f&quot;B{i:03d}&quot;
+
+
+LINES = to_lines(RAW)
+print(f&quot;{len(LINES)} non-blank lines. The model sees, e.g.:&quot;)
+print(&quot;\n&quot;.join(tag(LINES, &quot;L&quot;).splitlines()[19:24]))</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>28 non-blank lines. The model sees, e.g.:
+L013| The cutover touches three teams, so check whether you are on this
+L014| list before you plan anything for Monday:
+L015| The platform team
+L016| The web client team
+L017| Whoever still owns the release tooling</code></pre></div>
+<h2 id="第-1-遍拼接被拆分的句子">第 1 遍：拼接被拆分的句子</h2>
+<p>每对相邻行一个 Noul 问题，全部放进一次请求；被空行分隔的行对会被跳过。这个问题刻意狭窄（&quot;这一行是不是从句子中间接续的？&quot;），这接近于关于文本的客观事实。附录涵盖了两方面：措辞的选择，以及合并阈值是如何推导出来的。</p>
+<div class="codeblock"><span class="cb-title">expandable</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">def join_question(i: int) -&gt; Noul:
+    return Noul(
+        instructions=f&quot;Does line {line_id(i)} pick up mid-sentence, continuing a sentence left unfinished at the end of line {line_id(i - 1)}?&quot;,
+        criteria=NoulCriteria(
+            true=&quot;The line starts in the middle of a sentence that began on the previous line - the line break tore the sentence apart&quot;,
+            false=&quot;The line begins a new sentence, item, heading, or thought of its own&quot;,
+        ),
+    )
+
+
+@json_cache
+def stitch(wording: str = &quot;mid-sentence&quot;) -&gt; dict:
+    make = join_question if wording == &quot;mid-sentence&quot; else naive_join_question
+    questions = {line_id(i): make(i) for i in range(1, len(LINES)) if not LINES[i][&quot;gap&quot;]}
+    started = perf_counter()
+    response = client.system_one(
+        state=tag(LINES, &quot;L&quot;), questions=questions, model=TYPESAFE_MODEL
+    )
+    return {
+        &quot;joins&quot;: [
+            response.answers[line_id(i)].noul if line_id(i) in response.answers else 0.0
+            for i in range(len(LINES))
+        ],
+        &quot;seconds&quot;: round(perf_counter() - started, 2),
+        &quot;usage&quot;: [response.usage.input_tokens, response.usage.output_tokens],
+    }
+
+
+result = stitch()
+print(f&quot;{sum(1 for l in LINES if not l[&#x27;gap&#x27;]) - 1} pair questions, one request, &quot;
+      f&quot;{result[&#x27;seconds&#x27;]}s&quot;)</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>16 pair questions, one request, 0.32s</code></pre></div>
+<p>合并的截断值取决于上一行如何结束。在悬空行（没有句末标点的行）之后，拼接概率达到 0.2 或以上就合并该行对；在终结性标点（<code>.</code> <code>!</code> <code>?</code> <code>:</code> <code>;</code>）之后，截断提高到 0.5。附录逐步讲解了这两个数字背后的概率。</p>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">JOIN_AFTER_DANGLING, JOIN_AFTER_TERMINAL = 0.2, 0.5
+
+
+def ends_terminal(text: str) -&gt; bool:
+    return re.search(r&#x27;[.!?:;…][&quot;\&#x27;)\]]*$&#x27;, text) is not None
+
+
+def merge(joins: list[float]) -&gt; list[dict]:
+    blocks = []
+    for i, line in enumerate(LINES):
+        bar = (
+            JOIN_AFTER_TERMINAL
+            if i and ends_terminal(LINES[i - 1][&quot;text&quot;])
+            else JOIN_AFTER_DANGLING
+        )
+        if blocks and not line[&quot;gap&quot;] and joins[i] &gt;= bar:
+            blocks[-1][&quot;text&quot;] += &quot; &quot; + line[&quot;text&quot;]
+            blocks[-1][&quot;lines&quot;].append(i)
+        else:
+            blocks.append({&quot;text&quot;: line[&quot;text&quot;], &quot;lines&quot;: [i], &quot;gap&quot;: line[&quot;gap&quot;]})
+    return blocks
+
+
+blocks = merge(result[&quot;joins&quot;])
+healed = len(LINES) - len(blocks)
+print(f&quot;{len(LINES)} lines -&gt; {len(blocks)} blocks ({healed} line breaks healed)&quot;)
+for i, block in enumerate(blocks):
+    n = len(block[&quot;lines&quot;])
+    print(f&quot;{block_id(i)}  {n} line{&#x27;s&#x27; if n &gt; 1 else &#x27; &#x27;}  {block[&#x27;text&#x27;][:62]}&quot;)</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>28 lines -&gt; 17 blocks (11 line breaks healed)
+B000  1 line   Migration to the new build system
+B001  4 lines  Hi everyone, quick heads up about the build system migration t
+B002  1 line   What changes for you
+B003  3 lines  The old make targets keep working until the end of the month. 
+B004  1 line   bun run build
+B005  3 lines  Generated artifacts no longer need to be committed. The new pi
+B006  2 lines  The cutover touches three teams, so check whether you are on t
+B007  1 line   The platform team
+B008  1 line   The web client team
+B009  1 line   Whoever still owns the release tooling
+B010  1 line   Things to do before Monday
+B011  1 line   Update your local toolchain to version 2.4 or later
+B012  1 line   Delete the old build cache directory
+B013  1 line   Run the doctor script and fix anything it flags
+B014  3 lines  If the doctor script reports a red result on the toolchain che
+B015  2 lines  As Dana put it in the kickoff, &quot;a migration nobody notices is 
+B016  1 line   Thanks, and shout if anything looks off.</code></pre></div>
+<h2 id="第-2-遍为块分类">第 2 遍：为块分类</h2>
+<p>每个拼接后的块都会得到一个 <code>Choice</code> 问题：<em>这是什么类型的内容？</em> 下面这三个字典，加上 <code>classify_questions</code> 内步骤问题的真/假标准，构成了分类器的全部规范。没有其他逻辑。要把这个流水线适配到你自己的文档上，只需编辑这些描述。</p>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">TYPE_CRITERIA = {
+    &quot;heading&quot;: &quot;A short label or title that names the document or the section that follows it - not a full sentence of content&quot;,
+    &quot;paragraph&quot;: &quot;Running prose: one or more complete sentences of explanatory or narrative text&quot;,
+    &quot;list_item&quot;: &quot;One entry in a list of parallel items - an ingredient, a feature, a task, an attendee; reads as one of several sibling entries&quot;,
+    &quot;quote&quot;: &quot;Words attributed to a person or source - quoted speech, a citation, an excerpt someone else wrote&quot;,
+    &quot;code&quot;: &quot;Computer code, a shell command, terminal output, or a config snippet meant to be read verbatim&quot;,
+    &quot;callout&quot;: &quot;A warning, tip, or important note that interrupts the flow to flag something the reader must not miss&quot;,
+}
+HLEVEL_CRITERIA = {
+    &quot;title&quot;: &quot;The title of the whole document&quot;,
+    &quot;section&quot;: &quot;A major section heading within the document&quot;,
+    &quot;subsection&quot;: &quot;A minor heading nested under a section&quot;,
+}
+CALLOUT_CRITERIA = {
+    &quot;note&quot;: &quot;Neutral extra information the reader should be aware of&quot;,
+    &quot;tip&quot;: &quot;A helpful suggestion or shortcut that makes things easier&quot;,
+    &quot;warning&quot;: &quot;A caution about something that can go wrong or cause harm&quot;,
+}</code></pre></div>
+<p>下面的一切都是管道工作：构建问题、发送一次请求、读回答案。如果类型返回 <code>heading</code>，渲染器需要标题级别；如果是 <code>list_item</code>，需要知道顺序是否重要；如果是 <code>callout</code>，需要知道是哪一种。类型此刻还未知，而等待它们意味着第三次往返，所以伴随问题在同一次请求中提前提出。这些答案大多永远不会被读取：段落的步骤概率毫无意义，直接忽略即可。多加一个问题代价很小，因为状态占了大部分 token，无论如何都只发送一次；而多一次往返会增加整整一个请求的延迟。</p>
+<div class="codeblock"><span class="cb-title">expandable</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">HEADING_MAX_CHARS = 90  # longer blocks can&#x27;t render as headings, so don&#x27;t ask
+
+
+def classify_questions(texts: list[str]) -&gt; dict:
+    questions = {}
+    for i, text in enumerate(texts):
+        bid = block_id(i)
+        questions[f&quot;type_{bid}&quot;] = Choice(
+            instructions=f&quot;What kind of content is block {bid}?&quot;, criteria=TYPE_CRITERIA
+        )
+        if len(text) &lt;= HEADING_MAX_CHARS:
+            questions[f&quot;hlevel_{bid}&quot;] = Choice(
+                instructions=f&quot;As a heading, what level would block {bid} occupy in this document&#x27;s structure?&quot;,
+                criteria=HLEVEL_CRITERIA,
+            )
+        questions[f&quot;step_{bid}&quot;] = Noul(
+            instructions=f&quot;Is block {bid} an instruction in a sequence where the order of the items matters?&quot;,
+            criteria=NoulCriteria(
+                true=&quot;It is one step of a procedure - the items around it must happen in order&quot;,
+                false=&quot;Order is irrelevant - it is a loose collection, or not a list item at all&quot;,
+            ),
+        )
+        questions[f&quot;callout_{bid}&quot;] = Choice(
+            instructions=f&quot;What kind of aside is block {bid}?&quot;, criteria=CALLOUT_CRITERIA
+        )
+    return questions
+
+
+@json_cache
+def classify(texts: list[str], gaps: list[bool]) -&gt; dict:
+    tagged = tag([{&quot;text&quot;: t, &quot;gap&quot;: g} for t, g in zip(texts, gaps)], &quot;B&quot;)
+    questions = classify_questions(texts)
+    started = perf_counter()
+    response = client.system_one(state=tagged, questions=questions, model=TYPESAFE_MODEL)
+    judgments = []
+    for i in range(len(texts)):
+        bid = block_id(i)
+        type_answer = response.answers[f&quot;type_{bid}&quot;]
+        hlevel = response.answers.get(f&quot;hlevel_{bid}&quot;)
+        judgments.append(
+            {
+                &quot;type&quot;: type_answer.choice,
+                &quot;confidence&quot;: type_answer.confidence,
+                &quot;probabilities&quot;: type_answer.probabilities,
+                &quot;hlevel&quot;: hlevel.choice if hlevel else &quot;section&quot;,
+                &quot;step&quot;: response.answers[f&quot;step_{bid}&quot;].noul,
+                &quot;callout&quot;: response.answers[f&quot;callout_{bid}&quot;].choice,
+            }
+        )
+    return {
+        &quot;judgments&quot;: judgments,
+        &quot;n_questions&quot;: len(questions),
+        &quot;seconds&quot;: round(perf_counter() - started, 2),
+        &quot;usage&quot;: [response.usage.input_tokens, response.usage.output_tokens],
+    }
+
+
+classified = classify([b[&quot;text&quot;] for b in blocks], [b[&quot;gap&quot;] for b in blocks])
+for block, judgment in zip(blocks, classified[&quot;judgments&quot;]):
+    block.update(judgment)
+print(f&quot;{classified[&#x27;n_questions&#x27;]} questions about {len(blocks)} blocks, one request, &quot;
+      f&quot;{classified[&#x27;seconds&#x27;]}s\n&quot;)
+print(f&quot;{&#x27;block&#x27;:&lt;6}{&#x27;type&#x27;:&lt;11}{&#x27;conf&#x27;:&lt;6}{&#x27;companion used&#x27;:&lt;18}text&quot;)
+for i, b in enumerate(blocks):
+    companion = {
+        &quot;heading&quot;: f&quot;level={b[&#x27;hlevel&#x27;]}&quot;,
+        &quot;list_item&quot;: f&quot;step={b[&#x27;step&#x27;]:.2f}&quot;,
+        &quot;callout&quot;: f&quot;kind={b[&#x27;callout&#x27;]}&quot;,
+    }.get(b[&quot;type&quot;], &quot;-&quot;)
+    print(f&quot;{block_id(i):&lt;6}{b[&#x27;type&#x27;]:&lt;11}{b[&#x27;confidence&#x27;]:.2f}  {companion:&lt;18}&quot;
+          f&quot;{b[&#x27;text&#x27;][:46]}&quot;)</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>62 questions about 17 blocks, one request, 0.51s
+
+block type       conf  companion used    text
+B000  heading    0.99  level=title       Migration to the new build system
+B001  paragraph  0.98  -                 Hi everyone, quick heads up about the build sy
+B002  heading    0.75  level=section     What changes for you
+B003  paragraph  0.89  -                 The old make targets keep working until the en
+B004  code       1.00  -                 bun run build
+B005  paragraph  0.90  -                 Generated artifacts no longer need to be commi
+B006  paragraph  0.43  -                 The cutover touches three teams, so check whet
+B007  list_item  0.99  step=0.15         The platform team
+B008  list_item  1.00  step=0.16         The web client team
+B009  list_item  0.99  step=0.12         Whoever still owns the release tooling
+B010  heading    0.96  level=section     Things to do before Monday
+B011  list_item  0.98  step=0.86         Update your local toolchain to version 2.4 or 
+B012  list_item  0.99  step=0.87         Delete the old build cache directory
+B013  list_item  0.92  step=0.90         Run the doctor script and fix anything it flag
+B014  callout    0.65  kind=warning      If the doctor script reports a red result on t
+B015  quote      0.99  -                 As Dana put it in the kickoff, &quot;a migration no
+B016  paragraph  0.92  -                 Thanks, and shout if anything looks off.</code></pre></div>
+<p>每个块的判断都在那张表里，伴随问题一列展示了提前拿到的答案如何派上用场：&quot;Things to do before Monday&quot; 下面的三行带着接近 0.9 的步骤概率（它们会渲染成编号列表），三行团队条目接近 0.1（渲染为圆点列表），而那条没有任何标记的 doctor 脚本警告被分类为 <code>warning</code> 类型的标注。附录分析了模型唯一没有把握的那个块。</p>
+<h2 id="渲染">渲染</h2>
+<p>代码根据这些判断组装页面。连续的列表项合并成一个列表，当各项步骤概率的平均值至少为 0.5 时使用编号。该阈值是一个组级别的决策，没有任何单个问题直接问过它。</p>
+<div class="codeblock"><span class="cb-title">expandable</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">STEP_THRESHOLD = 0.5
+HEADING_MARK = {&quot;title&quot;: &quot;#&quot;, &quot;section&quot;: &quot;##&quot;, &quot;subsection&quot;: &quot;###&quot;}
+CALLOUT_MARK = {&quot;note&quot;: &quot;NOTE&quot;, &quot;tip&quot;: &quot;TIP&quot;, &quot;warning&quot;: &quot;WARNING&quot;}
+
+
+def to_markdown(blocks: list[dict]) -&gt; str:
+    groups = []
+    for b in blocks:
+        if b[&quot;type&quot;] in (&quot;list_item&quot;, &quot;code&quot;) and groups and groups[-1][0] == b[&quot;type&quot;]:
+            groups[-1][1].append(b)
+        else:
+            groups.append((b[&quot;type&quot;], [b]))
+    parts = []
+    for kind, items in groups:
+        if kind == &quot;list_item&quot;:
+            ordered = sum(b[&quot;step&quot;] for b in items) / len(items) &gt;= STEP_THRESHOLD
+            parts.append(&quot;\n&quot;.join(
+                f&quot;{n + 1}. {b[&#x27;text&#x27;]}&quot; if ordered else f&quot;- {b[&#x27;text&#x27;]}&quot;
+                for n, b in enumerate(items)
+            ))
+        elif kind == &quot;code&quot;:
+            parts.append(&quot;```\n&quot; + &quot;\n&quot;.join(b[&quot;text&quot;] for b in items) + &quot;\n```&quot;)
+        elif kind == &quot;heading&quot;:
+            parts.append(f&quot;{HEADING_MARK[items[0][&#x27;hlevel&#x27;]]} {items[0][&#x27;text&#x27;]}&quot;)
+        elif kind == &quot;quote&quot;:
+            parts.append(f&quot;&gt; {items[0][&#x27;text&#x27;]}&quot;)
+        elif kind == &quot;callout&quot;:
+            parts.append(f&quot;&gt; [!{CALLOUT_MARK[items[0][&#x27;callout&#x27;]]}]\n&gt; {items[0][&#x27;text&#x27;]}&quot;)
+        else:
+            parts.append(items[0][&quot;text&quot;])
+    return &quot;\n\n&quot;.join(parts) + &quot;\n&quot;
+
+
+markdown = to_markdown(blocks)
+print(markdown)</code></pre></div>
+<div class="codeblock"><span class="cb-title">expandable</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-text"># Migration to the new build system
+
+Hi everyone, quick heads up about the build system migration that is happening next week. We have been running the new pipeline in shadow mode for three weeks and the results look solid, so it is time to make the switch for real.
+
+## What changes for you
+
+The old make targets keep working until the end of the month. The new entrypoint is a single command that wraps everything, including the docs build that used to be separate.
+
+```
+bun run build
+```
+
+Generated artifacts no longer need to be committed. The new pipeline uploads them to the registry automatically, and checking them in just creates merge conflicts.
+
+The cutover touches three teams, so check whether you are on this list before you plan anything for Monday:
+
+- The platform team
+- The web client team
+- Whoever still owns the release tooling
+
+## Things to do before Monday
+
+1. Update your local toolchain to version 2.4 or later
+2. Delete the old build cache directory
+3. Run the doctor script and fix anything it flags
+
+&gt; [!WARNING]
+&gt; If the doctor script reports a red result on the toolchain check, do not proceed with the migration. Ping the infra channel first and we will sort it out together.
+
+&gt; As Dana put it in the kickoff, &quot;a migration nobody notices is the only kind worth shipping.&quot;
+
+Thanks, and shout if anything looks off.</code></pre></div>
+<p>上面的每个字都来自输入。流水线只选择了边界、类型和标记。</p>
+<h2 id="在-playground-中打开">在 Playground 中打开</h2>
+<p>这条分享链接包含拼接后的块和完整的第 2 遍问题集。打开它即可实时重新运行分类。</p>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">playground_link = make_playground_link(
+    tag(blocks, &quot;B&quot;),
+    classify_questions([b[&quot;text&quot;] for b in blocks]),
+    models=[TYPESAFE_MODEL],
+)
+display(Markdown(f&quot;🔗 [Open the stitched memo + questions in the TypeSafe playground]({playground_link})&quot;))</code></pre></div>
+<a href="https://console.typesafe.ai/playground#share/N4IgJg9gxgrgtgUwHYBcAqCAeKQC4AEIAQgAxkA++AsgJYDmATgIYo0RL4oScAWC+SBAHd8AIxg0ANmHwBnAJ6yUCOAB0k60iQCMlABI18CAG4IG89ggA0+AI4SoAa3x8mYWfhgAHfE1EQYFF5+cSkZBSUVfDh6ZlZ2XhZ8Gg8eJi8vZBokOgEsIKEEBEcAOnwAdX400zEijgYYJCRs3JQ+PJEvGkzJbP5suTTIETgIMH4AMwgGXgYi-ELijyYkGTb+OdkYSRQPSQgIZ1kIXrAbY+SglM4aRE5uOCZHfnW5IRoUKB58KZm5pkkJXUmjIACZKOU0kEvis6AgPL98BYYMCkFoAMyUNDtE4yR7PThMBhw3b4Z4IHxCaaOFqeVBSYJGVb4CATRmjVA8MrY-iCETIFDmLwQbJXZZyFqSfhQCBwR7MtpJITMLweExmeRtFo2bJQSQwMC016QKAeULSRJBGCyBBrbiifg2rxElgIIEaNFkAAslHE9UaYgk0lRWgArJQAOLIMyumRE1gTJhQUlIbj7HJmPK2+61fAyuUfZRgbntPn4Lo9PqeLz7NwedZwHOvOZ0FKC+S+QKylg0KAAyTyGwrGRfBBOI18RsDABW1uh-2UHkQxOl7AmvWTsndIJIADYse1YFxTDMuDBR-WeHMXggmHBZOduKOnAs+OsZsjfHMWRwtXs27Uvz8J+NYrL4SCajwtKIlQ7BgEw8i4DuADsB78KBKC-I2yh3juAAcaELAgoh5r0AqcLeaieiQACcEI8BA6ozEoUiSCyQhIJeGwIFKTA2vcJwtCGOgkAeLT1twkCAdM-CwasCHCdouj4AAql48HKEiAQzPsfZsVwJwwgMXD4CeshsBwoIlF6LI6a6DAgto4L4AAIjxCCaa8uKBmEeZJu0hpzMm0zyI5mL4AASgGxrQFwzFQAw3RBMOPw0Jg4GQbSHw-JITB0LIik+vgACSbIxcF8WJV4QRzMKDCkkw+BzDImzbEECSvAZkhGRwz6ODYUmpkEXgMNARQyO8bTsrEPbsGUAAKE79EgEzMHmaRNDxqUMEo4ETfw7ySGxxz1ZcLKBPcJJ8Aw26eto4b4AAgh4LkrI1XgXdlxntDSTishMNiqCAjUxIws0cKm-hgB2Q29vCyRcT+A5ktkE3TFNshQRkLRAiAin7vg2IrI4D57YMARXGyKyZTk+D7IcHj-SUIA2CAI2ytVsgYNgeCEMAQMoPImQAPpaCQQMEPzICC5kEv4EDXwilACBA4DIDZEoDTJhZBW80DkJJDSzKsnm7DKKgCNiLpzhiwA-Kr8sgAlHxmDQTBy1LriGjkctA495OnblDpsdMNwoFKloCHe8PlfA5Gh68Nrax1UI-Cc+xCB42UALQCBAyU-Nsx0CsgyssmyMqoAKDtA86zBg14PC+yAUVNLS7M2gQli2dEMmm3ANYeY6JdIMrjNslgoFICwIU99PDBxDQNTKNgNcgL0SjCy7ah6yAADyghMu2yQcI1G-tWydf9lt28eLnYEtM1NACkOPy3igMBzK-KB8f14G+Cgc24wEAAG4mq3ncL4Rmh8TY2hPACCUohei0wFIleEa97D5xVrvco0xIEsEFDQcQRYczvTMMcDgodjifzLrnTBJDZCZDHDwV+UAPjgyHBwLAysGDVTkLKBA3ceL8WVFgteMpxjNwAMIc0CJmCR1hfCDB4mxfM8ozgUQYDEaeIdAgfRQDYUOjVK4THoHIZoGQPLRFvBbEyDpwFuFMmYUQPYd5qz0vsQIzd-ZCCJM0HINhWBeEMTMW4dUf4WyGi8VOoozANE5oydcEARAmXXHlfhiAtS02bBAzMcA5x5yCDEWQusAC+pS1Y8ClKYSQosyDi15lLGW2CCAKwYnDNeGtBTnniJxbx4ovbalfEkapW0qTbBkEg6ANt6ksigLALwHZvrXBNHHVAAByDwmsemfwQPbFmjtnbKESu7RpAsPhSmbjyMOEcTavCEAxCOqzECoDXknXp3johMGnFQscvSXAQNpJNKCv4ArQDWSgN5MBRDvIsp87RodBm00EJEGQjRxgzEarC9gQNylq0iF4OpZAPYCyFi0x2qZtidM4t05OfTd7FTNNbfAYt-5dK1v8gYWKED2FLgda60T+B4MzHc9ot8vmAPIfs9xiVjluxJdLBo5KgbFTFD+R0ygfAm3eqNZWYBdn4Fzq8cVRIAjMmyvk3aaRLEcAGMKhyBygaJkkDaZue8GAYstjQBe7ljArCCLnL64p6b8RlEdP5FkQmFKUefS4UQkj9lxRUw5-YKZEoaZLUlstd6Kw6Y69WNKOU62bgbIIRsZDavMuMS2UyXx23EbK12pzM0gCic3AAcggQIzA2L5DWtkLC4NGT-E9ZjAIFp7FMF8d+Vka8gmfL4JILwExthyBgHQOELEEhUIYvVI8kd8QxxBflIwfFn4OrVtO-xdBPl9kCBZXw-gLrHEyceyOfYOB0G4KI2moc738TSFopNatmlEu0Aq5pzdc3K2pdsulutWkgFLSjY2FczbkWuLWmZOhpWHMbSchVSKb2739mOwOfgtoJwudEpI09ECI2efHU87RsWgqSFMI6ySs4BujY1FdR05AjzLibSu5tIX5qvg3Juu9W7XvLKNTu6qe6jG-PmQemkbRV1HvDE2k9crTzih2UO89F7L3yGvc+W9lA70QwffgqClmnzpgBE2V9w1sXFffW1OQn4vyURMd+uzv6-04QAoBRQwEjuWNAoVbI4ExmOkQ5BuRUHP11mrehyqkN4OWIAxKxDswmTITtbdzFtK0LsDALB4QmFfFYew3poXuFmD4S+wRh9hEHVGsocRYwssyIHnImYCjX6YxUf3dRgSzDaIQRTfRUbjFrjMbICxmQik2KCHY7ijiTwuNYG4lNnGvEkYWH4oZQSo1hPRv6wpNGrhVwXt4UkrwkkpO4Gk3IbWsmtHaCOvJBShrRBSGU5NQMCVgYg2S5ulLJCwdpb0hDjtGVW2mSysg2g2WFp6Q+rlgneXadfGYQVtlPWiv6NZpcBCpUNpdgRs5iqYBZdVZbbuBLy5KPZnqg1RqxUU6-GamQFqCnWsyN5knZg17Otdbvd1nrrjermNUm7ga1VnwOKG9OEb2BRsB2fAC28AG+COsBw7niUAQ-p5BnN7SYP5vZdj9giP9ap3Lezs91bMPMq0NoXDCt8Pyvp223enbu0IL7Y1Ad0xHj-JyW4TMY6Jm5inUSWLc7ugLp4su1dWwN3wn+Tu9G+7FRFKeEe8Sp7zIS-zVeoSJ273-L8BTDJHk33F78p+79o1f3DaYNaKoRId54sdqBrQoJIfZsQ9B7Bat7fwZLS71G7PRMYaZaj0fvunb++bfgT2gKfYnbI0EIOlHTzUcjnRo9-BGMWwTixrXbGggcYztxw1vHC4Cc0+bYTaGtPibVpJlUaTRDWTduBTBALuGBGYFTVcAeKUDTITHTCeTAKeGecwOeIkUzG8VefNSzbeN1DrVANA3HWNVzF0dzONe8V-B+HzW0Z+VAV+ALFgILJRH+WQP+MCKnVYCLBxfBGLdneLHtRBZLI+NBdLR2TLEtHLMLfLORO0DnchUrfhGhfgOhKrBhWrFhJRNhH+Rrf+ZrXhIINrIRF1LrMRfNBRaRWRY5U2cYUbRdVRWUSbTRGbXRFAebHuRbFaZbVbKxRAG7LbHgpxBgPbW4cRVNY7RDHxM7AJG4YJHuK7eqG7KJSOWJR7BJF7DOHMD7Zvb7YdXJKAgHfOIHEpE3IGKpdUWpUfcfLLKfOHItR3fpJRIjGwB5EZCohYcdSZL3MEOZBZRzXgFZcFF5FATZOQeHXZDfI5JtCDajK5doVgcOWLRkB5E4K-IY6ufNVjeFb5X5OlAFNwIFD4EFRka-P-R2LYGFe-eFbIRFPfXIFFEhdFTMblOlUokAcHKoy3KHXeGHOoh3elRDZHLDNHEgUETHODTlJzG0fHMuB5InRke1dnY1PnaPY5WQSYrfCDJVZuZna4VnTVN3eTMafVb8HncnFQZYUadFM6S1IIEXZAE+cXC9R2KXLLWXTMeXH1JXC2FXS2NXCADXcNOlHXIovXXaA3BNY3EAIfBWcI83T4ltK3SfG3afR2WfBHefQ2RfStGgD3VfOtMEDE2nAPFtIPRDEPQUMPbAftFaKPIdWPUdBiRPSdadVPfNedE7RdLPY6ddTdfPZiXdT4C6NvQ9S8cvW8SvZkoGGvffSIvye9BIRvZ9ARXItvD9fAL9BYLvXIP9XvADAfN4kfMgdEaoqDFUv4ufHBBfVDU2X-GtbokgdEI0uVbfXfA42Mx2UjQMumCjEOU-RY8-aOBjdYm-ZjYePYtvJ-LjM6XOXXd-YuLTb-WssTNeAA9IIAx2EA2mDucApTUOaA-udTYeRcxAowZA-TVAozGYEzHsMzbAtWXA6zfA+zQg-osUi+csMgqUDzPnLzE+RgWgvzPjQLL+FgkLf+Tg4BSLCBaLPcuLJiBBcyJBWkVLdBfNCQnBKQghGQkhIrcsBQyhMrZQ1-TLGrIoOrLQhrSNPQzAHhVrARYwkRbrVUhWPrSwwbawkbJRMbATNRYcKbLRbIWbPRQIBbWs0xT7Hw9bfw+0bbGQXbVxMIo7cTOMmMugQJboS7Aea7SJLBFIh7eJZ7doV7LI3KT7FM1vX7fI6IQoopYHN4j44s0sn48dCsjUhlfU7DdEcE+HHHKEnlRnAnOE78LyD1EVMqXnCkiVNE5s6Yy3bEhlNVfEikQkznW0bnRkE1Kk81IpYXdIUXRk+1SXAEaXWzMK0JLOLkkwZXM6a4fkwUqUYUueUU5zcU6zQ3RNaU0HJ2OUolEsr4ifQ5csu3LHSsxDZDV3HUvUlHA0xs2KunU0sw80rtS03ta0iPW0rRe0qyuPAMzopPV08uNPLwDPJdfjNdXPLdQigOIMzbVOUMgYnINUM9KvS9aI4jOM+vB9JMwwiyicJIdMzMn9HMnvPvFwAsrqkDMlIlL0Zy5UpWFigtCE4tKsrUms5fC2T3Nfb0eak0nfMou4z5Q-Hs4OHuBYiONvC-Yc2AYYsmu-Cc1OKczOGct-fjBcr-JYjGs42uF0KTZuLc3IHciAoVKAvuNTOA48jm8eM8lAwzdAheW8rA7m9eNsKzFQZ8kQt81qj8tzb8igu+THACw0ICt+Jg0CxqVg9g0+SVLg0BHg2C7uWBBCxLZClBQgtLDBNQrLXBD1XLQhArOQ4rChHuahBgCrUiuQDQ+rHQ6isCfQ+ixARi0wnrcwti3eAbfReRPrOw8bPi1YASlw86Nw0Sjw8S7w7oNbaxGS3MEdIIkIg7WU5Sz5NSjSuI0OBIiJIIZItvVIwyxGEy1JMynIyyuS-7XaQHYpEHSpUZSo70OGoahGtylGyIgZO4lo1OGejo50hsmyaAPoxkv8fAU40YiEiYmnFsmYxYuYl4M-MnV8VYo+kc5WrYk7R4H5Zie-fY72XIYFb6NYmmjY-FaFF+uMhFGYIjPIVFOkT1F4j5SG84zVGG+eoGX4ka5Ghojyma7DGyag9BsXblGE-leE0K0nCK8kyg1E6ncwzE+KxnHEpKw+NnbVIkrnUkzKvnU1akoXK1fKhku1cq4qkwt1cqr1Kqv1Hk2q4NdXVcIU3Q4zFq2NCU5KKUmUnq5SpBgamo4amfUa9y8a6sitKmKtfoTykEr0XG1slBpax2C0wQ8PE+QdGPHax0-al0lPI6909PT0zPc6nPP0h9AvPdYM+60vMMp6ivc9NeNS29XvBvJ9X619f66EMCIG7Mnuf9fvIDeBrNBAIlUMZBp2bRtU3R5ex2Ca7Un-MTes7GkgUMCxwjQmg-bs4-Psm5O7KOejE4p+um8cpx9jdOacnOVmouQTE8pfdDV5CTXmwA-mxoOTIWvc0W1TDmCW0ZqW9nPTN6OW4zDAxWiie8x2R89WmXAg4+YglzS+L8m+X8w23zeg-zECxRC28Cjgm2qC+2qBOCwTeBF24Q1CsQoGDC8arCvLIhWQ0hfCkra60O8Or2si5haOjhGiuihJ9rezEwrMsw9xNOxDDOobGwp55RXixw-i5woS1w9woxMuySiu3wjbHMexWuhS-bJSs3Zu961urS8JJIvSnugyp7fuzIwe9JL7EengseruooyehyxBsMAp1BnRvBp3EAIEhs0MHy+o-BvHQK2EgVBEkRu+8VShnaep2hpnBhjVFK5htKkklQ9hqKzhnKmynhm1QqgR-NVk4RuXSqxXaqiRoNGNaR02WR6i+RguRR9qyU2HbJtRs3PJgp2otB3yjB-RtGwxqBXUkxrBkEup8+uKxalO5a0PNay0hxu0px0eva50-gZPGdCYY60670i6-xxQw-IvEJ54MJk9CMyJ6vd6mJhM0+eJ4epJ9vDMzvdgEG+M-MrJ1RosvcBNopoGdU0p53NN8ZusrG2a3cU1ltIjIm5p3ssms-SmocrpgB0cxkVjSOJml-WclqtmtZvlDdlcqZ+uGZmTOZ0AgU3cx2pZmAo8p97TaWzZgzWeHZhW1gO85Wo5mzR2OzTWxk989nXW65qKv8x+QC+54Cs2wly20LSC7gqLT5x2+Cn5oQlC92tCjLL2yQ326QsF3C7gIO1t8rO1iOxhcizQ4xKi7XZFlrVFpOzFlO7FyRdOqwrO2w7i+wibUl45QuubEuqlkxcuyxaS2xWSwI5l0I8wuU9lhga9Tl+I7SxI3SzyGJfl9I4yoV97Ie0VpacVgo8eqV+ymNxyhdzR6HVypNzV5V1Vmp3cDV-4pD7V594K4nREw1lEqnE1vNha-Ghnc1lnRhgk613VdKth5Eh17KwXXKl1gq-hjFQR0q+DkRzk318RnjAN+qmRxquR68hR-XSN5R6N1RjxNNLQXcRdxenz-45V8pms93LN4Ezr3dhLs0mxlaux9astraitxz8mat3wQ62dTxk67xs67PX0vPAJvaoJu6pIB677Z6yMqJ-tuvWJ764d+z7JVOQGid7vadzJwfbq+d5CbrvNRV5NgEspgxl9lfbNrQZCMbts7+g99GEmk-Npwczp2OWm2-Xph9ScgZ5moZucx9z-Z9kTCZ5WtcxuWZtubcsA4W5TMWlZoeIDseDZ88rZ8D683ZqDpWizVWvAk5l8s5pzEgy5ntPWzzW5rDgxB53D4LNggjt5ojmCkjmBMjhLCjt2whaj8Q2jzC+j7CxjwrZjyF4OqhNjkiuFyOrjxF3QuO2igT5vIT0RETw5HFx2PFzi7O6T3Okl-OslnRIuylzFal8xWl9TzbTTpl5xRS3Tpuk7Fu2IrlnSyV8zpIXugVxJGznKEVv627yt51qP4oqex2compIld7zz63Hrr73zxoxqZo4ZI-do8ZCdBs5CXo7wfow+4+rZcYuYEH85K+3ea5cmpY+5R5f+iFN5K41+nYj+vYiB3+0Ffv4YqFS4141+m48Bu4yBx4rgz3l+1R9zvPxU74xDBV4ppVnE0xoHoLvY3HaEnVohkKnEA1sh-W6KqhmVY0yxxL+h5Ly1rVKmFhjLu1rLygx13LtPuDVdaFdXqLJEqmyTK4+tfUNVarnTCDZho6uobBruGya7xoWubxdroEFz4fdbcRfPrpqTLQVMM201EbmQGB5xc8aUsCbkDFsZWlS2keObkj2cbx4nSE6Gtit3rZrdG2vjbbldRDqBl22h3UJo9W7YvUoyIAaJhd0HaPom8N3H7ADRSYPcp2GTcGrO1e7Q0tAeEHAYjRXYptfu67bHpuyP5kA8IbfEAPuyaYQ8Wmx7Acqe1h5goL27UMcoJgZr9NOMqPHjOjxGaY8Cchg19v-mmbrkCe8zYnos17jLNYCFPHwVT10w08wOaBCDpgX2YwcWeT5Nnoh3Oa7RSCPPNDpQQw40Fja2HU2h-HNqEhReEFcXnbWI58QvmAhRCklko4K8AWIAIFmUxBb+1wWeFTIFCxDq69VC1WA3gi0oox0+OJvFFubw6wYtLeiNCwuJw4qSdCWPFBwnKDk7TZyW7vJTp7xU40s1OVdDTjXQgR10g+7iPTqHw5bh9jO3LMzu01j5WdJgCfbInILyK7VABE9Vzqo2z48QiUWg-PvDU+779vuyrZ6E0TXrl86YlfVxg2Twh19FkB9KCB4Cb5jEOUZ9ahk-0vqXJO+8xW+rfxWJPIn6g-OfqAxH4uD-k4-I4n-UfqOCZ+IDTskDlTCL92y9xPPNmCeJr8h+G-WViYPlbec8BY1JHMYJIDQjcG33ELufzC56sSG4Ve1hQxi7okKBz-bpElzxIpcrWn-G1hlV-6UkBcNJPKsAMIpFcPW4Ar1hySgHckququOAT+2DaIC+OYbGNKgMbBRsMBvVTQdoKXp6C12hAwbsY2qazVTB8ohVNQJAC0CS2NpRxkwNT4J42By3dxqtxAxeM4yXpHgZdX9I3VBBJeTtiIJO69s3qBnWvJ9Uu6JlruyfeQckw7yYtHuKgwDC9yhoiwtANEN0b1z5GeiUM6bLmr6Oww0QzBFguMsTWsFUZbBqcKmuewhQ9MSRTAtwc-hZpeCP8CBf7pMwCHvsghn7QnoLVCF-twhAHVZtENPKgdLy8tJISvBSGbxWetmU5kQU54XNPyOQn8uh356FDBeOHEoXhxebW1wsVQyXjUNI7fNZeSFP5lR2aGtD9Y7QnChr3kI9CdexFfoeoUN7DCkWYws3kYUmFMUsW1vMTriwk7DYHeWKGTnnQ0Tyd1hinQXspyWw7DK6fhfYYy0OHacG6sbCmPp0M4XD26JnTurdn0rHI+68fZJKZST6JMU+C3WktGmlYxtPhs9WiI2N5F6NOyq9RkevTaI1It61fGpjRBhEN94RlIiFCfRb57IAxluWYpiJvoDk76uIqfoA3OJD8iR79ccQkDJFZIRx0-TYsAwsm0iwGX9WkA8RZGr9uK7I7qu5wbG-CKUPIgEcX0wakDaIJ-SEt5MIaE4r+ItUhtKMpySpYuqIi+ma1f7Kj3+qVdLra1fyaj+cXDPLnSV4Zi4iqhooRjLkgHJAxGMAi0SGlq734RSKAtqmgKNytduqmA+UmQH8nb9BqbSQvsFPwGo0vR6bIbh2JBJdjdJBbLLCGLPL0DNq0eCMQtyjGTJ2BsYzgfGPW6JifGW3FMbtzTHBMhBmY47hE1AHRlzuBY6QT9RHa3cFB5Y4GukzzLPdCyGgkSBJIGnNikMf3PwQD1IHaASA3Yxpr2MPak0BxFNIcWezh5MYr2n9ZHu4LvbDNZxYzb6QuMdh48NyQMAWkSUUwbiDy4tKIQgRA5xD9xiQvZkeOZ4ni0hZ49nhePtFZDue18W8XkPvF0FHxxQ5gs83KGvN3x0FOsFLyWJ1DfmjQ0Qp7WsbATVeoLAOhC26Ha8iKYddjvr045DCeOIwpAE1lN4GEJh6LFCVb1YroTbemEgljnWJYrCXeBEt3kRLErbDveuwiiX7wOE7ZA+LLYPmyzOF5iYiF2S4ZHzYl8sOJcfDItxOFbmU+JP2VPoJLeElERJM9OpH9LenLsSmHokAMCNL6gjWiFfBSVXy6LY0-pqkuEYMUcFaTkRrfSaQl277X1oexkvvhpIcn4pnJfsL5FZOva2TjikMlGWDicmEiXJC-NycimZFoovJsDOFG505ExyApVjKlE2KkkqpjB2c4UZq1FEBVxRxDa-vFLynGs5RKU-NiXISqAkLWYxVURzmykajIqf-HLjqPy58N9Rp0kAJ6wqnesqpFXGqXyUtENUGpzVJqVcGa6tTnR6jUgCPJ6laN+pccg-kNNbFu4fRW7GZH9LMFBiZp9jBgQtJTiRjWBK0mMXWwbYbcm2fjHbq2wEEHSMxZecJj2yvmSCLpcTWQSWPfSKCKxygx6aoJrHD4XpSkWOUjUBEEDQFyMtVL9J9zFzQe+Y2kX2KPagz2mw4luU4OhmuDH8KPeGTOPZpY9KmZknmkuPx4riQhP7EnvuTJ6RD4CJ5QmbLTp5RxIOS8JnjgVSHHMqZGQy8XTOvEMy7++Qo2izIYKPMReVtMLMgHebVC+CTtcjn+KFke10KyvYFuLI6FMdwJMspQnLL14DDFZFFZWfBK4TqyE6aLIwFMOYq9Y9ZQMO3gsKNnLCnCZs4SsXWIlbDSJ1s8ifSwCIB9gixw03PRNdmMSPZzEq4VHxuGWcjK9wgObZ14kt4HOf2Jzun2EkfCo5v88DKPMKaAKWFIUleiCNklgjN6GcwHjoAxx716+uchEU-QLk7Ii5G8+Lk0n0mIYu+2I5YpXNOIEi4Glk3YqSKX4T97JCi94u3NOWdz6R3cpkVA1ZHeS5+HIikNHOGX-yvO48ySauxVbTyMcs84LmfwXlBUJRy8qUavNlFmDFR6UvgkwzVGHzMux8rUQVMAH0kSp7rNWDfLKp3yFc0A-1rVPgGa4mqdo5Dkoy-kxsOpXy5hboJ+4tjJqRjTNmNKGXQLRZwYqbnQLDHltFpPSxbtGNrZukNp3AnaS22ha4KDu+CrttmOIXnTaRX1IseQuDmUK7paTXMmDWrHPS6xOgMfCMsTb-KE5A3NsTjzZV6qAZjI8HuRhBn9kwZtGCGQ4NHEI9rJD+NOHDOnEPtvBc4jhauUCHKLgCX7InmorCG4zye2i9ZrEL0UJD6ehi6DuTPNynj4O54rWlz2sXkE+e1BexSbUYLPjnFYvbmR8y-HS8fxghHxfL2Fn+LOVPtfBBLM6Ga9pZrHKCZViiVR04JxveJeMKQlazk6Mwm3hkoNlcUcJTvE2fhLWHmyRKhSrQsUpWw+89hdsqiQ7MqVOyThIfVSucPqWhIWJPLaPvdl9l3Cco7SxPkHK6X8SBVYclzhHIGUVFo5+qn5QX3+FALWFJGGSd-TklpyxkkIrOWCSWWwjlkqy-Oc30Lk6StllA9vhiL2VYijJOIo5fiM2K1zE59c85Q+ibkUjjljk2fvcrrmuSIGHkvuTA1dUytPlv8u9SXJ36BS-l70yeYCvmVOQIpflKKRfxikRcb+CU+-slMf6pTFS28pHLvKRUHziSR88huiqdaCSsVbrA0biqNG3yTR98oleaKfl1TrRr8ildrQoIdUVG7Ul0XqvpXxzGVn0gwSypIHdEnIHKwtpN2LazTeVjAxBUtOQUHU1p6CraZtx9K7ScFhePBV8iOnHo5V4gkhYqsLFDsVVp60sWO1SaTsHpWqiGnO0YX9V71fw3AVRoBUmr5xnCkzU2R4UE0rVlgm1VD274w9L8VcqGYnBhmM0pFnqguBjx9XyLW5bMf1ejJbhBq1xIanGZosA47jdFF5bZrGsPHmYTFFMsxcmupmpqrxqHRmQbSzV3NWZua9mWUJcWEcPxvM4tfzOdpy8UsAEkWeZrFm1rglYEljtCz6EtqYJSsvMLx1Vn8cNZ3a5JdrL7XpKQAmSrCVJ2HXGzcl46-JR72nVeEyJdLauouvkqOydOq6l2eurdnqUmJW6xpd7Is77rWlh6t7MeuukhyBJtlDPm8VEnRy4tZG3qaMsfXjLBpky5OdMtTngj05X6g0toG8q-q1JeczSUBo2UgbONm8nZR30g2GTbkMGh+uhprkdzsNxIxuZcvJGT8ittWi4jSOw1dzcNvc6Bs8UI1DziNOgTHU0nI1jzo2Rq-Tf53J3eUQVp-fytFPC76sV5aK9jevMZ3bKBYPGlVHxtS7IrBNqK4TflNE26iCul88QXitK4ErqpxKxTaSpDa2jkBtMj+S1M6ptdtNFO3TcAtTbDSwFrKiBWjgp1mbpp3K0MRtXDG2aBVy0hzWgq4EYLkxEq-gR5ulVeaCFog07n21B0DsyFyZVVWmSoX3TNVM7ehTk2jmw0DVS7PHR9JS0cLzV2gcxplvMGAz+FwMvLSe3Bn2DTJl7ErRIvdVTi0eXqxGRzVS1+qlFDWzGQs1a0RD2tBM6ntGqvIGLetBzIGLBw1oOYQuaasbbYuZk5qnFYFTmW+LcUS8ltnimXmWoaEVq-FNHatSBPV6B0teTaiJdBOzDRLuOp2lWWrK7UMVkJvatJf1kHXYSiWOS1YYJQnUFLLZM6qSvOoZZyUjhK66pREVpFh9N1yQbddcPYlxI-Z1nI9Y8IoUOkJWQk94b5OHkt74tFG1XUloTka7IFODbzHg3nl67IVcU6FUbrXlwqLdKrK3fvJ1S26f+Ru--mfKKl6imSxXCAR7ofle66qz8+qeSv92UrP5werTT-J0BMGsdAC3HQyv65fSjNw3Ezb3tA3P8YFSeqzSnr5Vp7rKGetxlntFU57xV2CyVQXoPTCDjpRCvzQqrrlKqgtVekLWqvHbULItDenVbk1-n5NW9Yysw2wuZXLkfpJm3NrYYabZagZVgwRXauEWOrx9YiyfX00kUerZ9lW71UjJq2496twQ79tjMgKbjDy24rfVGq636KbyjPZIQmrVpwcgYCHE-ZkJ1pXNxtVBbzNmqKEzbSh+HCoYWo8W1DVt5a9bU0M23e0v9ksroQRV6HNqOOba2JR2rPLgHE6kB4TrdpgPzDHtiw3Cc7zHVIH3tmwz7RJRKU-bKJWBmiayxqUg66lmlT2aZyaWkG0isOgeh0pPWplmBvSug1eoYPy77o3IyjU+omX8jaN6rbXZFIIZMb9dkomYFFyirCG+98KxKm-z3kf8BNrDaQ-btkPcN5DzuxQ2VJK7DHKphKs0a-lgFKaEBKm7Q2pqpV6GgdHXHQEkeYN9TTDem8w4ZuIFWGs52R03WBtbScrYFM3eBdtSQWuNVpHh4fAmNpFJjvDfAwJrdX8PebwyYgs7uXqkGV7UWUJ26dEbr2g04jMbIstoC67JHxTEe-QVHq72x7f5O7PvT2MH0FHbV0POwYVtOJjjr2sMmfZ4Ln2yLfB9RpfXlA-aBrVxWM39q0bDVaLJafKTrbTxjV77SZfWh8qYqGP7wU1p+0bRMYv2TaBeji4Xjfvm2VCeZvBFY94tf3rHK1H+rbdliCWgSf9jag7QcYVlHGQDcS044hIgM9rLj0B9ipnVuPZLZOpst7RSxeOeE3js6m2WUv97USAdtEjqQxPOwAmGlXs7utDrIMHrwTCOp4TQZhPhzM+ZRQZToFdOimcdiWlE-juklTK31MyiEdvSzmBcqdKy4XSMTp3JgUR8phUbssdj7LoNhyznXBu51YbENb9ZDTZIF12TRF1IhDf7Bw1L88N0utke8vhOEpfTSJ1g++Y+kcG49gXTEwxuxOLzYpTJJEkIdhXEnRDuJRFdbspPf9cpMh0+XSaAEMnSpUm8qfitk1sm-WCm9Q1ybJX1c38EbIPZpsFNYDSLbpt8+3uo2d7LD3ev0zkcDxKmHDcC+aWqbs0anUFIq7U5tN1PbTXNeew0+mKL2yqTpwRi06Qqu7BabTZYu0xqodNPSuqpSA5MDC6AAA1chBZF5ggBjA2gQKzaDq62hYI4wF1LzAADaIAacCYGzjaASgTkEAAAF1SkQAA" target="_blank" rel="noreferrer" className="text-primary">在 TypeSafe Playground 中打开拼接后的备忘录 + 问题 →</a>
+<hr />
+<h1 id="附录">附录</h1>
+<h2 id="成本与延迟">成本与延迟</h2>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">tokens = [result[&quot;usage&quot;], classified[&quot;usage&quot;]]
+total_in, total_out = sum(t[0] for t in tokens), sum(t[1] for t in tokens)
+cost = total_in / 1e6 * PRICE[0] + total_out / 1e6 * PRICE[1]
+n_joins = sum(1 for l in LINES if not l[&quot;gap&quot;]) - 1
+print(f&quot;pass 1  {n_joins} questions  {result[&#x27;seconds&#x27;]}s&quot;)
+print(f&quot;pass 2  {classified[&#x27;n_questions&#x27;]} questions  {classified[&#x27;seconds&#x27;]}s&quot;)
+print(f&quot;total   {total_in + total_out:,} tokens  &quot;
+      f&quot;{result[&#x27;seconds&#x27;] + classified[&#x27;seconds&#x27;]:.1f}s  ${cost:.4f}&quot;)</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>pass 1  16 questions  0.32s
+pass 2  62 questions  0.51s
+total   10,211 tokens  0.8s  $0.0003</code></pre></div>
+<p>两趟往返，10,211 个 token，0.8 秒，\$0.0015。</p>
+<h2 id="拼接阈值从何而来">拼接阈值从何而来</h2>
+<p>第 1 遍得到的逐行拼接概率：</p>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">print(&quot;join  line&quot;)
+for i, line in enumerate(LINES[:18]):
+    join = &quot;    &quot; if i == 0 or line[&quot;gap&quot;] else f&quot;{result[&#x27;joins&#x27;][i]:.2f}&quot;
+    print(f&quot;{join}  {line_id(i)}| {line[&#x27;text&#x27;][:66]}&quot;)</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>join  line
+      L000| Migration to the new build system
+      L001| Hi everyone, quick heads up about the build system migration that 
+0.77  L002| happening next week. We have been running the new pipeline in shad
+0.62  L003| mode for three weeks and the results look solid, so it is time to
+0.39  L004| make the switch for real.
+      L005| What changes for you
+      L006| The old make targets keep working until the end of the month. The 
+0.42  L007| entrypoint is a single command that wraps everything, including th
+0.59  L008| docs build that used to be separate.
+      L009| bun run build
+      L010| Generated artifacts no longer need to be committed. The new pipeli
+0.48  L011| uploads them to the registry automatically, and checking them in
+0.40  L012| just creates merge conflicts.
+      L013| The cutover touches three teams, so check whether you are on this
+0.50  L014| list before you plan anything for Monday:
+0.22  L015| The platform team
+0.11  L016| The web client team
+0.12  L017| Whoever still owns the release tooling</code></pre></div>
+<p>这些概率落在两个分离的区间：拆分句子的换行得分在 0.39 及以上，作者本意的换行得分接近零。但两个区间之间的截断点放在哪里，取决于<strong>上一行如何结束</strong>——这是代码可以直接读取的事实：</p>
+<ul><li><p>在<em>悬空</em>行（没有句末标点的行）之后，0.2 及以上的任何值都算作接续。这里真正的接续得分低至 0.39（<code>L004| make the switch for real.</code>），因此单一而保守的 0.5 截断会拆散原本健康的段落。</p></li><li><p>在<em>终结性</em>标点（结束句子或分句的字符：<code>.</code> <code>!</code> <code>?</code> <code>:</code> <code>;</code>）之后，截断提高到 0.5。备忘录中的团队列表说明了原因：<code>L015| The platform team</code> 跟在冒号之后，得分 0.22。这是一个低但非零的&quot;这句话在接续上文&quot;信号，它会越过 0.2 截断，把列表并入引入它的那个句子。没有任何单一阈值能同时适用于两种情况；一旦代码先检查标点，两个区间便分开了。</p></li></ul>
+<h2 id="为什么问题是从句子中间接续而不是同一段落">为什么问题是&quot;从句子中间接续&quot;而不是&quot;同一段落&quot;</h2>
+<p>这个流水线的第一个版本问了那个显而易见的问题：&quot;这两行是否属于同一段落？&quot;它以一种特定的方式失败了。标题下的一串短行（录入时没打列表符号的列表）在宽泛意义上<em>确实</em>是一个段落：这些行挨在一起、共享一个主题。被问到段落时，模型对每一对都回答&quot;是&quot;，拼接遍便把整个列表合并成一个长块。</p>
+<p>同一份文档，同样的请求结构，只有措辞变了：</p>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">def naive_join_question(i: int) -&gt; Noul:
+    return Noul(
+        instructions=f&quot;Are lines {line_id(i - 1)} and {line_id(i)} part of the same paragraph?&quot;,
+        criteria=NoulCriteria(
+            true=&quot;The two lines belong to the same paragraph of running text&quot;,
+            false=&quot;The two lines belong to different paragraphs or different pieces of content&quot;,
+        ),
+    )
+
+
+naive = stitch(&quot;same-paragraph&quot;)
+print(f&quot;{&#x27;&#x27;:14}{&#x27;mid-sentence&#x27;:&gt;13}{&#x27;same paragraph&#x27;:&gt;16}&quot;)
+for i in (15, 16, 17, 20, 21):
+    print(f&quot;{line_id(i)}{&#x27;&#x27;:2}{LINES[i][&#x27;text&#x27;][:36]:&lt;38}&quot;
+          f&quot;{result[&#x27;joins&#x27;][i]:&gt;7.2f}{naive[&#x27;joins&#x27;][i]:&gt;13.2f}&quot;)
+print(f&quot;\nblocks after merge: {len(blocks)} (mid-sentence) vs &quot;
+      f&quot;{len(merge(naive[&#x27;joins&#x27;]))} (same paragraph)&quot;)</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>               mid-sentence  same paragraph
+L015  The platform team                        0.22         0.77
+L016  The web client team                      0.11         0.81
+L017  Whoever still owns the release tooli     0.12         0.78
+L020  Delete the old build cache directory     0.08         0.88
+L021  Run the doctor script and fix anythi     0.05         0.91
+
+blocks after merge: 17 (mid-sentence) vs 12 (same paragraph)</code></pre></div>
+<p>采用段落措辞时，每个未标记的列表项得分都高于 0.75，两个列表都塌缩了，备忘录合并成几个连绵不断的块。&quot;同一段落&quot;让模型判断主题是否延续，而在列表项之间主题确实延续。&quot;从句子中间接续&quot;问的是文本本身。当一个主观判断要喂给阈值时，问题就应该指明决定它的那个最狭窄的事实。在这里，措辞就是 17 个块与 12 个块之间的差别。</p>
+<h2 id="置信度最低的块">置信度最低的块</h2>
+<div class="codeblock"><span class="cb-title">python</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">uncertain = min(blocks, key=lambda b: b[&quot;confidence&quot;])
+print(f&#x27;&quot;{uncertain[&quot;text&quot;]}&quot;&#x27;)
+print(f&quot;confidence {uncertain[&#x27;confidence&#x27;]:.2f}: &quot;, end=&quot;&quot;)
+print(&quot;, &quot;.join(f&quot;{k} {v:.2f}&quot; for k, v in
+                sorted(uncertain[&quot;probabilities&quot;].items(), key=lambda kv: -kv[1])[:3]))</code></pre></div>
+<div class="codeblock"><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code>&quot;The cutover touches three teams, so check whether you are on this list before you plan anything for Monday:&quot;
+confidence 0.43: paragraph 0.53, list_item 0.24, callout 0.19</code></pre></div>
+<p>引入团队列表的那句话确实存在歧义——它命名了接下来的内容（像标题），本身又是完整的句子（像段落），而且所处的位置正是标注可能出现的地方。概率也相应地分散开来（paragraph 0.53、list_item 0.24、callout 0.19），UI 可以把这一点呈现出来——例如，对类型置信度（获胜选项背后的概率）低于 0.55 的任何块加下划线以供复核。</p>
+<section class="lesson" id="lesson">
+  <div class="lesson-head">
+    <div class="lesson-title">📓 内嵌教程 · 第 4 章 · 06_结构恢复 实战笔记本</div>
+    <div class="lesson-sub">像运行 notebook 一样逐步学习：点「下一步」逐格展开——代码格会先出现再"运行"出结果。内容来自教程仓库配套笔记本。</div>
+    <div class="lesson-progress"><div class="lesson-progress-fill" id="lesson-fill"></div></div>
+    <div class="lesson-meta"><span id="lesson-pos">0 / 20</span>
+      <span class="lesson-btns">
+        <button type="button" id="lesson-next">▶ 下一步</button>
+        <button type="button" id="lesson-all">全部展开</button>
+        <button type="button" id="lesson-reset">↺ 重新开始</button>
+      </span>
+    </div>
+  </div>
+  <div class="lesson-cells" id="lesson-cells"></div>
+  <div class="lesson-foot">📖 想看带真实 API Key 的完整运行与源文件：
+    <a href="https://github.com/datawhalechina/jev-cookbook/blob/main/main/04_实战指南/06_结构恢复.ipynb" target="_blank" rel="noopener">第 4 章 · 06_结构恢复 实战笔记本（GitHub）↗</a></div>
+</section>
+<script type="application/json" id="lesson-data">{"cells": [{"k": "md", "h": "<h1 id=\"结构恢复交互式实验\">结构恢复：交互式实验<\/h1>\n<p>本 notebook 把中文镜像站中的 <a href=\"/cookbooks/autoformat/\">Cookbook<\/a> 改写成可以逐格运行、修改输入并观察结果的最小实验。 判断换行边界并从纯文本重建段落。<\/p>\n<p>运行方式与 <code>../03_架构模式/01_架构模式.ipynb<\/code> 一致：有有效的 <code>TYPESAFE_API_KEY<\/code> 时调用真实的 TypeSafe API；没有 Key 或返回 401 时使用内置的离线示例答案。后续代码不区分两种模式，便于先学习 控制流，再切换到真实模型观察概率和置信度。<\/p>\n<blockquote><p>学习提示：先顺序运行全部单元格，再回到“定义 state”或“定义问题”的单元格修改内容，重新运行后面的单元格。 API Key 只从环境变量读取，不能写进 notebook。<\/p><\/blockquote>"}, {"k": "md", "h": "<h2 id=\"0-准备\">0. 准备<\/h2>"}, {"k": "md", "h": "<h3 id=\"01-安装依赖\">0.1 安装依赖<\/h3>"}, {"k": "code", "n": 1, "c": "%pip install -q -U typesafe-sdk", "o": ""}, {"k": "md", "h": "<h3 id=\"02-创建客户端\">0.2 创建客户端<\/h3>"}, {"k": "code", "n": 2, "c": "import os\nimport statistics\nimport time\nfrom pprint import pprint\n\nfrom typesafe_sdk import (\n    Choice,\n    Score,\n    Noul,\n    TypeSafeClient,\n    TypeSafeAuthenticationError,\n)\n\nAPI_KEY = os.environ.get(\"TYPESAFE_API_KEY\", \"\")\nclient = TypeSafeClient(api_key=API_KEY, model=\"jev-latest\") if API_KEY else None\nprint(\"客户端已创建：模型=jev-latest，Key=\", \"已配置\" if API_KEY else \"未配置（将使用离线示例）\")\n", "o": ""}, {"k": "md", "h": "<h3 id=\"03-离线响应与统一调用入口\">0.3 离线响应与统一调用入口<\/h3>"}, {"k": "code", "n": 3, "c": "class _FakeAnswer:\n    def __init__(self, type_, **values):\n        self.type = type_\n        for key, value in values.items():\n            setattr(self, key, value)\n\n\nclass _FakeResponse:\n    def __init__(self, answers):\n        self.answers = answers\n        self.nouls = {k: v for k, v in answers.items() if v.type == \"noul\"}\n        self.choices = {k: v for k, v in answers.items() if v.type == \"choice\"}\n        self.scores = {k: v for k, v in answers.items() if v.type == \"score\"}\n        self.model = \"jev-latest（离线示例）\"\n        self.usage = _FakeAnswer(\"usage\", input_tokens=0, output_tokens=0)\n\n\nclass TS:\n    offline = False\n    _warned = False\n\n    @classmethod\n    def call(cls, state, questions, offline_answers):\n        if client is None:\n            cls.offline = True\n            if not cls._warned:\n                cls._warned = True\n                print(\"⚠️ 未设置有效 TYPESAFE_API_KEY，以下输出使用内置离线示例。\")\n            return _FakeResponse(offline_answers)\n        try:\n            return client.system_one(state, questions)\n        except TypeSafeAuthenticationError:\n            cls.offline = True\n            if not cls._warned:\n                cls._warned = True\n                print(\"⚠️ 未设置有效 TYPESAFE_API_KEY，以下输出使用内置离线示例。\")\n            return _FakeResponse(offline_answers)\n\n\ndef answer_line(name, answer):\n    if answer.type == \"noul\":\n        return f\"{name}: noul={answer.noul:.2f}\"\n    if answer.type == \"choice\":\n        return f\"{name}: choice={answer.choice} confidence={answer.confidence:.2f}\"\n    return f\"{name}: score={answer.score:.2f} confidence={answer.confidence:.2f}\"\n\n\nprint(\"模式：\", \"离线示例\" if TS.offline else \"真实 API（首次调用后确定）\")\n", "o": ""}, {"k": "md", "h": "<h3 id=\"04-连通性测试\">0.4 连通性测试<\/h3>"}, {"k": "code", "n": 4, "c": "if client is None:\n    TS.offline = True\n    print(\"⚠️ API Key 未设置，后续单元格使用离线示例。\")\nelse:\n    try:\n        ping = client.system_one(\"你好\", {\"is_greeting\": Noul(instructions=\"这段文字是在打招呼吗？\")})\n        print(\"✅ API 连通正常，后续单元格会使用真实结果。\")\n    except TypeSafeAuthenticationError:\n        TS.offline = True\n        print(\"⚠️ API Key 无效，后续单元格使用离线示例。\")\n", "o": ""}, {"k": "md", "h": "<h2 id=\"1-结构恢复\">1. 结构恢复<\/h2>\n<p>判断相邻文本行之间的换行是否切断了同一句话，用 Noul 得到连接概率，再按阈值重建段落。<\/p>"}, {"k": "md", "h": "<h3 id=\"11-定义被错误换行的文本\">1.1 定义被错误换行的文本<\/h3>"}, {"k": "code", "n": 5, "c": "LINES = [\n    \"TypeSafe 返回结构化答案，\",\n    \"代码可以直接消费这些答案。\",\n    \"每个问题都应当足够窄，\",\n    \"让模型在一秒内完成判断。\",\n    \"这是一个新的段落。\",\n]\nprint(\"待恢复文本已定义：行数=\", len(LINES))\n", "o": ""}, {"k": "md", "h": "<h3 id=\"12-判断每个相邻行是否属于同一句\">1.2 判断每个相邻行是否属于同一句<\/h3>"}, {"k": "code", "n": 6, "c": "JOIN_PROBABILITIES = [.91, .87, .78, .12]\njoins = []\nfor index in range(len(LINES) - 1):\n    pair = {\"left\": LINES[index], \"right\": LINES[index + 1]}\n    response = TS.call(pair,\n                       {\"same_sentence\": Noul(instructions=\"换行是否把同一个句子切开了？\")},\n                       {\"same_sentence\": _FakeAnswer(\"noul\", noul=JOIN_PROBABILITIES[index])})\n    probability = response.nouls[\"same_sentence\"].noul\n    joins.append(probability)\n    print(f\"{probability:.2f}  {LINES[index]} + {LINES[index + 1]}\")\n", "o": ""}, {"k": "md", "h": "<h3 id=\"13-根据概率重建段落\">1.3 根据概率重建段落<\/h3>"}, {"k": "code", "n": 7, "c": "paragraphs = [LINES[0]]\nfor index, probability in enumerate(joins):\n    if probability >= 0.50:\n        paragraphs[-1] += LINES[index + 1]\n    else:\n        paragraphs.append(LINES[index + 1])\n\nprint(\"\\n\\n\".join(paragraphs))\n", "o": ""}, {"k": "md", "h": "<p>观察：模型只判断相邻两行是否属于同一句，拼接和分段仍由代码控制。调高阈值会产生更多段落，调低阈值会更激进地合并。<\/p>"}, {"k": "md", "h": "<h2 id=\"知识补充\">知识补充<\/h2>\n<ul><li><p><strong>判断不生成<\/strong>：让模型判&quot;这里该不该换段&quot;（noul），重建文本由代码拼接——原文一字不丢。这是 Jev 与生成式模型的分界线：凡是要保真的处理，都用判断+代码，不要摘要。<\/p><\/li><li><p><strong>生产实例<\/strong>（jev-cookbook 04）：fast-jev-compaction 插件用同样模式给 Claude Code 做上下文压缩——逐条工具调用打分、过期的丢、保留的保持原文，替代有损摘要。<\/p><\/li><li><p><strong>批量优势<\/strong>：这类任务往往百万行级，Jev 按输入计费（$0.042/M token、输出免费），成本约为大模型调用的百分之一量级。<\/p><\/li><\/ul>"}, {"k": "md", "h": "<h2 id=\"小结\">小结<\/h2>\n<p>这本 notebook 的边界很清楚：TypeSafe 只负责受限、可编程的判断；排序、阈值、分组、重建文本和 函数分派都由 Python 代码完成。修改输入或问题后重新运行，就能观察“模型答案 → 确定性代码”的变化。<\/p>"}], "gh": "https://github.com/datawhalechina/jev-cookbook/blob/main/main/04_实战指南/06_结构恢复.ipynb", "label": "第 4 章 · 06_结构恢复 实战笔记本"}</script>
+  </article>
+  <nav class="pager"><a class="pager-prev" href="../../cookbooks/semantic_find/"><span>上一篇</span><strong>逐行语义搜索</strong></a><a class="pager-next" href="../../cookbooks/function_calling/"><span>下一篇</span><strong>函数调用</strong></a></nav>
+  <footer class="site-footer">本站为 <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">docs.typesafe.ai</a> 的中文翻译，仅供学习参考；内容版权归原作者所有。</footer>
+  </main>
+<aside class="toc"><div class="toc-title">本页内容</div><a class="toc-item toc-l2" href="#环境准备">环境准备</a><a class="toc-item toc-l2" href="#文档一份丢失格式的团队备忘录">文档：一份丢失格式的团队备忘录</a><a class="toc-item toc-l2" href="#第-1-遍拼接被拆分的句子">第 1 遍：拼接被拆分的句子</a><a class="toc-item toc-l2" href="#第-2-遍为块分类">第 2 遍：为块分类</a><a class="toc-item toc-l2" href="#渲染">渲染</a><a class="toc-item toc-l2" href="#在-playground-中打开">在 Playground 中打开</a><a class="toc-item toc-l2" href="#成本与延迟">成本与延迟</a><a class="toc-item toc-l2" href="#拼接阈值从何而来">拼接阈值从何而来</a><a class="toc-item toc-l2" href="#为什么问题是从句子中间接续而不是同一段落">为什么问题是&amp;quot;从句子中间接续&amp;quot;而不是&amp;quot;同一段落&amp;quot;</a><a class="toc-item toc-l2" href="#置信度最低的块">置信度最低的块</a></aside>
+</div>
+<script src="../../assets/search-index.js"></script>
+<script src="../../assets/lz-string.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/lab.js"></script>
+<script src="../../assets/lesson.js"></script>
+</body>
+</html>

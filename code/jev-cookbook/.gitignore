@@ -1,0 +1,28 @@
+_orig/
+__pycache__/
+nohup.out
+.DS_Store
+.venv/
+notebooks/.venv/
+.ipynb_checkpoints/
+**/data_generation/generated/
+
+# llm_eval / laya/benchmark are self-contained and ship their own .gitignore,
+# but the root .gitignore is the safety net for editor / OS noise that
+# escapes the submodule-level rules.
+llm_eval/.pytest_cache/
+llm_eval/**/__pycache__/
+llm_eval/.DS_Store
+laya/benchmark/.pytest_cache/
+laya/benchmark/**/__pycache__/
+laya/benchmark/.DS_Store
+
+main/07_实战应用/app/browser-use/.env
+main/07_实战应用/app/jev-games/games/*/.env
+**/.env
+!**/.env.example
+
+main/07_实战应用/logs/
+main/07_实战应用/app/typesafe-mario-repro/artifacts/viz/
+
+main/10_本地模型/experiments/

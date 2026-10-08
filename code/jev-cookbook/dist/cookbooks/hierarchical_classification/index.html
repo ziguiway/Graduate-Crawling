@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>层级分类 · TypeSafe 中文文档</title>
+<link rel="stylesheet" href="../../assets/style.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛡️%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" id="menu-btn" aria-label="打开导航">☰</button>
+  <a class="brand" href="../../"><span class="brand-mark">🛡️</span>TypeSafe 中文文档</a>
+  <div class="searchbox">
+    <input id="search-input" type="search" placeholder="搜索文档…（Ctrl / ⌘ + K）" autocomplete="off" />
+    <div class="search-results" id="search-results" hidden></div>
+  </div>
+  <div class="top-actions">
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换深色模式">🌙</button>
+    <a class="origin-link" href="https://docs.typesafe.ai" target="_blank" rel="noopener">原文档 ↗</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"><nav class="sidebar-nav" id="sidebar-nav"><div class="nav-group" data-group="0"><button class="nav-group-title" type="button">开始<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../introduction/">简介</a><a class="nav-item" href="../../introduction/quickstart/">快速开始</a><a class="nav-item" href="../../introduction/machine-learning-primer/">AI 入门</a><a class="nav-item" href="../../introduction/coding-agents/">Jev 与编码智能体</a></div></div><div class="nav-group" data-group="1"><button class="nav-group-title" type="button">核心概念<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../concepts/system-one/">System One</a><a class="nav-item" href="../../concepts/state/">状态（State）</a><a class="nav-item" href="../../concepts/how-to-build-with-system-one/">如何用 TypeSafe 构建</a><a class="nav-item" href="../../concepts/use-case-map/">应用场景地图</a></div></div><div class="nav-group" data-group="2"><button class="nav-group-title" type="button">原语（问题类型）<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../primitives/">原语概览</a><a class="nav-item" href="../../primitives/choice/">Choice（选择）</a><a class="nav-item" href="../../primitives/score/">Score（评分）</a><a class="nav-item" href="../../primitives/noul/">Noul（是非判断）</a><a class="nav-item" href="../../primitives/advanced/">进阶：结构化</a></div></div><div class="nav-group" data-group="3"><button class="nav-group-title" type="button">置信度<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../confidence/">置信度（Confidence）</a></div></div><div class="nav-group" data-group="4"><button class="nav-group-title" type="button">架构模式<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../patterns/">模式概览</a><a class="nav-item" href="../../patterns/fan-out/">投机式扇出</a><a class="nav-item" href="../../patterns/confidence-routing/">置信度门控路由</a><a class="nav-item" href="../../patterns/composite-scoring/">组合评分</a><a class="nav-item" href="../../patterns/intent-routing/">意图路由</a></div></div><div class="nav-group open" data-group="5"><button class="nav-group-title" type="button">实战指南<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../cookbooks/">实战指南概览</a><a class="nav-item" href="../../cookbooks/consistency_noul_cookbook/">自一致性：Noul</a><a class="nav-item" href="../../cookbooks/consistency_choice_cookbook/">自一致性：Choice</a><a class="nav-item" href="../../cookbooks/parallel_questions/">并行提问</a><a class="nav-item" href="../../cookbooks/rerank_typesafe/">重排序（Re-ranking）</a><a class="nav-item" href="../../cookbooks/semantic_find/">逐行语义搜索</a><a class="nav-item" href="../../cookbooks/autoformat/">结构恢复</a><a class="nav-item" href="../../cookbooks/function_calling/">函数调用</a><a class="nav-item" href="../../cookbooks/skill_suggestion/">技能推荐</a><a class="nav-item" href="../../cookbooks/entity_alignment/">知识图谱实体对齐</a><a class="nav-item" href="../../cookbooks/classifying_rag_passages/">RAG 段落分类</a><a class="nav-item" href="../../cookbooks/citation_check/">引用核查</a><a class="nav-item" href="../../cookbooks/llm_guardrails/">LLM 防护栏</a><a class="nav-item" href="../../cookbooks/sde_cascade/">SDE 级联</a><a class="nav-item" href="../../cookbooks/date_extraction_cookbook/">日期抽取</a><a class="nav-item" href="../../cookbooks/pre_parsed_value_extraction_cookbook/">预解析值抽取</a><a class="nav-item current" href="../../cookbooks/hierarchical_classification/">层级分类</a><a class="nav-item" href="../../cookbooks/autoresearch_feature_discovery/">自动研究特征发现</a><a class="nav-item" href="../../cookbooks/classification_using_confidence/">基于置信度的分类</a></div></div><div class="nav-group" data-group="6"><button class="nav-group-title" type="button">示例<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../demos/">示例概览</a><a class="nav-item" href="../../demos/smart-home/">智能家居助手</a></div></div><div class="nav-group" data-group="7"><button class="nav-group-title" type="button">参考<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../api/">HTTP API 参考</a><a class="nav-item" href="../../models/">模型</a><a class="nav-item" href="../../model-jaggedness/jev-1.13/">Jev 1.13 已知短板</a><a class="nav-item" href="../../agent-skill/">Agent 技能</a><a class="nav-item" href="../../legal/">法律条款</a></div></div><div class="nav-group" data-group="8"><button class="nav-group-title" type="button">客户端 SDK<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../sdk/">SDK 概览</a><a class="nav-item" href="../../sdk/python/">TypeSafe Python SDK</a><a class="nav-item" href="../../sdk/python/usage/">用法</a><a class="nav-item" href="../../sdk/python/changelog/">更新日志</a><a class="nav-item" href="../../sdk/python/api/">API 参考</a><a class="nav-item" href="../../sdk/python/api/clients/async/">异步客户端 AsyncTypeSafeClient</a><a class="nav-item" href="../../sdk/python/api/clients/sync/">同步客户端 TypeSafeClient</a><a class="nav-item" href="../../sdk/python/api/types/questions/">类型：Questions（提问）</a><a class="nav-item" href="../../sdk/python/api/types/responses/">类型：Answers 与响应</a><a class="nav-item" href="../../sdk/python/api/types/common/">通用类型</a><a class="nav-item" href="../../sdk/python/api/retries/">重试策略 RetryPolicy</a><a class="nav-item" href="../../sdk/python/api/exceptions/">异常</a><a class="nav-item" href="../../sdk/python/api/constants/">常量</a><a class="nav-item" href="../../sdk/javascript/">TypeSafe JavaScript SDK</a><a class="nav-item" href="../../sdk/javascript/changelog/">更新日志</a><a class="nav-item" href="../../sdk/javascript/api/">API 参考</a><a class="nav-item" href="../../sdk/javascript/api/classes/APIConnectionError/">类：APIConnectionError</a><a class="nav-item" href="../../sdk/javascript/api/classes/APIError/">类：APIError</a><a class="nav-item" href="../../sdk/javascript/api/classes/APIPromise/">类：APIPromise</a><a class="nav-item" href="../../sdk/javascript/api/classes/APITimeoutError/">类：APITimeoutError</a><a class="nav-item" href="../../sdk/javascript/api/classes/APIUserAbortError/">类：APIUserAbortError</a><a class="nav-item" href="../../sdk/javascript/api/classes/AuthenticationError/">类：AuthenticationError</a><a class="nav-item" href="../../sdk/javascript/api/classes/BadRequestError/">类：BadRequestError</a><a class="nav-item" href="../../sdk/javascript/api/classes/InternalServerError/">类：InternalServerError</a><a class="nav-item" href="../../sdk/javascript/api/classes/NotFoundError/">类：NotFoundError</a><a class="nav-item" href="../../sdk/javascript/api/classes/PermissionDeniedError/">类：PermissionDeniedError</a><a class="nav-item" href="../../sdk/javascript/api/classes/RateLimitError/">类：RateLimitError</a><a class="nav-item" href="../../sdk/javascript/api/classes/TypeSafeClient/">类：TypeSafeClient</a><a class="nav-item" href="../../sdk/javascript/api/classes/TypeSafeError/">类：TypeSafeError</a><a class="nav-item" href="../../sdk/javascript/api/classes/UnprocessableEntityError/">类：UnprocessableEntityError</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ChoiceQuestion/">接口：ChoiceQuestion</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ChoiceResponse/">接口：ChoiceResponse</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/Logger/">接口：Logger</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ModelCard/">接口：ModelCard</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/Models/">接口：Models</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/NoulQuestion/">接口：NoulQuestion</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/NoulResponse/">接口：NoulResponse</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/Questions/">接口：Questions</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/RequestOptions/">接口：RequestOptions</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/RetryPolicy/">接口：RetryPolicy</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ScoreQuestion/">接口：ScoreQuestion</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/ScoreResponse/">接口：ScoreResponse</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/SystemOneRequest/">接口：SystemOneRequest</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/SystemOneRequestPayload/">接口：SystemOneRequestPayload</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/SystemOneResult/">接口：SystemOneResult</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/TypeSafeClientConfig/">接口：TypeSafeClientConfig</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/Usage/">接口：Usage</a><a class="nav-item" href="../../sdk/javascript/api/interfaces/WithResponse/">接口：WithResponse</a><a class="nav-item" href="../../sdk/javascript/api/functions/choice/">函数：choice()</a><a class="nav-item" href="../../sdk/javascript/api/functions/noul/">函数：noul()</a><a class="nav-item" href="../../sdk/javascript/api/functions/score/">函数：score()</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ChoiceCriteria/">类型：ChoiceCriteria</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/Description/">类型：Description</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/EntryType/">类型：EntryType</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/EnvVar/">类型：EnvVar</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/Fetch/">类型：Fetch</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/JsonValue/">类型：JsonValue</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/LogLevel/">类型：LogLevel</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/Question/">类型：Question</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ResultFor/">类型：ResultFor</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ScoreCriteria/">类型：ScoreCriteria</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ScoreLegend/">类型：ScoreLegend</a><a class="nav-item" href="../../sdk/javascript/api/type-aliases/ScoreOf/">类型：ScoreOf</a><a class="nav-item" href="../../sdk/javascript/api/variables/ENV/">变量：ENV</a><a class="nav-item" href="../../sdk/javascript/api/variables/LOG_LEVELS/">变量：LOG_LEVELS</a><a class="nav-item" href="../../sdk/javascript/api/variables/VERSION/">变量：VERSION</a></div></div><div class="nav-group" data-group="9"><button class="nav-group-title" type="button">拓展阅读<span class="chev">▾</span></button><div class="nav-items"><a class="nav-item" href="../../materials/clef/">Clef：开源决策模型与 RL 微调平台</a><a class="nav-item" href="../../materials/polydao/">Jev 工程实战：账单砍掉 90%</a><a class="nav-item" href="../../materials/rerank-lab/">Jev 能替代 Rerank 模型吗</a><a class="nav-item" href="../../materials/laya-arch/">Laya 决策模型架构解析</a><a class="nav-item" href="../../materials/laya-oss/">Laya 开源发布</a><a class="nav-item" href="../../materials/laya-trend/">Laya 登上 HuggingFace 榜单</a></div></div></nav></aside>
+  <div class="sidebar-mask" id="sidebar-mask"></div>
+  <main class="content"><article class="doc">
+<h1 id="层级分类">层级分类</h1>
+<p class="page-desc">通过对 TypeSafe Choice 概率进行并行束搜索，在深层的专利、零售产品、生物医学和源代码层级中对文档进行分类。</p>
+<p>大量数据以结构化层级的形态存在，例如分类体系、文件系统层级、网站结构、代码库、组织架构图、生物本体、LLM 技能、内容审核策略等。层级分类的目标是遍历层级直到正确的叶子节点，该叶子节点就是最终的分类结果。这对 typesafe 的 <code>Choice</code> 原语来说是完美契合。我们通过在每个节点（从根开始）对文档进行分类，然后迭代地前往下一个概率最高的节点，直到抵达某个叶子节点（<strong>贪心搜索</strong>），来找到最可能的叶子。</p>
+<p>API 的并行特性还让我们能用并行问题同时探索多条路径，即使用<strong>束搜索</strong>来提升性能。本实战指南的 TypeSafe API 调用每次同时评估层级的 <code>K</code> 条路径。束搜索按几何平均边概率保留最好的 <code>K</code> 条路径：<code>product(edge_probabilities) ** (1 / decisions)</code>，并剪掉其余的。该概率做了长度归一化，因此浅层和深层叶子可以公平比较。</p>
+<p>把问题这样分解成层级结构本身也有其好处：</p>
+<ul><li><p>可观测性</p>
+<ul><li><p>确定你的错误分类最常发生在哪些节点</p></li><li><p>测量每个节点和每条边被遍历的次数</p></li></ul></li><li><p>可测试性</p>
+<ul><li><p>对层级更新进行单元测试，并测量其对分类性能的影响</p></li></ul></li><li><p><img src="../../assets/images/cookbooks/hierarchical_classification/this_is_the_way.jpg" alt="this is the way" width="100" height="56" data-path="cookbooks/hierarchical_classification/this_is_the_way.jpg" /></p></li></ul>
+<h3 id="本实战指南使用的层级">本实战指南使用的层级</h3>
+<ul><li><p><strong><a href="https://www.cooperativepatentclassification.org/sites/default/files/cpc/bulk/CPCSchemeXML202605.zip" target="_blank" rel="noopener" target="_blank" rel="noopener">CPC 2026.05</a>:</strong> 专利主题内容，从宽泛的技术大类到具体发明。</p></li><li><p><strong><a href="https://github.com/Shopify/product-taxonomy/blob/v2026-02/dist/en/categories.txt" target="_blank" rel="noopener" target="_blank" rel="noopener">Shopify 2026-02</a>:</strong> 零售产品类别，从商店部门到具体产品类型。</p></li><li><p><strong><a href="https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/desc2026.zip" target="_blank" rel="noopener" target="_blank" rel="noopener">MeSH 2026</a>:</strong> 生物医学主题，从宽泛的领域到具体的病症。MeSH 是一个 DAG，因此一个描述符可以出现在多个父节点之下；本演示将其官方树号路径展开。</p></li><li><p><strong>CookSafe 文件：</strong> TypeSafe 实战指南仓库的层级，从文件夹一直搜索到源文件。</p></li></ul>
+<h3 id="方法">方法</h3>
+<ul><li><p><strong>贪心搜索：</strong> 选择概率最高的子节点，丢弃所有其他选项。早期的错误无法挽回。</p></li><li><p><strong>束搜索：</strong> 保留 <code>K</code> 条可能路径，并并行地对每个前沿分类。更深层的证据可以修复早期含糊的决定。几何平均概率最高的那条路径，其叶子即为最终分类。</p></li><li><p><strong>TypeSafe Choice：</strong> 每个节点都是一个 <code>Choice</code> 问题，其完整的概率分布就是它的各条边。束中的每条路径都作为并行问题运行，因此额外的探索几乎不增加实际耗时。</p></li><li><p><strong>公式：</strong></p>
+<ul><li><p><code>path_score = product(edge_probabilities) ** (1 / decisions)</code></p>
+<ul><li><p>用于剪枝和比较路径</p></li></ul></li><li><p><code>separation = top_path_score / second_path_score</code></p>
+<ul><li><p>有用的指标，但不用于剪枝</p></li><li><p>该比率把最高路径的几何平均值与其最接近的对手进行比较。</p>
+<ul><li><p>接近 <code>1×</code> 说明含糊</p></li><li><p>比率大意味着区分清晰。</p></li></ul></li></ul></li></ul></li><li><p><strong>关于指标的说明：</strong></p>
+<ul><li><p>换一种指标，例如 <code>min(top_prob/second_top_prob)</code>，它会针对在每个节点上决定都非常清晰的路径进行优化。</p></li><li><p>对于非常深的层级（例如超过 10 层），用 <code>exp(mean(log(probs)))</code> 代替 <code>product(edge_probabilities) ** (1 / decisions)</code>，以避免精度误差。</p></li></ul></li></ul>
+<h2 id="加载并可视化示例层级">加载并可视化示例层级</h2>
+<p>这些辅助工具下载固定版本的分类体系源数据，将其解析为直接子节点树，并把每次搜索遍历渲染为静态 SVG。</p>
+<div class="codeblock"><span class="cb-title">expandable</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">import html
+import os
+import shutil
+import textwrap
+import urllib.request
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+from typing import NamedTuple, TypeAlias
+from xml.etree import ElementTree
+from zipfile import ZipFile
+
+from cooksafe import JsonCache
+from IPython.display import Markdown, display
+from typesafe_sdk import Choice, RetryPolicy, TypeSafeClient
+
+Tree: TypeAlias = dict[str, &quot;Tree&quot;]
+
+
+class Hierarchy(NamedTuple):
+    &quot;&quot;&quot;One query and a complete hierarchy.
+
+    :param slug: filename-safe taxonomy name.
+    :param name: display name.
+    :param version: pinned dataset version.
+    :param source_url: hierarchy source.
+    :param node_count: number of loaded hierarchy nodes.
+    :param document: unstructured text classified by TypeSafe.
+    :param expected_leaf: expected final classification.
+    :param tree: nested direct-child menus.
+    &quot;&quot;&quot;
+
+    slug: str
+    name: str
+    version: str
+    source_url: str
+    node_count: int
+    document: str
+    expected_leaf: str
+    tree: Tree
+
+
+CPC_URL = (
+    &quot;https://www.cooperativepatentclassification.org/sites/default/files/&quot;
+    &quot;cpc/bulk/CPCSchemeXML202605.zip&quot;
+)
+SHOPIFY_URL = (
+    &quot;https://raw.githubusercontent.com/Shopify/product-taxonomy/&quot;
+    &quot;v2026-02/dist/en/categories.txt&quot;
+)
+MESH_URL = &quot;https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/desc2026.zip&quot;
+MESH_CATEGORIES = {
+    &quot;A&quot;: &quot;Anatomy&quot;,
+    &quot;B&quot;: &quot;Organisms&quot;,
+    &quot;C&quot;: &quot;Diseases&quot;,
+    &quot;D&quot;: &quot;Chemicals and Drugs&quot;,
+    &quot;E&quot;: &quot;Analytical, Diagnostic and Therapeutic Techniques, and Equipment&quot;,
+    &quot;F&quot;: &quot;Psychiatry and Psychology&quot;,
+    &quot;G&quot;: &quot;Phenomena and Processes&quot;,
+    &quot;H&quot;: &quot;Disciplines and Occupations&quot;,
+    &quot;I&quot;: &quot;Anthropology, Education, Sociology, and Social Phenomena&quot;,
+    &quot;J&quot;: &quot;Technology, Industry, and Agriculture&quot;,
+    &quot;K&quot;: &quot;Humanities&quot;,
+    &quot;L&quot;: &quot;Information Science&quot;,
+    &quot;M&quot;: &quot;Named Groups&quot;,
+    &quot;N&quot;: &quot;Health Care&quot;,
+    &quot;V&quot;: &quot;Publication Characteristics&quot;,
+    &quot;Z&quot;: &quot;Geographicals&quot;,
+}
+
+
+def _download(url: str, path: Path) -&gt; Path:
+    &quot;&quot;&quot;Download a pinned dataset once.
+
+    :param url: official dataset URL.
+    :param path: local cache path.
+    :returns: local dataset path.
+    &quot;&quot;&quot;
+
+    if path.exists():
+        return path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path: Path = path.with_suffix(path.suffix + &quot;.tmp&quot;)
+    request = urllib.request.Request(
+        url, headers={&quot;User-Agent&quot;: &quot;typesafe-taxonomy/1.0&quot;}
+    )
+    with urllib.request.urlopen(request, timeout=120) as response:
+        with temporary_path.open(&quot;wb&quot;) as file:
+            shutil.copyfileobj(response, file)
+    temporary_path.replace(path)
+    return path
+
+
+def _insert(tree: Tree, path: tuple[str, ...]) -&gt; None:
+    subtree_value: Tree = tree
+    for label in path:
+        subtree_value = subtree_value.setdefault(label, {})
+
+
+def _cpc_title(item: ElementTree.Element) -&gt; str:
+    class_title: ElementTree.Element | None = item.find(&quot;class-title&quot;)
+    if class_title is None:
+        return &quot;&quot;
+    return &quot; &quot;.join(&quot; &quot;.join(class_title.itertext()).split())
+
+
+def _load_cpc(path: Path) -&gt; tuple[Tree, int]:
+    titles: dict[str, str] = {}
+    levels: dict[str, int] = {}
+    parent_by_symbol: dict[str, str] = {}
+    children_by_symbol: defaultdict[str, list[str]] = defaultdict(list)
+
+    def visit(item: ElementTree.Element, parent_symbol: str | None) -&gt; None:
+        symbol: str | None = item.findtext(&quot;classification-symbol&quot;)
+        next_parent: str | None = parent_symbol
+        if symbol:
+            title: str = _cpc_title(item)
+            if title:
+                titles[symbol] = title
+            levels[symbol] = min(levels.get(symbol, 99), int(item.attrib[&quot;level&quot;]))
+            if (
+                parent_symbol
+                and parent_symbol != symbol
+                and symbol not in parent_by_symbol
+            ):
+                parent_by_symbol[symbol] = parent_symbol
+                children_by_symbol[parent_symbol].append(symbol)
+            next_parent = symbol
+        for child in item.findall(&quot;classification-item&quot;):
+            visit(child, next_parent)
+
+    with ZipFile(path) as zip_file:
+        names = sorted(
+            name
+            for name in zip_file.namelist()
+            if name.startswith(&quot;cpc-scheme-&quot;) and name.endswith(&quot;.xml&quot;)
+        )
+        for name in names:
+            root = ElementTree.fromstring(zip_file.read(name))
+            for item in root.findall(&quot;classification-item&quot;):
+                visit(item, None)
+
+    labels: dict[str, str] = {
+        symbol: f&quot;{symbol} {titles.get(symbol, &#x27;&#x27;)}&quot;.strip() for symbol in levels
+    }
+
+    def build(symbol: str) -&gt; Tree:
+        return {
+            labels[child]: build(child) for child in children_by_symbol.get(symbol, [])
+        }
+
+    root_symbols: list[str] = sorted(
+        symbol for symbol, level in levels.items() if level == 2
+    )
+    tree: Tree = {labels[symbol]: build(symbol) for symbol in root_symbols}
+    return tree, len(labels)
+
+
+def _load_shopify(path: Path) -&gt; tuple[Tree, int]:
+    tree: Tree = {}
+    category_count: int = 0
+    for line in path.read_text().splitlines():
+        if not line or line.startswith(&quot;#&quot;):
+            continue
+        _, path_text = line.split(&quot; : &quot;, maxsplit=1)
+        category_path: tuple[str, ...] = tuple(path_text.strip().split(&quot; &gt; &quot;))
+        _insert(tree, category_path)
+        category_count += 1
+    return tree, category_count
+
+
+def _load_mesh(path: Path) -&gt; tuple[Tree, int]:
+    &quot;&quot;&quot;Load every official MeSH tree-number path.
+
+    A descriptor may have multiple tree numbers because MeSH is a DAG. Expanding
+    those positions into paths makes it usable by the tree-oriented beam search.
+
+    :param path: MeSH descriptor XML ZIP.
+    :returns: expanded tree and position count.
+    &quot;&quot;&quot;
+
+    with ZipFile(path) as zip_file:
+        root: ElementTree.Element = ElementTree.fromstring(
+            zip_file.read(&quot;desc2026.xml&quot;)
+        )
+    names_by_tree_number: dict[str, str] = {
+        tree_number.text: descriptor_record.findtext(&quot;DescriptorName/String&quot;, &quot;&quot;)
+        for descriptor_record in root.findall(&quot;DescriptorRecord&quot;)
+        for tree_number in descriptor_record.findall(&quot;TreeNumberList/TreeNumber&quot;)
+        if tree_number.text
+    }
+    tree: Tree = {}
+    for tree_number in sorted(names_by_tree_number):
+        parts: list[str] = tree_number.split(&quot;.&quot;)
+        prefixes: list[str] = [
+            &quot;.&quot;.join(parts[:index]) for index in range(1, len(parts) + 1)
+        ]
+        category_code: str = tree_number[0]
+        category_path: tuple[str, ...] = (
+            f&quot;{category_code} {MESH_CATEGORIES[category_code]}&quot;,
+            *(f&quot;{prefix} {names_by_tree_number[prefix]}&quot; for prefix in prefixes),
+        )
+        _insert(tree, category_path)
+    position_count: int = len(names_by_tree_number) + len(tree)
+    return tree, position_count
+
+
+CODEBASE_SNAPSHOT = Path(&quot;codebase_files.txt&quot;)
+
+
+def _load_codebase(path: Path) -&gt; tuple[Tree, int]:
+    &quot;&quot;&quot;Load the frozen CookSafe source-file hierarchy.
+
+    The listing is a snapshot of the repository&#x27;s source files in the order a walk found them,
+    taken when this cookbook was rendered, rather than a walk of whatever tree the cookbook
+    happens to sit in. A live walk makes the taxonomy -- and every number derived from it --
+    depend on the reader&#x27;s checkout, including untracked scratch files, so the shipped cache
+    stops describing the same tree. Line order is significant: sibling options are asked in the
+    order they appear here, so it is part of the question, not presentation.
+
+    :param path: file holding one repository-relative source path per line.
+    :returns: nested file tree and node count.
+    &quot;&quot;&quot;
+
+    tree: Tree = {}
+    node_paths: set[tuple[str, ...]] = set()
+    for line in path.read_text(encoding=&quot;utf-8&quot;).splitlines():
+        if not line.strip():
+            continue
+        hierarchy_path: tuple[str, ...] = (&quot;CookSafe&quot;, *line.split(&quot;/&quot;))
+        _insert(tree, hierarchy_path)
+        node_paths.update(
+            hierarchy_path[:index] for index in range(1, len(hierarchy_path) + 1)
+        )
+    return tree, len(node_paths)
+
+
+def load_hierarchies(data_directory: Path = Path(&quot;datasets&quot;)) -&gt; tuple[Hierarchy, ...]:
+    &quot;&quot;&quot;Load three public taxonomies and one frozen code hierarchy.
+
+    :param data_directory: cache directory for official raw files.
+    :returns: CPC, Shopify, MeSH, and CookSafe examples.
+    &quot;&quot;&quot;
+
+    cpc_tree, cpc_nodes = _load_cpc(
+        _download(CPC_URL, data_directory / &quot;CPCSchemeXML202605.zip&quot;)
+    )
+    shopify_tree, shopify_nodes = _load_shopify(
+        _download(SHOPIFY_URL, data_directory / &quot;shopify_categories_2026-02.txt&quot;)
+    )
+    mesh_tree, mesh_nodes = _load_mesh(
+        _download(MESH_URL, data_directory / &quot;mesh_descriptors_2026.zip&quot;)
+    )
+    codebase_tree, codebase_nodes = _load_codebase(CODEBASE_SNAPSHOT)
+    return (
+        Hierarchy(
+            slug=&quot;cpc&quot;,
+            name=&quot;CPC patents&quot;,
+            version=&quot;2026.05&quot;,
+            source_url=CPC_URL,
+            node_count=cpc_nodes,
+            document=(
+                &quot;Patent abstract: a freestanding structural wooden perch for poultry or &quot;
+                &quot;pet birds. The elevated roost has crossbars sized for bird feet and mounts &quot;
+                &quot;inside an aviary.&quot;
+            ),
+            expected_leaf=&quot;A01K31/12 Perches for poultry or birds, e.g. roosts&quot;,
+            tree=cpc_tree,
+        ),
+        Hierarchy(
+            slug=&quot;shopify&quot;,
+            name=&quot;Shopify products&quot;,
+            version=&quot;2026-02&quot;,
+            source_url=SHOPIFY_URL,
+            node_count=shopify_nodes,
+            document=(
+                &quot;Furniture listing: a wall-mounted window shelf bed. This padded floating shelf &quot;
+                &quot;uses suction cups and a washable cushion as a sunny perch for one cat.&quot;
+            ),
+            expected_leaf=&quot;Cat Window Beds &amp; Perches&quot;,
+            tree=shopify_tree,
+        ),
+        Hierarchy(
+            slug=&quot;mesh&quot;,
+            name=&quot;MeSH biomedical subjects&quot;,
+            version=&quot;2026&quot;,
+            source_url=MESH_URL,
+            node_count=mesh_nodes,
+            document=(
+                &quot;Clinical abstract: Crohn disease with transmural ileocolonic inflammation, &quot;
+                &quot;skip lesions, abdominal pain, and chronic diarrhea. Colonoscopy showed &quot;
+                &quot;cobblestoning and biopsy found noncaseating granulomas; treatment with &quot;
+                &quot;infliximab produced remission.&quot;
+            ),
+            expected_leaf=&quot;C06.405.469.432.500 Crohn Disease&quot;,
+            tree=mesh_tree,
+        ),
+        Hierarchy(
+            slug=&quot;codebase&quot;,
+            name=&quot;CookSafe files&quot;,
+            version=&quot;snapshot 2026-08-06&quot;,
+            source_url=str(CODEBASE_SNAPSHOT),
+            node_count=codebase_nodes,
+            document=(
+                &quot;Developer search: find the experimental Python module under x/eugene that &quot;
+                &quot;implements BM25, dense, and fused retrievers for legal RAG.&quot;
+            ),
+            expected_leaf=&quot;retrievers.py&quot;,
+            tree=codebase_tree,
+        ),
+    )
+
+
+NODE_W, NODE_H = 300, 38
+COL_W, ROW_H = 360, 50
+PAD_X = 28
+EDGE_TOP_K = 5
+
+
+def subtree(tree: Tree, path: tuple[str, ...]) -&gt; Tree:
+    &quot;&quot;&quot;Return the direct-child menu below ``path``.
+
+    :param tree: taxonomy root.
+    :param path: path from the taxonomy root.
+    :returns: child mapping at the path.
+    &quot;&quot;&quot;
+
+    subtree_value: Tree = tree
+    for label in path:
+        subtree_value = subtree_value[label]
+    return subtree_value
+
+
+def _escape(value: object) -&gt; str:
+    return html.escape(str(value), quote=True)
+
+
+def _truncate(value: str, length: int = 33) -&gt; str:
+    return value if len(value) &lt;= length else value[: length - 1] + &quot;…&quot;
+
+
+def _build_nodes(hierarchy: Hierarchy, result: dict) -&gt; dict:
+    records: dict[tuple[str, ...], dict] = {
+        tuple(record[&quot;parent&quot;]): record for record in result[&quot;records&quot;]
+    }
+    best_path: tuple[str, ...] = tuple(result[&quot;beam&quot;][0][&quot;path&quot;])
+    greedy_path: tuple[str, ...] = tuple(result[&quot;greedy&quot;][&quot;path&quot;])
+    retained: set[tuple[str, ...]] = {tuple(path) for path in result[&quot;retained_paths&quot;]}
+
+    def grow(path: tuple[str, ...]) -&gt; list[dict]:
+        record: dict | None = records.get(path)
+        if record is None:
+            return []
+        children: list[dict] = []
+        probabilities: dict[str, float] = record[&quot;probabilities&quot;]
+        ranked: list[tuple[str, float]] = sorted(
+            probabilities.items(), key=lambda item: item[1], reverse=True
+        )
+        shown_labels: set[str] = {label for label, _ in ranked[:EDGE_TOP_K]}
+        shown_labels.update(
+            label
+            for label, _ in ranked
+            if path + (label,) in retained
+            or path + (label,) == best_path[: len(path) + 1]
+            or path + (label,) == greedy_path[: len(path) + 1]
+        )
+        for label, probability in ranked:
+            if label not in shown_labels:
+                continue
+            child_path: tuple[str, ...] = path + (label,)
+            on_best_path: bool = child_path == best_path[: len(child_path)]
+            on_greedy_path: bool = child_path == greedy_path[: len(child_path)]
+            kind: str = (
+                &quot;winner&quot;
+                if on_best_path
+                else &quot;greedy&quot;
+                if on_greedy_path
+                else &quot;beam&quot;
+                if child_path in retained
+                else &quot;alt&quot;
+            )
+            children.append(
+                {
+                    &quot;label&quot;: label,
+                    &quot;probability&quot;: probability,
+                    &quot;kind&quot;: kind,
+                    &quot;children&quot;: grow(child_path),
+                }
+            )
+        return children
+
+    return {
+        &quot;label&quot;: hierarchy.name,
+        &quot;probability&quot;: None,
+        &quot;kind&quot;: &quot;root&quot;,
+        &quot;children&quot;: grow(()),
+    }
+
+
+def _layout(root: dict) -&gt; tuple[int, int]:
+    rows: list[int] = [0]
+    maximum_depth: list[int] = [0]
+
+    def walk(node: dict, depth: int) -&gt; None:
+        node[&quot;depth&quot;] = depth
+        maximum_depth[0] = max(maximum_depth[0], depth)
+        if node[&quot;children&quot;]:
+            for child in node[&quot;children&quot;]:
+                walk(child, depth + 1)
+            node[&quot;row&quot;] = (node[&quot;children&quot;][0][&quot;row&quot;] + node[&quot;children&quot;][-1][&quot;row&quot;]) / 2
+        else:
+            node[&quot;row&quot;] = rows[0]
+            rows[0] += 1
+
+    walk(root, 0)
+    return maximum_depth[0], rows[0]
+
+
+def render_svg(hierarchy: Hierarchy, result: dict, path: Path) -&gt; None:
+    &quot;&quot;&quot;Write a standalone traversal SVG matching the Customer_ProdX visual language.
+
+    :param hierarchy: taxonomy demonstration.
+    :param result: beam-search result from the notebook.
+    :param path: output SVG path.
+    &quot;&quot;&quot;
+
+    root: dict = _build_nodes(hierarchy, result)
+    maximum_depth, row_count = _layout(root)
+    document_lines: list[str] = textwrap.wrap(
+        hierarchy.document,
+        width=105,
+        break_long_words=False,
+        break_on_hyphens=False,
+    ) or [&quot;&quot;]
+    document_y: int = 124
+    greedy_y: int = document_y + (len(document_lines) - 1) * 21 + 34
+    beam_y: int = greedy_y + 25
+    method_y: int = beam_y + 29
+    legend_y: int = method_y + 23
+    header_height: int = legend_y + 32
+    width: int = PAD_X * 2 + maximum_depth * COL_W + NODE_W
+    height: int = header_height + max(row_count, 1) * ROW_H + 34
+    edges: list[str] = []
+    nodes: list[str] = []
+
+    def node_x(node: dict) -&gt; float:
+        return PAD_X + node[&quot;depth&quot;] * COL_W
+
+    def node_y(node: dict) -&gt; float:
+        return header_height + node[&quot;row&quot;] * ROW_H
+
+    def walk(node: dict) -&gt; None:
+        x_value, y_value = node_x(node), node_y(node)
+        for child in node[&quot;children&quot;]:
+            child_x, child_y = node_x(child), node_y(child)
+            x1, y1 = x_value + NODE_W, y_value + NODE_H / 2
+            x2, y2 = child_x, child_y + NODE_H / 2
+            bend: float = COL_W * 0.38
+            edges.append(
+                f&#x27;&lt;path class=&quot;edge {child[&quot;kind&quot;]}&quot; &#x27;
+                f&#x27;d=&quot;M{x1:.0f},{y1:.0f} C{x1 + bend:.0f},{y1:.0f} &#x27;
+                f&#x27;{x2 - bend:.0f},{y2:.0f} {x2:.0f},{y2:.0f}&quot;/&gt;&#x27;
+            )
+            edges.append(
+                f&#x27;&lt;text class=&quot;prob&quot; x=&quot;{x2 - 7:.0f}&quot; y=&quot;{y2 - 5:.0f}&quot; &#x27;
+                f&#x27;text-anchor=&quot;end&quot;&gt;{child[&quot;probability&quot;]:.2f}&lt;/text&gt;&#x27;
+            )
+            walk(child)
+
+        kind: str = node[&quot;kind&quot;]
+        label: str = _truncate(node[&quot;label&quot;], 40)
+        nodes.append(
+            f&#x27;&lt;g class=&quot;node {kind}&quot;&gt;&lt;title&gt;{_escape(node[&quot;label&quot;])}&lt;/title&gt;&#x27;
+            f&#x27;&lt;rect x=&quot;{x_value:.0f}&quot; y=&quot;{y_value:.0f}&quot; width=&quot;{NODE_W}&quot; &#x27;
+            f&#x27;height=&quot;{NODE_H}&quot; rx=&quot;7&quot;/&gt;&#x27;
+            f&#x27;&lt;text x=&quot;{x_value + 11:.0f}&quot; y=&quot;{y_value + 24:.0f}&quot;&gt;&#x27;
+            f&quot;{_escape(label)}&lt;/text&gt;&lt;/g&gt;&quot;
+        )
+
+    walk(root)
+    best: dict = result[&quot;beam&quot;][0]
+    best_path: tuple[str, ...] = tuple(best[&quot;path&quot;])
+    greedy_path: tuple[str, ...] = tuple(result[&quot;greedy&quot;][&quot;path&quot;])
+    beam_leaf: str = best_path[-1] if best_path else &quot;no leaf&quot;
+    greedy_leaf: str = greedy_path[-1] if greedy_path else &quot;no leaf&quot;
+    beam_width: int = result[&quot;beam_width&quot;]
+    separation_ratio: float = result[&quot;separation_ratio&quot;]
+    document_text: str = &quot;&quot;.join(
+        f&#x27;&lt;text class=&quot;document&quot; x=&quot;24&quot; y=&quot;{document_y + index * 21}&quot;&gt;&#x27;
+        f&quot;{_escape(line)}&lt;/text&gt;&quot;
+        for index, line in enumerate(document_lines)
+    )
+    separation_text: str = (
+        &quot;&gt;999×&quot; if separation_ratio &gt; 999 else f&quot;{separation_ratio:.2f}×&quot;
+    )
+
+    svg: str = f&#x27;&#x27;&#x27;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 {width} {height}&quot;
+  width=&quot;{width}&quot; height=&quot;{height}&quot; role=&quot;img&quot; aria-label=&quot;{_escape(hierarchy.name)} taxonomy beam search&quot;&gt;
+&lt;style&gt;
+  .bg {{ fill:#f6f7fb }}
+  text {{ font-family:ui-monospace,&quot;SF Mono&quot;,Menlo,Consolas,monospace }}
+  .eyebrow {{ font-size:14px; font-weight:700; letter-spacing:1.2px; fill:#4f46e5 }}
+  .title {{ font:700 28px system-ui,-apple-system,&quot;Segoe UI&quot;,sans-serif; fill:#181b28 }}
+  .document-label {{ font:700 12px system-ui,-apple-system,&quot;Segoe UI&quot;,sans-serif; letter-spacing:1px; fill:#777c91 }}
+  .document {{ font:500 17px system-ui,-apple-system,&quot;Segoe UI&quot;,sans-serif; fill:#303449 }}
+  .copy {{ font-size:14px; fill:#5c6178 }}
+  .result {{ font-size:14px; font-weight:700 }}
+  .greedy-result {{ fill:#c2410c }}
+  .beam-result {{ fill:#15803d }}
+  .edge {{ fill:none; stroke:#c9cee0; stroke-width:2 }}
+  .edge.winner {{ stroke:#15803d; stroke-width:2.5 }}
+  .edge.greedy {{ stroke:#ea580c; stroke-width:2.5 }}
+  .edge.beam {{ stroke:#4f46e5; stroke-width:2.2 }}
+  .edge.alt {{ opacity:.48 }}
+  .prob {{ font-size:12px; font-weight:600; fill:#5c6178 }}
+  .node rect {{ stroke-width:1.7 }}
+  .node text {{ font-size:13px }}
+  .node.root rect {{ fill:#f0f2f8; stroke:#e2e5f0 }}
+  .node.root text {{ fill:#5c6178 }}
+  .node.winner rect {{ fill:#e4f5ea; stroke:#15803d }}
+  .node.winner text {{ fill:#15803d; font-weight:700 }}
+  .node.greedy rect {{ fill:#fff0e8; stroke:#ea580c }}
+  .node.greedy text {{ fill:#c2410c; font-weight:700 }}
+  .node.beam rect {{ fill:#ecebfd; stroke:#4f46e5 }}
+  .node.beam text {{ fill:#181b28 }}
+  .node.alt rect {{ fill:#fff; stroke:#e2e5f0; stroke-dasharray:3 3 }}
+  .node.alt text {{ fill:#5c6178 }}
+&lt;/style&gt;
+&lt;rect class=&quot;bg&quot; width=&quot;{width}&quot; height=&quot;{height}&quot; rx=&quot;14&quot;/&gt;
+&lt;text class=&quot;eyebrow&quot; x=&quot;24&quot; y=&quot;32&quot;&gt;TYPESAFE · {hierarchy.name.upper()} · {hierarchy.version.upper()} · {hierarchy.node_count:,} NODES&lt;/text&gt;
+&lt;text class=&quot;title&quot; x=&quot;24&quot; y=&quot;69&quot;&gt;Greedy vs parallel beam search&lt;/text&gt;
+&lt;text class=&quot;document-label&quot; x=&quot;24&quot; y=&quot;99&quot;&gt;DOCUMENT&lt;/text&gt;
+{document_text}
+&lt;text class=&quot;result greedy-result&quot; x=&quot;24&quot; y=&quot;{greedy_y}&quot;&gt;GREEDY TOP-1 → {_escape(_truncate(greedy_leaf, 105))}&lt;/text&gt;
+&lt;text class=&quot;result beam-result&quot; x=&quot;24&quot; y=&quot;{beam_y}&quot;&gt;BEAM K={beam_width} → {_escape(_truncate(beam_leaf, 105))}&lt;/text&gt;
+&lt;text class=&quot;copy&quot; x=&quot;24&quot; y=&quot;{method_y}&quot;&gt;parallel sibling Choices → keep {beam_width} by geometric mean p → top/second = {separation_text}&lt;/text&gt;
+&lt;text class=&quot;copy&quot; x=&quot;24&quot; y=&quot;{legend_y}&quot;&gt;orange = greedy   green = beam winner   purple = retained beam   dashed = pruned&lt;/text&gt;
+{&quot;&quot;.join(edges)}{&quot;&quot;.join(nodes)}
+&lt;/svg&gt;&#x27;&#x27;&#x27;
+    path.write_text(svg)</code></pre></div>
+<h2 id="实现贪心搜索与束搜索">实现贪心搜索与束搜索</h2>
+<p>每个兄弟集合在下一节中都成为一个 <code>Choice</code> 问题；该节还实现了两种遍历策略，并保留了静态图所需的概率。</p>
+<div class="codeblock"><span class="cb-title">expandable</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">HIERARCHIES = load_hierarchies()
+MODEL, BEAM_WIDTH, MAX_DEPTH, EPSILON = &quot;jev-1.12&quot;, 3, 12, 1e-9
+client = TypeSafeClient(
+    api_key=os.environ[&quot;TYPESAFE_API_KEY&quot;],
+    retry=RetryPolicy(max_retries=5, backoff_initial=1.0, backoff_max=20.0),
+)
+json_cache = JsonCache(Path(&quot;json_cache.json&quot;))
+
+
+@json_cache
+def choose(state: str, labels: tuple[str, ...]) -&gt; dict[str, float]:
+    &quot;&quot;&quot;Ask one atomic direct-child question and return its distribution.&quot;&quot;&quot;
+    if len(labels) == 1:
+        return {labels[0]: 1.0}
+    question, keys = child_question(labels)
+    response = client.system_one(
+        state=state, questions={&quot;child&quot;: question}, model=MODEL
+    )
+    probabilities = response.answers[&quot;child&quot;].probabilities
+    return {label: probabilities[key] for key, label in keys.items()}
+
+
+def child_question(labels: tuple[str, ...]) -&gt; tuple[Choice, dict[str, str]]:
+    &quot;&quot;&quot;Build the direct-child Choice and its reversible option mapping.&quot;&quot;&quot;
+    keys = {f&quot;c{i}&quot;: label for i, label in enumerate(labels)}
+    question = Choice(
+        instructions=&quot;Which direct child category best matches this document?&quot;,
+        criteria=keys,
+    )
+    return question, keys
+
+
+def extend_candidate(
+    candidate: dict, label: str, probabilities: dict[str, float]
+) -&gt; dict:
+    &quot;&quot;&quot;Append one edge and recompute its geometric-mean path score.&quot;&quot;&quot;
+    is_decision: bool = len(probabilities) &gt; 1
+    # Use log space for very deep trees to avoid floating-point precision loss.
+    probability_product: float = candidate[&quot;probability_product&quot;] * (
+        max(probabilities[label], EPSILON) if is_decision else 1.0
+    )
+    decision_count: int = candidate[&quot;decision_count&quot;] + is_decision
+    return {
+        &quot;path&quot;: candidate[&quot;path&quot;] + (label,),
+        &quot;probability_product&quot;: probability_product,
+        &quot;decision_count&quot;: decision_count,
+        &quot;score&quot;: probability_product ** (1 / decision_count) if decision_count else 1.0,
+    }
+
+
+def choice_record(path: tuple[str, ...], probabilities: dict[str, float]) -&gt; dict:
+    &quot;&quot;&quot;Package one sibling decision for the traversal diagram.&quot;&quot;&quot;
+    return {&quot;parent&quot;: path, &quot;probabilities&quot;: probabilities}
+
+
+def beam_search(hierarchy: Hierarchy) -&gt; dict:
+    &quot;&quot;&quot;Parallel width-three beam search using geometric-mean probability.&quot;&quot;&quot;
+    beam = [{&quot;path&quot;: (), &quot;probability_product&quot;: 1.0, &quot;decision_count&quot;: 0, &quot;score&quot;: 1.0}]
+    records, retained_paths = [], {()}
+
+    for _ in range(MAX_DEPTH):
+        expandable = [
+            candidate
+            for candidate in beam
+            if subtree(hierarchy.tree, candidate[&quot;path&quot;])
+        ]
+        finished = [
+            candidate
+            for candidate in beam
+            if not subtree(hierarchy.tree, candidate[&quot;path&quot;])
+        ]
+        if not expandable:
+            break
+        with ThreadPoolExecutor(max_workers=BEAM_WIDTH) as executor:
+            distributions = list(
+                executor.map(
+                    lambda candidate: choose(
+                        hierarchy.document,
+                        tuple(subtree(hierarchy.tree, candidate[&quot;path&quot;])),
+                    ),
+                    expandable,
+                )
+            )
+
+        expanded = []
+        round_records = []
+        for candidate, probabilities in zip(expandable, distributions, strict=True):
+            round_records.append(choice_record(candidate[&quot;path&quot;], probabilities))
+            candidate_expanded = []
+            for label in probabilities:
+                candidate_expanded.append(
+                    extend_candidate(candidate, label, probabilities)
+                )
+            expanded.extend(candidate_expanded)
+        beam = sorted(
+            finished + expanded,
+            key=lambda candidate: candidate[&quot;score&quot;],
+            reverse=True,
+        )[:BEAM_WIDTH]
+        retained_paths.update(candidate[&quot;path&quot;] for candidate in beam)
+        records.extend(round_records)
+
+    beam = sorted(beam, key=lambda candidate: candidate[&quot;score&quot;], reverse=True)
+    return {
+        &quot;beam&quot;: beam,
+        &quot;records&quot;: records,
+        &quot;retained_paths&quot;: sorted(retained_paths, key=lambda path: (len(path), path)),
+    }
+
+
+def greedy_search(hierarchy: Hierarchy) -&gt; dict:
+    &quot;&quot;&quot;Follow only the locally highest-probability child.&quot;&quot;&quot;
+    path, probability_product, decision_count, records = (), 1.0, 0, []
+    for _ in range(MAX_DEPTH):
+        labels = tuple(subtree(hierarchy.tree, path))
+        if not labels:
+            break
+        probabilities = choose(hierarchy.document, labels)
+        records.append(choice_record(path, probabilities))
+        label = max(probabilities, key=probabilities.get)
+        if len(probabilities) &gt; 1:
+            probability_product *= max(probabilities[label], EPSILON)
+            decision_count += 1
+        path += (label,)
+    score: float = (
+        probability_product ** (1 / decision_count) if decision_count else 1.0
+    )
+    return {&quot;path&quot;: path, &quot;score&quot;: score, &quot;records&quot;: records}
+
+
+def compare_searches(hierarchy: Hierarchy) -&gt; dict:
+    &quot;&quot;&quot;Run beam and greedy, then merge their queried nodes for rendering.&quot;&quot;&quot;
+    result = beam_search(hierarchy)
+    greedy = greedy_search(hierarchy)
+    recorded_paths = {tuple(record[&quot;parent&quot;]) for record in result[&quot;records&quot;]}
+    result[&quot;records&quot;].extend(
+        record
+        for record in greedy[&quot;records&quot;]
+        if tuple(record[&quot;parent&quot;]) not in recorded_paths
+    )
+    result[&quot;greedy&quot;] = greedy
+    result[&quot;beam_width&quot;] = BEAM_WIDTH
+    top_score: float = result[&quot;beam&quot;][0][&quot;score&quot;]
+    second_score: float = result[&quot;beam&quot;][1][&quot;score&quot;]
+    result[&quot;separation_ratio&quot;] = top_score / max(second_score, EPSILON)
+    return result</code></pre></div>
+<h2 id="比较各种方法">比较各种方法</h2>
+<p>在四个带标签的示例上运行两种策略，把它们的叶子与预期分类进行比较，并可视化它们探索的路线。</p>
+<div class="codeblock"><span class="cb-title">expandable</span><button class="cb-copy" type="button" aria-label="复制代码">复制</button><pre><code class="language-python">with ThreadPoolExecutor(max_workers=len(HIERARCHIES)) as executor:
+    results = list(executor.map(compare_searches, HIERARCHIES))
+
+rows: list[dict[str, str | int | bool]] = []
+for hierarchy, result in zip(HIERARCHIES, results, strict=True):
+    svg_path: Path = Path(f&quot;{hierarchy.slug}_tree.svg&quot;)
+    render_svg(hierarchy, result, svg_path)
+    beam_path: tuple[str, ...] = tuple(result[&quot;beam&quot;][0][&quot;path&quot;])
+    greedy_path: tuple[str, ...] = tuple(result[&quot;greedy&quot;][&quot;path&quot;])
+    beam_leaf: str = beam_path[-1]
+    greedy_leaf: str = greedy_path[-1]
+    rows.append(
+        {
+            &quot;hierarchy&quot;: hierarchy.name,
+            &quot;nodes&quot;: hierarchy.node_count,
+            &quot;expected leaf&quot;: hierarchy.expected_leaf,
+            &quot;greedy leaf&quot;: greedy_leaf,
+            &quot;beam K=3 leaf&quot;: beam_leaf,
+            &quot;greedy correct&quot;: greedy_leaf == hierarchy.expected_leaf,
+            &quot;beam correct&quot;: beam_leaf == hierarchy.expected_leaf,
+            &quot;mean p&quot;: f&quot;{result[&#x27;beam&#x27;][0][&#x27;score&#x27;]:.2f}&quot;,
+            &quot;top/second&quot;: f&quot;{result[&#x27;separation_ratio&#x27;]:.2f}×&quot;,
+        }
+    )
+
+greedy_correct_count: int = sum(bool(row[&quot;greedy correct&quot;]) for row in rows)
+beam_correct_count: int = sum(bool(row[&quot;beam correct&quot;]) for row in rows)
+recovered_names: str = &quot;, &quot;.join(
+    str(row[&quot;hierarchy&quot;])
+    for row in rows
+    if not row[&quot;greedy correct&quot;] and row[&quot;beam correct&quot;]
+)
+table_lines: list[str] = [
+    &quot;| Hierarchy | Expected leaf | Greedy leaf | Beam K=3 leaf | Greedy correct | Beam correct |&quot;,
+    &quot;| --- | --- | --- | --- | --- | --- |&quot;,
+]
+table_lines.extend(
+    &quot;| &quot;
+    + &quot; | &quot;.join(
+        (
+            str(row[&quot;hierarchy&quot;]),
+            str(row[&quot;expected leaf&quot;]),
+            str(row[&quot;greedy leaf&quot;]),
+            str(row[&quot;beam K=3 leaf&quot;]),
+            &quot;yes&quot; if row[&quot;greedy correct&quot;] else &quot;no&quot;,
+            &quot;yes&quot; if row[&quot;beam correct&quot;] else &quot;no&quot;,
+        )
+    )
+    + &quot; |&quot;
+    for row in rows
+)
+display(
+    Markdown(
+        &quot;## Results\n\n&quot;
+        &quot;Each example has a known expected leaf. &quot;
+        f&quot;Beam search matched {beam_correct_count} of {len(rows)} expected leaves; &quot;
+        f&quot;greedy search matched {greedy_correct_count} of {len(rows)}. &quot;
+        f&quot;Keeping three paths recovered the expected classification for {recovered_names}.\n\n&quot;
+        + &quot;\n&quot;.join(table_lines)
+        + &quot;\n\nThe diagrams show why the methods differ. Orange marks the greedy route, &quot;
+        &quot;green marks the winning beam route, purple marks other retained paths, and &quot;
+        &quot;dashed edges were pruned.\n\n&quot;
+        + &quot;\n\n&quot;.join(
+            f&quot;### {hierarchy.name}\n\n![]({hierarchy.slug}_tree.svg)&quot;
+            for hierarchy in HIERARCHIES
+        )
+    )
+)</code></pre></div>
+<h2 id="结果">结果</h2>
+<p>每个示例都有一个已知的预期叶子。束搜索匹配了 4 个预期叶子中的 4 个；贪心搜索匹配了 4 个中的 2 个。保留三条路径为 CPC patents、Shopify products 找回了预期分类。</p>
+<div class="table-wrap"><table><thead><tr><th>Hierarchy</th><th>Expected leaf</th><th>Greedy leaf</th><th>Beam K=3 leaf</th><th>Greedy correct</th><th>Beam correct</th></tr></thead><tbody><tr><td>CPC patents</td><td>A01K31/12 Perches for poultry or birds, e.g. roosts</td><td>E99Z99/00 Subject matter not otherwise provided for in this section</td><td>A01K31/12 Perches for poultry or birds, e.g. roosts</td><td>no</td><td>yes</td></tr><tr><td>Shopify products</td><td>Cat Window Beds &amp; Perches</td><td>Pet Chairs</td><td>Cat Window Beds &amp; Perches</td><td>no</td><td>yes</td></tr><tr><td>MeSH biomedical subjects</td><td>C06.405.469.432.500 Crohn Disease</td><td>C06.405.469.432.500 Crohn Disease</td><td>C06.405.469.432.500 Crohn Disease</td><td>yes</td><td>yes</td></tr><tr><td>CookSafe files</td><td>retrievers.py</td><td>retrievers.py</td><td>retrievers.py</td><td>yes</td><td>yes</td></tr></tbody></table></div>
+<p>这些图解释了两种方法为何不同。橙色标记贪心路线，绿色标记胜出的束搜索路线，紫色标记其他被保留的路径，虚线边是被剪枝的。</p>
+<h3 id="cpc-专利">CPC 专利</h3>
+<p><img src="../../assets/images/cookbooks/hierarchical_classification/cpc_tree.svg" alt="" width="2876" height="2322" data-path="cookbooks/hierarchical_classification/cpc_tree.svg" /></p>
+<h3 id="shopify-产品">Shopify 产品</h3>
+<p><img src="../../assets/images/cookbooks/hierarchical_classification/shopify_tree.svg" alt="" width="2156" height="2272" data-path="cookbooks/hierarchical_classification/shopify_tree.svg" /></p>
+<h3 id="mesh-生物医学主题">MeSH 生物医学主题</h3>
+<p><img src="../../assets/images/cookbooks/hierarchical_classification/mesh_tree.svg" alt="" width="2516" height="2693" data-path="cookbooks/hierarchical_classification/mesh_tree.svg" /></p>
+<h3 id="cooksafe-文件">CookSafe 文件</h3>
+<p><img src="../../assets/images/cookbooks/hierarchical_classification/codebase_tree.svg" alt="" width="2156" height="1072" data-path="cookbooks/hierarchical_classification/codebase_tree.svg" /></p>
+<section class="lesson" id="lesson">
+  <div class="lesson-head">
+    <div class="lesson-title">📓 内嵌教程 · 第 4 章 · 16_层级分类 实战笔记本</div>
+    <div class="lesson-sub">像运行 notebook 一样逐步学习：点「下一步」逐格展开——代码格会先出现再"运行"出结果。内容来自教程仓库配套笔记本。</div>
+    <div class="lesson-progress"><div class="lesson-progress-fill" id="lesson-fill"></div></div>
+    <div class="lesson-meta"><span id="lesson-pos">0 / 38</span>
+      <span class="lesson-btns">
+        <button type="button" id="lesson-next">▶ 下一步</button>
+        <button type="button" id="lesson-all">全部展开</button>
+        <button type="button" id="lesson-reset">↺ 重新开始</button>
+      </span>
+    </div>
+  </div>
+  <div class="lesson-cells" id="lesson-cells"></div>
+  <div class="lesson-foot">📖 想看带真实 API Key 的完整运行与源文件：
+    <a href="https://github.com/datawhalechina/jev-cookbook/blob/main/main/04_实战指南/16_层级分类.ipynb" target="_blank" rel="noopener">第 4 章 · 16_层级分类 实战笔记本（GitHub）↗</a></div>
+</section>
+<script type="application/json" id="lesson-data">{"cells": [{"k": "md", "h": "<h1 id=\"层级分类hierarchical-classification\">层级分类（Hierarchical Classification）<\/h1>\n<p>针对官方文档 <strong><a href=\"https://docs.typesafe.ai/cookbooks/hierarchical_classification\" target=\"_blank\" rel=\"noopener\">实战指南 · Hierarchical Classification<\/a><\/strong> 的可运行实验笔记， 用真实 TypeSafe API（Jev 模型）复刻核心流程并中文化。中文翻译版见 <a href=\"https://datawhalechina.github.io/jev-cookbook/cookbooks/hierarchical_classification/\" target=\"_blank\" rel=\"noopener\">datawhalechina.github.io/jev-cookbook<\/a>。<\/p>\n<h2 id=\"笔记本结构\">笔记本结构<\/h2>\n<div class=\"table-wrap\"><table><thead><tr><th>章节<\/th><th>内容<\/th><th>实验<\/th><\/tr><\/thead><tbody><tr><td>0. 准备<\/td><td>安装、客户端、连通性、离线回退<\/td><td>—<\/td><\/tr><tr><td>1. 迷你商品树<\/td><td>三级中文数码分类树（约 10 个叶子）<\/td><td>打印树结构<\/td><\/tr><tr><td>2. 贪心下行<\/td><td>每层 Choice 选子节点，沿 argmax 走到叶子<\/td><td>3 条商品描述<\/td><\/tr><tr><td>3. 束搜索 K=2<\/td><td>保留 top-2 路径，path_score = 几何平均边概率<\/td><td>同 3 条对比<\/td><\/tr><\/tbody><\/table><\/div>\n<p>每个主题按固定节奏展开：<strong>原理 → 理论根基 → 定义数据 → 定义问题 → 调用 → 解读结果<\/strong>， 每个单元格只做一件事，可直接顺着跑完（约 15–25 次 API 调用）。<\/p>\n<h2 id=\"运行要求\">运行要求<\/h2>\n<ul><li><p>Python ≥ 3.10（官方 SDK 要求；macOS 系统自带 python3 是 3.9，装不上 SDK）<\/p><\/li><li><p>一个 TypeSafe API Key（<a href=\"https://console.typesafe.ai/keys\" target=\"_blank\" rel=\"noopener\">console.typesafe.ai/keys<\/a> 获取）<\/p><\/li><\/ul>\n<p><strong>推荐：一键创建本地环境<\/strong>（在本 notebooks 目录下）<\/p>\n<p>```bash ./setup_env.sh                                  # 创建 .venv：Python 3.12 + 全部依赖 export TYPESAFE_API_KEY=你的key .venv/bin/jupyter lab &lt;本文件&gt;.ipynb ```<\/p>\n<p>或者手动创建：<code>python3.12 -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt<\/code><\/p>\n<blockquote><p>🔑 <strong>API Key 安全提示<\/strong>：本笔记从环境变量 <code>TYPESAFE_API_KEY<\/code> 读取密钥， <strong>不要<\/strong>把 Key 硬编码进笔记本（尤其打算提交到公开仓库时）。<\/p>\n<p>🈶 <strong>关于语言<\/strong>：实验全部使用中文 <code>state<\/code> 与中文提示词。三种原语的选项 key （如 <code>billing<\/code>、<code>verified<\/code>）属于代码标识符，保持英文以便代码分支判断； 它们的<strong>描述文字<\/strong>（criteria 值）均为中文，模型据此理解语义。<\/p><\/blockquote>"}, {"k": "md", "h": "<h2 id=\"0-准备\">0. 准备<\/h2>"}, {"k": "md", "h": "<h3 id=\"01-安装所需的库\">0.1 安装所需的库<\/h3>\n<p>如果已经用 <code>./setup_env.sh<\/code> 创建过环境，本节通常显示“依赖已满足”；在其他环境里首次运行时会自动安装。<\/p>"}, {"k": "code", "n": 1, "c": "%pip install -q -U typesafe-sdk          # 本笔记本必需（要求 Python ≥ 3.10）\n# %pip install -q -U jupyterlab         # 如本机还没有 Jupyter，取消注释运行一次\n# %pip install -q -U nbformat nbclient  # 仅在需要重新生成/批量执行笔记本时安装", "o": ""}, {"k": "md", "h": "<h3 id=\"02-导入库并创建客户端\">0.2 导入库并创建客户端<\/h3>\n<ul><li><p><code>Choice<\/code> / <code>Score<\/code> / <code>Noul<\/code>：三种问题原语的构造器（对应官方文档<a href=\"https://docs.typesafe.ai/primitives\" target=\"_blank\" rel=\"noopener\">原语<\/a>一章）；<\/p><\/li><li><p><code>TypeSafeClient<\/code>：同步客户端，<code>model=&quot;jev-latest&quot;<\/code> 表示使用官方旗舰模型的最新别名；<\/p><\/li><li><p>Key 从环境变量 <code>TYPESAFE_API_KEY<\/code> 读取；临时调试也可以直接赋值给 <code>API_KEY<\/code>（不要提交）。<\/p><\/li><\/ul>"}, {"k": "code", "n": 2, "c": "import os\nimport time\n\nfrom typesafe_sdk import (\n    Choice,                       # 选择题：从命名选项中选一个，返回 choice + probabilities + confidence\n    Score,                        # 打分题：按有序量表打分，返回期望分 + probabilities + confidence\n    Noul,                         # 是非题：返回\"是\"的概率（0~1），本身就是概率所以没有 confidence 字段\n    TypeSafeClient,\n    TypeSafeAuthenticationError,  # 401 鉴权失败时抛出\n)\n\nAPI_KEY = os.environ.get(\"TYPESAFE_API_KEY\", \"\")\n# API_KEY = \"apikey_...\"   # ← 仅在临时调试时使用，注意不要提交到公开仓库\n\n# Key 为空时不构造客户端：SDK 在无 Key 时抛 TypeSafeError（非 401 的\n# TypeSafeAuthenticationError），不会被下面的回退捕获，会让整本笔记本中断。\nclient = TypeSafeClient(api_key=API_KEY, model=\"jev-latest\") if API_KEY else None", "o": ""}, {"k": "md", "h": "<h3 id=\"03-离线回退用的两个替身类\">0.3 离线回退用的两个替身类<\/h3>\n<p>真实 API 不可用时，我们需要一个与官方 SDK 响应对象<strong>同构<\/strong>的替身，让后续分析代码不用改。官方 <code>SystemOneResponse<\/code> 的访问方式是：<\/p>\n<div class=\"table-wrap\"><table><thead><tr><th>访问方式<\/th><th>返回<\/th><\/tr><\/thead><tbody><tr><td><code>resp.answers[&quot;名称&quot;]<\/code><\/td><td>全部答案（按问题名）<\/td><\/tr><tr><td><code>resp.choices[&quot;名称&quot;]<\/code><\/td><td>选择题答案：<code>.choice<\/code> <code>.confidence<\/code> <code>.probabilities<\/code><\/td><\/tr><tr><td><code>resp.scores[&quot;名称&quot;]<\/code><\/td><td>打分题答案：<code>.score<\/code> <code>.confidence<\/code> <code>.legend<\/code> <code>.probabilities<\/code><\/td><\/tr><tr><td><code>resp.nouls[&quot;名称&quot;]<\/code><\/td><td>是非题答案：<code>.noul<\/code>（本身就是概率，无 confidence）<\/td><\/tr><tr><td><code>resp.usage.input_tokens<\/code><\/td><td>本次请求计费的 input token 数<\/td><\/tr><\/tbody><\/table><\/div>\n<p>下面的替身类暴露完全相同的属性，仅用于离线模式。<\/p>"}, {"k": "code", "n": 3, "c": "class _FakeAnswer:\n    \"\"\"单个答案的替身：按需挂属性（choice/score/noul/confidence/...）。\"\"\"\n\n    def __init__(self, type_, **kw):\n        self.type = type_\n        for k, v in kw.items():\n            setattr(self, k, v)\n\n\nclass _FakeResponse:\n    \"\"\"整个响应的替身：与 SystemOneResponse 同构（answers/nouls/choices/scores/usage）。\"\"\"\n\n    def __init__(self, answers):\n        self.answers = answers\n        self.nouls = {k: v for k, v in answers.items() if v.type == \"noul\"}\n        self.choices = {k: v for k, v in answers.items() if v.type == \"choice\"}\n        self.scores = {k: v for k, v in answers.items() if v.type == \"score\"}\n        self.model = \"jev-latest(离线示例)\"\n        self.usage = _FakeAnswer(\"usage\", input_tokens=0, output_tokens=0)", "o": ""}, {"k": "md", "h": "<h3 id=\"04-调用助手-c18620\">0.4 调用助手 <code>ts.call()<\/code><\/h3>\n<p>统一入口：<strong>优先请求真实 API<\/strong>；只有当鉴权失败（401）时，才回退到各实验预置的离线示例数据，并在第一次回退时给出显著警告。这样拿到无效 Key 也能跑通全流程，而有效 Key 下全程真实。<\/p>"}, {"k": "code", "n": 4, "c": "class TS:\n    real_calls = 0     # 成功的真实调用计数\n    offline = False    # 一旦回退过就置 True，后续单元格据此跳过真实计时等逻辑\n    _warned = False    # 完整警告只打印一次，避免刷屏\n\n    def call(self, state, questions, offline_answers=None):\n        if client is None:          # 未配置 Key：直接走离线示例，不触碰任何客户端\n            TS.offline = True\n            assert offline_answers is not None, \"离线模式需要提供 offline_answers\"\n            if not TS._warned:\n                TS._warned = True\n                print(\"⚠️  离线示例模式：未设置 TYPESAFE_API_KEY，以下为内置示例数据而非真实模型结果；\"\n                      \"设置有效的 TYPESAFE_API_KEY 后重跑本笔记本即可得到真实输出。\")\n            else:\n                print(\"⚠️ （本次为离线示例数据，非真实 API 输出）\")\n            return _FakeResponse(offline_answers)\n        try:\n            resp = client.system_one(state, questions)\n            TS.real_calls += 1\n            return resp\n        except TypeSafeAuthenticationError:\n            TS.offline = True\n            assert offline_answers is not None, \"离线模式需要提供 offline_answers\"\n            if not TS._warned:\n                TS._warned = True\n                print(\"⚠️  离线示例模式：API Key 无效(401)，以下输出为内置示例数据而非真实模型结果；\"\n                      \"设置有效的 TYPESAFE_API_KEY 后重跑本笔记本即可得到真实输出。\")\n            else:\n                print(\"⚠️ （本次为离线示例数据，非真实 API 输出）\")\n            return _FakeResponse(offline_answers)\n\n\nts = TS()", "o": ""}, {"k": "md", "h": "<h3 id=\"05-连通性测试\">0.5 连通性测试<\/h3>\n<p>用一条最简单的是非题试连官方 API：Key 有效则提示通过；若返回 401，后面的实验会自动切换到<strong>离线示例模式<\/strong>（见下一节说明），流程照样能走通。<\/p>"}, {"k": "code", "n": 5, "c": "if client is None:\n    TS.offline = True\n    print(\"⚠️  未设置 TYPESAFE_API_KEY，以下实验以【离线示例模式】运行：\")\n    print(\"    代码路径与真实调用完全一致，仅数据换成本笔记内置的示例值；\")\n    print(\"    在有效 Key 下重跑本笔记本即可得到真实模型输出。\")\nelse:\n  try:\n    ping = client.system_one(\n        \"你好\",\n        {\"is_greeting\": Noul(instructions=\"这段文字是在打招呼吗？\")},\n    )\n    print(\"✅ API 连通正常，Key 有效。将进行真实实验。\")\n  except TypeSafeAuthenticationError:\n    TS.offline = True\n    print(\"⚠️  API Key 无效（401）。以下实验将以【离线示例模式】运行：\")\n    print(\"    代码路径与真实调用完全一致，仅数据换成本笔记内置的示例值；\")\n    print(\"    在有效 Key 下重跑本笔记本即可得到真实模型输出。\")", "o": ""}, {"k": "md", "h": "<h3 id=\"06-本章离线示例数据\">0.6 本章离线示例数据<\/h3>\n<p>仅在 Key 无效（401）时使用。数值按“清晰手机 / 笔记本 / 耳机”三类商品拟制，保证贪心与束搜索代码路径都能跑通。<\/p>"}, {"k": "code", "n": 6, "c": "# 离线：每层节点名 → 子选项概率分布（与 TREE 结构对齐）\n# 键为“父路径字符串”（根用 \"\"）；值为 {child_key: prob}\nHIER_OFFLINE = {\n    # 商品 0：旗舰手机 → 数码 > 手机 > 旗舰机\n    0: {\n        \"\": {\"digital\": 0.82, \"appliance\": 0.12, \"fashion\": 0.06},\n        \"digital\": {\"phone\": 0.78, \"computer\": 0.15, \"audio\": 0.07},\n        \"digital/phone\": {\"flagship\": 0.71, \"midrange\": 0.22, \"budget\": 0.07},\n    },\n    # 商品 1：轻薄本 → 数码 > 电脑 > 笔记本\n    1: {\n        \"\": {\"digital\": 0.80, \"appliance\": 0.14, \"fashion\": 0.06},\n        \"digital\": {\"phone\": 0.12, \"computer\": 0.75, \"audio\": 0.13},\n        \"digital/computer\": {\"laptop\": 0.80, \"desktop\": 0.14, \"tablet\": 0.06},\n    },\n    # 商品 2：降噪耳机 → 数码 > 音频 > 耳机（束搜索时第二路径可能偏向手机配件感）\n    2: {\n        \"\": {\"digital\": 0.76, \"appliance\": 0.16, \"fashion\": 0.08},\n        \"digital\": {\"phone\": 0.28, \"computer\": 0.18, \"audio\": 0.54},\n        \"digital/audio\": {\"headphones\": 0.72, \"speaker\": 0.20, \"mic\": 0.08},\n        \"digital/phone\": {\"flagship\": 0.35, \"midrange\": 0.40, \"budget\": 0.25},\n    },\n}", "o": ""}, {"k": "md", "h": "<hr />\n<h1 id=\"-理论速览精简\">📖 理论速览（精简）<\/h1>\n<p>本笔记本默认你已读过 <a href=\"https://docs.typesafe.ai/concepts/system-one\" target=\"_blank\" rel=\"noopener\">System One<\/a> / <a href=\"https://docs.typesafe.ai/primitives\" target=\"_blank\" rel=\"noopener\">原语<\/a> / <a href=\"https://docs.typesafe.ai/confidence\" target=\"_blank\" rel=\"noopener\">置信度<\/a> （中文镜像站有对应页）。此处只提醒实验会反复用到的三点：<\/p>\n<ol><li><p><strong>请求模型<\/strong>：同一个 <code>state<\/code> + 一组问题 → 类型化答案；问题彼此独立、按 ID 返回；<\/p><\/li><li><p><strong>三种原语<\/strong>：<code>Choice<\/code> 选命名选项；<code>Score<\/code> 返回概率加权期望分（可为小数）；<code>Noul<\/code> 返回“是”的概率（无 confidence）；<\/p><\/li><li><p><strong>代码掌控制权<\/strong>：阈值、路由、合并答案都在你的代码里；模型只回答狭窄、原子的判断。<\/p><\/li><\/ol>\n<blockquote><p>💡 问题 ID 不会发给模型——完整语义写在 <code>instructions<\/code> / <code>criteria<\/code> 里。<\/p><\/blockquote>"}, {"k": "md", "h": "<hr />\n<h1 id=\"1-迷你中文商品分类树\">1. 迷你中文商品分类树<\/h1>\n<p>官方实战指南在 CPC / Shopify / MeSH 等巨型树上做层级分类。本笔记<strong>大幅简化<\/strong>： 一棵三级中文数码零售树（约 10 个叶子），只保留算法骨架——<\/p>\n<ol><li><p><strong>贪心下行<\/strong>：从根开始，对当前节点的子节点发一次 <code>Choice<\/code>，取 argmax，直到叶子；<\/p><\/li><li><p><strong>束搜索（K=2）<\/strong>：每层保留概率最高的 2 条路径；路径分用长度归一化的几何平均 <code>product(probs) ** (1 / decisions)<\/code>，避免深浅叶子不公平。<\/p><\/li><\/ol>\n<blockquote><p>出处：<a href=\"https://docs.typesafe.ai/cookbooks/hierarchical_classification\" target=\"_blank\" rel=\"noopener\">Hierarchical Classification<\/a> · <a href=\"https://datawhalechina.github.io/jev-cookbook/cookbooks/hierarchical_classification/\" target=\"_blank\" rel=\"noopener\">中文镜像<\/a><\/p><\/blockquote>"}, {"k": "md", "h": "<h3 id=\"11-原理\">1.1 原理<\/h3>\n<ul><li><p>每个内部节点的子节点构成一次 <code>Choice<\/code> 的选项；<\/p><\/li><li><p>叶子没有子节点，到达叶子即分类完成；<\/p><\/li><li><p>问题 ID 不发给模型——语义写在 <code>instructions<\/code> / <code>criteria<\/code> 里；<\/p><\/li><li><p>代码掌控制权：遍历顺序、剪枝、最终取哪条路径都在你这边。<\/p><\/li><\/ul>"}, {"k": "md", "h": "<h3 id=\"12--理论根基\">1.2 📖 理论根基<\/h3>\n<p>层级把一次“从几百个叶子里直接选”拆成多次“在少量兄弟里选”，好处是：<\/p>\n<div class=\"table-wrap\"><table><thead><tr><th>点<\/th><th>说明<\/th><\/tr><\/thead><tbody><tr><td>可观测<\/td><td>能看出错分常发生在哪一层<\/td><\/tr><tr><td>可测试<\/td><td>改树结构后可单独测某节点的准确率<\/td><\/tr><tr><td>可校准<\/td><td>边概率可聚合为路径分，用于束搜索排序<\/td><\/tr><\/tbody><\/table><\/div>\n<p>束搜索的 <code>path_score<\/code> 做了<strong>长度归一化<\/strong>，否则浅叶子会系统性吃亏或占便宜。<\/p>"}, {"k": "md", "h": "<h3 id=\"13-定义分类树与展示函数\">1.3 定义分类树与展示函数<\/h3>"}, {"k": "code", "n": 7, "c": "TREE = {\n    \"digital\": {\n        \"_label\": \"数码电子\",\n        \"phone\": {\n            \"_label\": \"手机\",\n            \"flagship\": {\"_label\": \"旗舰机\"},\n            \"midrange\": {\"_label\": \"中端机\"},\n            \"budget\": {\"_label\": \"入门机\"},\n        },\n        \"computer\": {\n            \"_label\": \"电脑\",\n            \"laptop\": {\"_label\": \"笔记本\"},\n            \"desktop\": {\"_label\": \"台式机\"},\n            \"tablet\": {\"_label\": \"平板\"},\n        },\n        \"audio\": {\n            \"_label\": \"音频\",\n            \"headphones\": {\"_label\": \"耳机\"},\n            \"speaker\": {\"_label\": \"音箱\"},\n            \"mic\": {\"_label\": \"麦克风\"},\n        },\n    },\n    \"appliance\": {\n        \"_label\": \"家电\",\n        \"kitchen\": {\n            \"_label\": \"厨电\",\n            \"blender\": {\"_label\": \"搅拌机\"},\n            \"rice_cooker\": {\"_label\": \"电饭煲\"},\n        },\n        \"cleaning\": {\n            \"_label\": \"清洁\",\n            \"vacuum\": {\"_label\": \"吸尘器\"},\n        },\n    },\n    \"fashion\": {\n        \"_label\": \"服饰\",\n        \"wearable\": {\n            \"_label\": \"可穿戴\",\n            \"watch\": {\"_label\": \"手表\"},\n            \"band\": {\"_label\": \"手环\"},\n        },\n    },\n}\n\n\ndef children_of(node):\n    \"\"\"返回 (key, child_subtree) 列表，跳过元数据键。\"\"\"\n    return [(k, v) for k, v in node.items() if not k.startswith(\"_\") and isinstance(v, dict)]\n\n\ndef is_leaf(node):\n    return len(children_of(node)) == 0\n\n\ndef label_of(node, key):\n    return node.get(\"_label\", key)\n\n\ndef print_tree(node=None, indent=0, key=\"ROOT\"):\n    node = TREE if node is None else node\n    if node is TREE:\n        print(\"ROOT\")\n        for k, child in children_of(TREE):\n            print_tree(child, 1, k)\n        return\n    prefix = \"  \" * indent\n    mark = \"🍃\" if is_leaf(node) else \"📁\"\n    print(f\"{prefix}{mark} {key}（{label_of(node, key)}）\")\n    for k, child in children_of(node):\n        print_tree(child, indent + 1, k)\n\n\nprint_tree()\nn_leaves = 0\n\n\ndef count_leaves(node):\n    global n_leaves\n    kids = children_of(node)\n    if not kids:\n        n_leaves += 1\n        return\n    for _, c in kids:\n        count_leaves(c)\n\n\ncount_leaves(TREE)\nprint(f\"\\n叶子数: {n_leaves}\")", "o": ""}, {"k": "md", "h": "<h3 id=\"14-定义待分类的商品描述\">1.4 定义待分类的商品描述<\/h3>"}, {"k": "code", "n": 8, "c": "PRODUCTS = [\n    \"全新旗舰智能手机，6.7 寸 OLED，徕卡三摄，支持卫星通信，适合重度摄影用户。\",\n    \"14 寸轻薄商务笔记本，锐龙 7，16GB 内存，续航约 18 小时，重量 1.2kg。\",\n    \"头戴式主动降噪耳机，40mm 动圈，续航 30 小时，支持多设备切换。\",\n]\n\nfor i, p in enumerate(PRODUCTS):\n    print(f\"[{i}] {p}\")", "o": ""}, {"k": "md", "h": "<hr />\n<h1 id=\"2-贪心下行greedy-walk\">2. 贪心下行（Greedy Walk）<\/h1>\n<p>每到一个内部节点：对该节点的子节点发一次 <code>Choice<\/code>，选概率最高的子节点，再继续。 直到叶子。路径上的每条边概率都会记录下来，便于和束搜索对比。<\/p>"}, {"k": "md", "h": "<h3 id=\"21-定义从节点构造-choice-问题\">2.1 定义：从节点构造 Choice 问题<\/h3>"}, {"k": "code", "n": 9, "c": "def choice_at(node, path_keys):\n    \"\"\"对当前节点的直接子节点构造 Choice。\"\"\"\n    kids = children_of(node)\n    criteria = {k: label_of(child, k) for k, child in kids}\n    depth = len(path_keys)\n    instructions = (\n        f\"根据商品描述，判断它最属于哪一类（当前层级深度 {depth}）。\"\n        \"只依据描述中的产品形态与用途，忽略营销夸张用语。\"\n    )\n    return Choice(instructions=instructions, criteria=criteria)\n\n\ndef resolve_node(path_keys):\n    \"\"\"按 key 列表从 TREE 走到节点。\"\"\"\n    node = TREE\n    for k in path_keys:\n        node = node[k]\n    return node\n\n\ndef path_str(path_keys):\n    return \"/\".join(path_keys)", "o": ""}, {"k": "md", "h": "<h3 id=\"22-定义贪心分类函数\">2.2 定义贪心分类函数<\/h3>"}, {"k": "code", "n": 10, "c": "def greedy_classify(text, product_idx, verbose=True):\n    path = []\n    edge_probs = []\n    node = TREE\n    while not is_leaf(node):\n        kids = children_of(node)\n        q = {\"pick\": choice_at(node, path)}\n        # 离线表按“当前路径”取分布\n        parent_key = path_str(path)\n        dist = HIER_OFFLINE[product_idx].get(parent_key)\n        if dist is None:\n            # 兜底：均匀\n            dist = {k: 1.0 / len(kids) for k, _ in kids}\n        offline = {\n            \"pick\": _FakeAnswer(\n                \"choice\",\n                choice=max(dist, key=dist.get),\n                confidence=max(dist.values()),\n                probabilities=dist,\n            )\n        }\n        resp = ts.call(text, q, offline_answers=offline)\n        ans = resp.choices[\"pick\"]\n        chosen = ans.choice\n        prob = float(ans.probabilities.get(chosen, 0.0))\n        edge_probs.append(prob)\n        path.append(chosen)\n        node = node[chosen]\n        if verbose:\n            labels = \" > \".join(\n                label_of(resolve_node(path[: i + 1]), path[i]) for i in range(len(path))\n            )\n            print(f\"   层{len(path)}: {chosen}（{label_of(node, chosen)}）  p={prob:.2f}  conf={ans.confidence:.2f}\")\n            print(f\"        路径: {labels}\")\n    return path, edge_probs", "o": ""}, {"k": "md", "h": "<h3 id=\"23-对-3-条商品跑贪心分类\">2.3 对 3 条商品跑贪心分类<\/h3>"}, {"k": "code", "n": 11, "c": "print(\"=== 贪心下行 ===\\n\")\nGREEDY_RESULTS = []\nfor i, text in enumerate(PRODUCTS):\n    print(f\"商品[{i}] {text[:36]}…\")\n    path, probs = greedy_classify(text, i)\n    leaf_label = label_of(resolve_node(path), path[-1])\n    geo = 1.0\n    for p in probs:\n        geo *= p\n    geo = geo ** (1 / len(probs)) if probs else 0.0\n    GREEDY_RESULTS.append((path, probs, geo))\n    print(f\"   → 叶子: {path[-1]}（{leaf_label}）  path_score={geo:.3f}\\n\")", "o": ""}, {"k": "md", "h": "<p><strong>观察要点<\/strong><\/p>\n<ul><li><p>每层只在兄弟节点间做一次窄判断，比一次从全部叶子里选更稳；<\/p><\/li><li><p><code>path_score<\/code>（几何平均）可用来比较不同深度的路径；<\/p><\/li><li><p>若某一层概率很分散，贪心可能锁死错误分支——这正是束搜索要缓解的。<\/p><\/li><\/ul>"}, {"k": "md", "h": "<hr />\n<h1 id=\"3-简化束搜索beam-k2\">3. 简化束搜索（Beam K=2）<\/h1>\n<p>官方做法是并行评估 K 条路径。本笔记用<strong>串行简化版<\/strong>：每层对存活路径各自发 Choice， 只保留 <code>path_score<\/code> 最高的 K=2 条。评分公式：<\/p>\n<p>``` path_score = product(edge_probabilities) ** (1 / decisions) ```<\/p>"}, {"k": "md", "h": "<h3 id=\"31-定义束搜索\">3.1 定义束搜索<\/h3>"}, {"k": "code", "n": 12, "c": "def path_score(edge_probs):\n    if not edge_probs:\n        return 0.0\n    prod = 1.0\n    for p in edge_probs:\n        prod *= max(p, 1e-9)\n    return prod ** (1 / len(edge_probs))\n\n\ndef beam_classify(text, product_idx, k=2, verbose=True):\n    # 每项: (path_keys, edge_probs)\n    beam = [([], [])]\n    while True:\n        # 若所有路径都到叶子，结束\n        if all(is_leaf(resolve_node(p)) for p, _ in beam):\n            break\n        candidates = []\n        for path, probs in beam:\n            node = resolve_node(path)\n            if is_leaf(node):\n                candidates.append((path, probs))\n                continue\n            kids = children_of(node)\n            q = {\"pick\": choice_at(node, path)}\n            parent_key = path_str(path)\n            dist = HIER_OFFLINE[product_idx].get(parent_key)\n            if dist is None:\n                dist = {ck: 1.0 / len(kids) for ck, _ in kids}\n            offline = {\n                \"pick\": _FakeAnswer(\n                    \"choice\",\n                    choice=max(dist, key=dist.get),\n                    confidence=max(dist.values()),\n                    probabilities=dict(dist),\n                )\n            }\n            resp = ts.call(text, q, offline_answers=offline)\n            ans = resp.choices[\"pick\"]\n            # 取全部子选项概率，扩展候选\n            for ck, _ in kids:\n                p = float(ans.probabilities.get(ck, 0.0))\n                candidates.append((path + [ck], probs + [p]))\n        # 按 path_score 排序，保留 top-k\n        candidates.sort(key=lambda x: path_score(x[1]), reverse=True)\n        beam = candidates[:k]\n        if verbose:\n            print(\"   束状态:\")\n            for path, probs in beam:\n                labels = \" > \".join(\n                    label_of(resolve_node(path[: i + 1]), path[i]) for i in range(len(path))\n                )\n                print(f\"      [{path_score(probs):.3f}] {labels or '(根)'}\")\n    best = max(beam, key=lambda x: path_score(x[1]))\n    return best", "o": ""}, {"k": "md", "h": "<h3 id=\"32-对同一批商品跑束搜索并对比贪心\">3.2 对同一批商品跑束搜索并对比贪心<\/h3>"}, {"k": "code", "n": 13, "c": "print(\"=== 束搜索 K=2 ===\\n\")\nfor i, text in enumerate(PRODUCTS):\n    print(f\"商品[{i}] {text[:36]}…\")\n    path, probs = beam_classify(text, i, k=2)\n    leaf_label = label_of(resolve_node(path), path[-1])\n    g_path, g_probs, g_score = GREEDY_RESULTS[i]\n    b_score = path_score(probs)\n    same = path == g_path\n    print(f\"   束搜索 → {path[-1]}（{leaf_label}）  score={b_score:.3f}\")\n    print(f\"   贪心   → {g_path[-1]}（{label_of(resolve_node(g_path), g_path[-1])}）  score={g_score:.3f}\")\n    print(f\"   路径一致: {same}\\n\")", "o": ""}, {"k": "md", "h": "<p><strong>观察要点<\/strong><\/p>\n<ul><li><p>K=2 时，若第一层就几乎确定（如“明显是数码”），束与贪心结果通常一致；<\/p><\/li><li><p>当中间层概率接近时，束可能保留另一条分支，最终叶子可能不同；<\/p><\/li><li><p>生产环境可把 K 条路径的 Choice <strong>并行<\/strong>放进同一次 <code>system_one<\/code> 请求（官方做法）。<\/p><\/li><\/ul>"}, {"k": "md", "h": "<hr />\n<h1 id=\"小结\">小结<\/h1>\n<div class=\"table-wrap\"><table><thead><tr><th>方法<\/th><th>行为<\/th><th>适用<\/th><\/tr><\/thead><tbody><tr><td>贪心下行<\/td><td>每层 argmax，一条路走到黑<\/td><td>层级浅、节点可分性强<\/td><\/tr><tr><td>束搜索 K=2<\/td><td>保留 top-K，按几何平均边概率排序<\/td><td>中间层易混淆、需要召回<\/td><\/tr><\/tbody><\/table><\/div>\n<h2 id=\"延伸阅读\">延伸阅读<\/h2>\n<ul><li><p><a href=\"https://docs.typesafe.ai/cookbooks/hierarchical_classification\" target=\"_blank\" rel=\"noopener\">Hierarchical Classification<\/a> · <a href=\"https://datawhalechina.github.io/jev-cookbook/cookbooks/hierarchical_classification/\" target=\"_blank\" rel=\"noopener\">中文镜像<\/a><\/p><\/li><li><p>概念：<a href=\"https://docs.typesafe.ai/primitives\" target=\"_blank\" rel=\"noopener\">Choice 原语<\/a> · <a href=\"https://docs.typesafe.ai/concepts/system-one\" target=\"_blank\" rel=\"noopener\">System One<\/a><\/p><\/li><\/ul>\n<blockquote><p>⚠️ 若处于离线示例模式：路径上的概率是内置数据；设置有效 <code>TYPESAFE_API_KEY<\/code> 后重跑即可。<\/p><\/blockquote>"}, {"k": "md", "h": "<h2 id=\"知识补充\">知识补充<\/h2>\n<ul><li><p><strong>逐层 Choice 的代价结构<\/strong>：错误在高层会污染整棵子树，所以高层要么用更保守的阈值，要么用束搜索保留多条路径——本篇两种都演示了。<\/p><\/li><li><p><strong>束宽 vs 成本<\/strong>：束搜索 = 路径数 × 每层一次调用（同调用内并行）；层数深时先把每层候选压到 2-3 个再搜。<\/p><\/li><li><p><strong>进阶阅读<\/strong>：置信度门控决定&quot;何时停止搜索直接接受&quot;，见 <code>../02_核心概念/04_置信度.ipynb<\/code>。<\/p><\/li><\/ul>"}], "gh": "https://github.com/datawhalechina/jev-cookbook/blob/main/main/04_实战指南/16_层级分类.ipynb", "label": "第 4 章 · 16_层级分类 实战笔记本"}</script>
+  </article>
+  <nav class="pager"><a class="pager-prev" href="../../cookbooks/pre_parsed_value_extraction_cookbook/"><span>上一篇</span><strong>预解析值抽取</strong></a><a class="pager-next" href="../../cookbooks/autoresearch_feature_discovery/"><span>下一篇</span><strong>自动研究特征发现</strong></a></nav>
+  <footer class="site-footer">本站为 <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">docs.typesafe.ai</a> 的中文翻译，仅供学习参考；内容版权归原作者所有。</footer>
+  </main>
+<aside class="toc"><div class="toc-title">本页内容</div><a class="toc-item toc-l3" href="#本实战指南使用的层级">本实战指南使用的层级</a><a class="toc-item toc-l3" href="#方法">方法</a><a class="toc-item toc-l2" href="#加载并可视化示例层级">加载并可视化示例层级</a><a class="toc-item toc-l2" href="#实现贪心搜索与束搜索">实现贪心搜索与束搜索</a><a class="toc-item toc-l2" href="#比较各种方法">比较各种方法</a><a class="toc-item toc-l2" href="#结果">结果</a><a class="toc-item toc-l3" href="#cpc-专利">CPC 专利</a><a class="toc-item toc-l3" href="#shopify-产品">Shopify 产品</a><a class="toc-item toc-l3" href="#mesh-生物医学主题">MeSH 生物医学主题</a><a class="toc-item toc-l3" href="#cooksafe-文件">CookSafe 文件</a></aside>
+</div>
+<script src="../../assets/search-index.js"></script>
+<script src="../../assets/lz-string.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/lab.js"></script>
+<script src="../../assets/lesson.js"></script>
+</body>
+</html>
