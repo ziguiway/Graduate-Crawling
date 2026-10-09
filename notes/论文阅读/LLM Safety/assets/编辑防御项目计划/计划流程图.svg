@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1800" font-family="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1200" height="1800" fill="#ffffff"/>
+  <text x="70" y="46" font-size="24" font-weight="bold" fill="#0f172a">编辑防御攻防研究 · 项目总流程图</text>
+  <text x="70" y="72" font-size="13" fill="#64748b">DELMAN / EVA 延伸提案 · 2026-10-09 启动 · 引用均已核实（详见计划文档）</text>
+
+  <!-- P0 -->
+  <rect x="70" y="95" width="1060" height="100" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="90" y="122" font-size="17" font-weight="bold" fill="#5b21b6">P0 · 两周 Pilot（W1–W2）｜机制故事验证，不成立即止损</text>
+  <text x="90" y="143" font-size="13" fill="#334155">① 复现 DELMAN（Vicuna-7B + Llama2-7B，编辑一次 0.4h，代码 wanglne/DELMAN）</text>
+  <text x="90" y="161" font-size="13" fill="#334155">② 造变体攻击集：同义词 / 谐音 / 拼音首字母 / base64 编码</text>
+  <text x="90" y="179" font-size="13" fill="#334155">③ 同时量两个数：ASR 恢复幅度 + 失效归因（k* 距离分布 + activation patching）</text>
+
+  <line x1="600" y1="195" x2="600" y2="216" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Gate G0 -->
+  <polygon points="600,218 745,262 600,306 455,262" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="600" y="256" font-size="13" font-weight="bold" fill="#5b21b6" text-anchor="middle">Gate G0：pilot 数字撑得起</text>
+  <text x="600" y="274" font-size="13" font-weight="bold" fill="#5b21b6" text-anchor="middle">第四 / 五章的机制故事吗？</text>
+
+  <line x1="745" y1="262" x2="942" y2="262" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="790" y="252" font-size="12" fill="#dc2626">否</text>
+  <rect x="950" y="227" width="180" height="70" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="1040" y="253" font-size="13" font-weight="bold" fill="#9a3412" text-anchor="middle">出口 A：止损换题</text>
+  <text x="1040" y="272" font-size="12" fill="#9a3412" text-anchor="middle">沉没成本 ≤ 2 周</text>
+
+  <line x1="600" y1="306" x2="600" y2="338" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="612" y="328" font-size="12" fill="#16a34a">是</text>
+
+  <!-- P1 -->
+  <rect x="70" y="340" width="1060" height="310" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="90" y="368" font-size="17" font-weight="bold" fill="#991b1b">P1 · 机制感知攻击（W3–W8）｜三条武器线并行，产出第六章的动机</text>
+  <rect x="90" y="405" width="330" height="195" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="105" y="430" font-size="14" font-weight="bold" fill="#991b1b">A1 · 绕指纹</text>
+  <text x="105" y="452" font-size="12.5" fill="#334155">① 同义词 / 谐音 / 拼音首字母</text>
+  <text x="105" y="470" font-size="12.5" fill="#334155">② base64 / 字符编码变体</text>
+  <text x="105" y="488" font-size="12.5" fill="#334155">③ 让词的表示偏出 k* 邻域</text>
+  <text x="105" y="506" font-size="12.5" fill="#334155">④ 测：编辑后 ASR 恢复到多少</text>
+  <text x="105" y="524" font-size="12.5" fill="#64748b">对照：EVA 不知情 adaptive</text>
+  <text x="105" y="542" font-size="12.5" fill="#64748b">只 0.068→0.112，我们更狠</text>
+  <text x="105" y="578" font-size="12.5" fill="#334155" font-weight="bold">若 ASR 大幅回升 → 防御脆弱实锤</text>
+
+  <rect x="440" y="405" width="330" height="195" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="455" y="430" font-size="14" font-weight="bold" fill="#991b1b">A2 · 编辑对冲（编辑打编辑）</text>
+  <text x="455" y="452" font-size="12.5" fill="#334155">① JailbreakEdit 代码已确认可用</text>
+  <text x="455" y="470" font-size="12.5" fill="#334155">（JohnnyChanV/JailbreakEdit）</text>
+  <text x="455" y="488" font-size="12.5" fill="#334155">② TME（2412.08201）作机制参照</text>
+  <text x="455" y="506" font-size="12.5" fill="#334155">③ 在 k* 同位置写竞争联想对冲</text>
+  <text x="455" y="524" font-size="12.5" fill="#334155">④ 测：防御记忆被对冲的程度</text>
+  <text x="455" y="542" font-size="12.5" fill="#64748b">DELMAN/EVA 均未引用 TME</text>
+  <text x="455" y="560" font-size="12.5" fill="#64748b">引用空白 = 我们的安全牌</text>
+  <text x="455" y="586" font-size="12.5" fill="#334155" font-weight="bold">单点 value vs 多节点之争</text>
+
+  <rect x="790" y="405" width="330" height="195" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="805" y="430" font-size="14" font-weight="bold" fill="#991b1b">A3 · 抽词环节攻击</text>
+  <text x="805" y="452" font-size="12.5" fill="#334155">① DELMAN 防御依赖 GPT-4 抽词</text>
+  <text x="805" y="470" font-size="12.5" fill="#334155">② 攻击防御管线的输入侧</text>
+  <text x="805" y="488" font-size="12.5" fill="#334155">③ 诱导抽错 / 抽漏 → 编辑错 key</text>
+  <text x="805" y="506" font-size="12.5" fill="#334155">④ 机制感知程度最高的一类</text>
+  <text x="805" y="524" font-size="12.5" fill="#64748b">真空白：无人做过</text>
+  <text x="805" y="542" font-size="12.5" fill="#64748b">成本：只需构造对抗 query</text>
+  <text x="805" y="578" font-size="12.5" fill="#334155" font-weight="bold">防御依赖另一个 LLM = 攻击面</text>
+
+  <line x1="255" y1="600" x2="555" y2="698" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="605" y1="600" x2="600" y2="698" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="955" y1="600" x2="645" y2="698" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- 诊断枢纽 -->
+  <rect x="380" y="700" width="440" height="95" rx="10" fill="#f3e8ff" stroke="#9333ea" stroke-width="2"/>
+  <text x="600" y="726" font-size="15" font-weight="bold" fill="#581c87" text-anchor="middle">枢纽 · 失效归因（两篇论文都没做）</text>
+  <text x="600" y="748" font-size="12.5" fill="#334155" text-anchor="middle">被绕过时：key 没命中？value 推不动？还是抽词抽错？</text>
+  <text x="600" y="766" font-size="12.5" fill="#334155" text-anchor="middle">被误伤时：KL 只在单一句式上校准过，其他句式呢？</text>
+  <text x="600" y="784" font-size="12.5" fill="#581c87" text-anchor="middle" font-weight="bold">归因结果决定 P3 改进走哪条</text>
+
+  <line x1="600" y1="795" x2="600" y2="838" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- P2 -->
+  <rect x="70" y="840" width="1060" height="130" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
+  <text x="90" y="868" font-size="17" font-weight="bold" fill="#854d0e">P2 · 过拒绝审计（W9–W12）｜第五章，独立于 P1 结果成立</text>
+  <text x="90" y="890" font-size="12.5" fill="#334155">① 对象：DELMAN / EVA / LED / DINM 编辑防御全家族（首套统一误伤基准）</text>
+  <text x="90" y="908" font-size="12.5" fill="#334155">② 套件：XSTest + 良性敏感 query 按语境分层（新闻 / 比喻 / 医学 / 安全研究）</text>
+  <text x="90" y="926" font-size="12.5" fill="#334155">③ 产出：从未被报告过的过拒绝率，按语境类型分列；VLM 侧用新闻图片场景</text>
+  <text x="90" y="944" font-size="12.5" fill="#64748b">定位：vs When LLM Defenses Backfire(2607.24392)——他们审通用 trade-off，我们审编辑家族 + 机制级分层</text>
+
+  <line x1="600" y1="970" x2="600" y2="1018" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="618" y="1000" font-size="12" fill="#64748b">若误伤 ≈ 0：给 DELMAN 补正面证据，P3 只做轻量改进</text>
+
+  <!-- P3 -->
+  <rect x="70" y="1020" width="1060" height="150" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="90" y="1048" font-size="17" font-weight="bold" fill="#14532d">P3 · 改进：语境感知 key（W13–W16）｜第六章（收缩版）</text>
+  <text x="90" y="1070" font-size="12.5" fill="#334155">主贡献：双语境采样造 key——有害语境 + 良性语境各采一组，两组指纹可分 → 触发器看语境行事</text>
+  <text x="90" y="1088" font-size="12.5" fill="#334155">依据：EVA 的 PCA 分析已证明有害 key 自聚成簇，可分性信号存在（pilot 里再坐实）</text>
+  <text x="90" y="1106" font-size="12.5" fill="#334155">副消融：良性 key 刹车（良性语境指纹映射到"不动作"value）</text>
+  <text x="90" y="1124" font-size="12.5" fill="#64748b">已让出：AlphaSteer(2506.07022, ICLR26) / NullSteer(2603.22094) / AlphaEdit 零空间线 → 只进 related work</text>
+  <text x="90" y="1142" font-size="12.5" fill="#64748b">同一套双语境数据同时喂两条，互相印证不另花时间</text>
+
+  <line x1="600" y1="1170" x2="600" y2="1218" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- 验收 -->
+  <rect x="70" y="1220" width="1060" height="110" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+  <text x="90" y="1248" font-size="17" font-weight="bold" fill="#0c4a6e">验收闭环｜用 P1 攻击套件 + P2 误伤套件 反测改进后的模型</text>
+  <text x="90" y="1270" font-size="12.5" fill="#334155">三项全过才算成功：① P1 攻击挡得住（ASR 不回升）② P2 误伤不升（分层过拒绝率不涨）</text>
+  <text x="90" y="1288" font-size="12.5" fill="#334155">③ utility 不掉（MT-Bench / MM-Vet-v2 持平原模型）</text>
+  <text x="90" y="1306" font-size="12.5" fill="#64748b">这一步把"攻击—诊断—改进—验收"拧成闭环，是与点子拼盘的本质区别</text>
+
+  <line x1="300" y1="1330" x2="240" y2="1388" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="600" y1="1330" x2="600" y2="1388" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="900" y1="1330" x2="950" y2="1388" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- 三出口 -->
+  <rect x="70" y="1390" width="330" height="115" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="85" y="1416" font-size="14" font-weight="bold" fill="#1e40af">出口 B（主）· 完整论文</text>
+  <text x="85" y="1438" font-size="12.5" fill="#334155">攻击 + 归因 + 审计 + 改进闭环</text>
+  <text x="85" y="1456" font-size="12.5" fill="#334155">主打 Stronger 维度（稳健性研究）</text>
+  <text x="85" y="1474" font-size="12.5" fill="#334155">目标：安全四大 / NLP 主会</text>
+  <text x="85" y="1492" font-size="12.5" fill="#64748b">完整版周期 4–5 个月</text>
+
+  <rect x="435" y="1390" width="330" height="115" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+  <text x="450" y="1416" font-size="14" font-weight="bold" fill="#334155">出口 C（兜底）· 砍版投稿</text>
+  <text x="450" y="1438" font-size="12.5" fill="#334155">P1 + P2 + 归因独立成文</text>
+  <text x="450" y="1456" font-size="12.5" fill="#334155">P3 滑期论文照样成立</text>
+  <text x="450" y="1474" font-size="12.5" fill="#334155">周期 2.5–3 个月</text>
+  <text x="450" y="1492" font-size="12.5" fill="#64748b">W12 结束即到达可投稿状态</text>
+
+  <rect x="790" y="1390" width="330" height="115" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+  <text x="805" y="1416" font-size="14" font-weight="bold" fill="#475569">出口 D · 负结果短文</text>
+  <text x="805" y="1438" font-size="12.5" fill="#334155">仅当：攻击全败 + 误伤 ≈ 0</text>
+  <text x="805" y="1456" font-size="12.5" fill="#334155">超作者强度的独立审计 + 稳的机理</text>
+  <text x="805" y="1474" font-size="12.5" fill="#334155">workshop / 二档会议</text>
+  <text x="805" y="1492" font-size="12.5" fill="#64748b">买保险用，不是预期收成</text>
+
+  <!-- 时间轴 -->
+  <text x="70" y="1560" font-size="16" font-weight="bold" fill="#0f172a">里程碑时间轴（2026-10 启动）</text>
+  <line x1="100" y1="1610" x2="1100" y2="1610" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="95" y="1578" width="110" height="14" rx="4" fill="#7c3aed"/>
+  <rect x="325" y="1578" width="110" height="14" rx="4" fill="#dc2626"/>
+  <rect x="575" y="1578" width="110" height="14" rx="4" fill="#ca8a04"/>
+  <rect x="825" y="1578" width="110" height="14" rx="4" fill="#16a34a"/>
+  <rect x="1030" y="1578" width="90" height="14" rx="4" fill="#2563eb"/>
+  <circle cx="150" cy="1610" r="6" fill="#7c3aed"/>
+  <circle cx="380" cy="1610" r="6" fill="#dc2626"/>
+  <circle cx="630" cy="1610" r="6" fill="#ca8a04"/>
+  <circle cx="880" cy="1610" r="6" fill="#16a34a"/>
+  <circle cx="1080" cy="1610" r="6" fill="#2563eb"/>
+  <text x="150" y="1640" font-size="12.5" fill="#334155" text-anchor="middle">W1–2 · P0 Pilot</text>
+  <text x="150" y="1658" font-size="12" fill="#64748b" text-anchor="middle">10 月中</text>
+  <text x="150" y="1674" font-size="12" fill="#64748b" text-anchor="middle">Gate G0 止损点</text>
+  <text x="380" y="1640" font-size="12.5" fill="#334155" text-anchor="middle">W3–8 · P1 攻击</text>
+  <text x="380" y="1658" font-size="12" fill="#64748b" text-anchor="middle">10 月底–11 月</text>
+  <text x="380" y="1674" font-size="12" fill="#64748b" text-anchor="middle">M1：武器库成型</text>
+  <text x="630" y="1640" font-size="12.5" fill="#334155" text-anchor="middle">W9–12 · P2 审计</text>
+  <text x="630" y="1658" font-size="12" fill="#64748b" text-anchor="middle">12 月上–中</text>
+  <text x="630" y="1674" font-size="12" fill="#64748b" text-anchor="middle">M2：砍版可投</text>
+  <text x="880" y="1640" font-size="12.5" fill="#334155" text-anchor="middle">W13–16 · P3 改进</text>
+  <text x="880" y="1658" font-size="12" fill="#64748b" text-anchor="middle">12 月下–1 月上</text>
+  <text x="880" y="1674" font-size="12" fill="#64748b" text-anchor="middle">M3：闭环验收</text>
+  <text x="1080" y="1640" font-size="12.5" fill="#334155" text-anchor="middle">W17 起 · 写作</text>
+  <text x="1080" y="1658" font-size="12" fill="#64748b" text-anchor="middle">2027-01 起</text>
+  <text x="1080" y="1674" font-size="12" fill="#64748b" text-anchor="middle">M4：投稿</text>
+
+  <!-- 风险 -->
+  <rect x="70" y="1710" width="1060" height="52" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="90" y="1732" font-size="12.5" fill="#334155">⚠ 风险：原作者团队一年内 DELMAN→EVA 补掉大半 limitation 清单，Video-LLM 大概率是他们的下一作——窗口期有限，尽早启动。</text>
+  <text x="90" y="1750" font-size="12.5" fill="#64748b">⚠ 投稿前再扫一轮 arXiv：NeurIPS 2024 那篇"over-refusal 审计"未证实、SAME(ACL26) 未找到——related work 引用以本文档已核实清单为准。</text>
+</svg>
