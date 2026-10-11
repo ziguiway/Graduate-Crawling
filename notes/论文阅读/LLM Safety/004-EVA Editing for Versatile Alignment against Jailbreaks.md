@@ -13,7 +13,7 @@ tags:
 # EVA: Editing for Versatile Alignment against Jailbreaks
 
 - 作者 / 年份 / 会议：Yi Wang, Wenjie Wang*（上科大）、Zhan Qin（浙大）、Minlie Huang（清华）等 / 2026-05 arXiv（IEEE 格式，cs.CR）
-- PDF：[[../../../papers/mllm-safety/EVA_2605.14750.pdf]]
+- PDF：[[../../../papers/llm-safety/mllm-safety/EVA_2605.14750.pdf]]
 - 代码：https://github.com/wangline/EVA
 - 相关：[[002-DELMAN Dynamic Defense Against LLM Jailbreaking with Model Editing]]——**同一作者的期刊扩展版**：DELMAN(LLM-only) + 视觉模态 = EVA
 
@@ -51,7 +51,7 @@ tags:
 
 ## 框架图
 
-![[../../../papers/mllm-safety/EVA_2605.14750.pdf#page=5]]
+![[../../../papers/llm-safety/mllm-safety/EVA_2605.14750.pdf#page=5]]
 
 Figure 2：六步流程（抽 t → 造变体 → attention 选图像 token → 算 k → 优化 v* → 改 W_down）。
 

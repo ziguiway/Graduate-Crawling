@@ -8,7 +8,7 @@ tags:
 # Visual Instruction Tuning (LLaVA)
 
 - 作者 / 年份 / 会议：Haotian Liu 等（UW-Madison / Microsoft Research / Columbia）· NeurIPS 2023
-- PDF：[[../../../papers/mllm-safety/01_LLaVA_2304.08485.pdf]]
+- PDF：[[../../../papers/llm-safety/mllm-safety/01_LLaVA_2304.08485.pdf]]
 - 代码：https://github.com/LLaVA-VL/LLaVA
 - **定位：不是安全论文**，是后续 MLLM 安全研究最常用的底座模型（攻击靶子）
 

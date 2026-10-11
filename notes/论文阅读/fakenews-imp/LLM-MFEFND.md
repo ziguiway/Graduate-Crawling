@@ -12,7 +12,7 @@ tags:
 - PDF：[[Multimodal fusion with LLM content via hierarchical progressive transformer for explainable fake news detection.pdf]]
 - 代码：[li1608335419/LLM-MFEFND](https://github.com/li1608335419/LLM-MFEFND)（含自建 LLM 背景/评论数据集，分量最足）
 - 精读稿：[[paper|LLM-MFEFND reader/paper.md]]（全文中英对照 + 41 公式 + 图表）；Paper Card：`/tmp/paper15-card/paper-card.md`（临时）
-- 定位：[[ARG]]（#21 母论文）的多模态直系后代；索引 [[00-索引]] #15；与 [[LFND-AB]]（#11）同属"ARG 家族"
+- 定位：[[ARG]]（#21 母论文）的多模态直系后代；索引 [[../../../papers/llm-safety/mllm-safety/00-索引]] #15；与 [[LFND-AB]]（#11）同属"ARG 家族"
 
 ## 一句话概括
 
