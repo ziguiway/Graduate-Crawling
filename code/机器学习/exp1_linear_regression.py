@@ -23,10 +23,9 @@ plt.ion()
 
 for iteration in range(n_iterations):
     gradients = 1/m * X_b.T.dot(X_b.dot(theta)-Y) #计算梯度，注意为向量计算
-    print(gradients)
-    print(f'当前w和b:{theta[0],theta[1]}')
     theta = theta - eta * gradients #更新参数
-    loss = np.mean((X_b.dot(theta)-Y)**2) #均方误差 MSE = 1/m * Σ(ŷi-yi)²
+    #② 打印每一轮参数优化后的损失（均方误差 MSE = 1/m * Σ(ŷi-yi)²）
+    loss = np.mean((X_b.dot(theta)-Y)**2)
     print(f'第{iteration+1}轮迭代后的损失MSE: {loss:.4f}')
     X_new=np.array([[0],[1]])
     X_new_b=np.c_[np.ones((2,1)),X_new]
