@@ -14,8 +14,8 @@ plt.show()
 
 #这里采用梯度下降方法学习参数
 X_b = np.c_[np.ones((100,1)),X] #把参数b吸纳到向量X中，得到向量X_b=[1,X]
-eta=1.55 #初始化学习率
-n_iterations=50 #迭代次数
+eta=1 #初始化学习率
+n_iterations=100 #迭代次数
 m=100 #样本个数
 theta=np.random.randn(2,1) #随机初始化参数b,w
 plt.figure()
