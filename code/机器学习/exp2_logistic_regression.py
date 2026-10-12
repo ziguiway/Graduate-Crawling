@@ -32,7 +32,7 @@ def gradAscent(dataMatIn, classLabels):
     m,n = shape(dataMatrix)
     alpha = 0.001 #学习率
     maxCycles = 50
-    weights = ones((n,1))
+    weights = ones((n,1))   
     for k in range(maxCycles):              #heavy on matrix operations
         h = sigmoid(dataMatrix*weights)     #注意为矩阵相乘，对数几率输出
         error = (labelMat - h)              #向量相减
