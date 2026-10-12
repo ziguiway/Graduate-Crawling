@@ -9,10 +9,13 @@ Logistic Regression Working Module
 
 from numpy import *
 
+#兼容 NumPy 2.x：np.mat 别名已移除，np.matrix 仍在，补回别名
+mat = matrix
+
 def loadDataSet():
     dataMat = []
     labelMat = []
-    fr = open('testSet.txt')
+    fr = open('exp2_SampleData.txt')
     for line in fr.readlines():
         lineArr = line.strip().split()
         dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])])
