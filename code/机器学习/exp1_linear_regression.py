@@ -18,6 +18,7 @@ eta=1 #初始化学习率
 n_iterations=100 #迭代次数
 m=100 #样本个数
 theta=np.random.randn(2,1) #随机初始化参数b,w
+losses=[] #记录每一轮优化后的损失，用于绘制损失下降曲线
 plt.figure()
 plt.ion()
 
@@ -27,6 +28,7 @@ for iteration in range(n_iterations):
     #② 打印每一轮参数优化后的损失（均方误差 MSE = 1/m * Σ(ŷi-yi)²）
     loss = np.mean((X_b.dot(theta)-Y)**2)
     print(f'第{iteration+1}轮迭代后的损失MSE: {loss:.4f}')
+    losses.append(loss)
     X_new=np.array([[0],[1]])
     X_new_b=np.c_[np.ones((2,1)),X_new]
     Y_predict=X_new_b.dot(theta)
@@ -46,4 +48,15 @@ plt.plot(X_new, Y_predict, "b*")
 plt.ioff()
 plt.show()
 print(f"学习到的最优参数为：w={theta[0]}和b={theta[1]}")
+
+#③ 绘制MSE损失下降折线图
+plt.figure()
+plt.plot(range(1,n_iterations+1),losses,"g-o",markersize=3,label='MSE')
+plt.xlabel('iteration')
+plt.ylabel('MSE')
+plt.title('MSE Loss Curve of Gradient Descent')
+plt.grid(True,alpha=0.3)
+plt.legend()
+plt.savefig('exp1_loss_curve.png',dpi=150) #保存损失曲线图
+plt.show()
 
