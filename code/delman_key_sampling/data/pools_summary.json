@@ -1,0 +1,20 @@
+{
+ "n_subjects": 177,
+ "stype_dist": {
+  "noun": 128,
+  "verb": 48,
+  "sentence": 1
+ },
+ "n_harmful": 200,
+ "n_benign": 1009,
+ "benign_per_subject": {
+  "min": 5,
+  "max": 6
+ },
+ "benign_category_dist": {
+  "B1_news": 354,
+  "B2_metaphor": 124,
+  "B3_education": 354,
+  "B4_defense": 177
+ }
+}
