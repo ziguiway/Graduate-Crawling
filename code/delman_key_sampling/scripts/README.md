@@ -1,6 +1,6 @@
 # delman_key_sampling — 第一步"采样造 key"全套脚本
 
-对齐 [[notes/论文阅读/LLM Safety/008-第一步-采样造key方案.md]]。
+对齐 [[../../../notes/论文阅读/LLM Safety/模型编辑/008-第一步-采样造key方案]]。
 把 DELMAN 的中性句 k\* 换成双语境 key：**k_edit = k_H − α·(k_B − k\*)**。
 
 ## 文件结构
