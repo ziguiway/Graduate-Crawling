@@ -16,7 +16,7 @@ tags:
 - 作者 / 年份 / 会议：Wei Zhao, Zhe Li, Peixin Zhang, Jun Sun（Singapore Management University）/ 2026-08 arXiv 2608.14392；未见会议信息
 - PDF：[[../../../../papers/llm-safety/模型编辑防御/TripWire_2608.14392.pdf]]
 - 代码：https://anonymous.4open.science/r/Tripwire-65C4（匿名仓库）
-- 相关：[[002-DELMAN Dynamic Defense Against LLM Jailbreaking with Model Editing]]（同赛道参数编辑防御）、[[009-撞车调研与论文结构]]（本文在我们调研里的定位）
+- 相关：[[002-DELMAN Dynamic Defense Against LLM Jailbreaking with Model Editing]]（同赛道参数编辑防御）、[[想法/009-撞车调研与论文结构]]（本文在我们调研里的定位）
 
 ## 一句话概括
 
@@ -94,7 +94,7 @@ large：7–8B 为 top-2500，32B 为 top-5000；**粗体**是 TripWire。
 - **vs TraceRouter**：最接近的神经元级防御。TraceRouter 定位的是**生成有害内容**的神经元，做擦除/反转；TripWire 定位的是**检测有害请求 + 触发拒绝**的神经元，做钳制。两者对象不同：一个是“别说出有害内容”，一个是“看到有害输入就拒绝”。推理形态下 TripWire 在 ASR 和 MT-Bench 上都优于 TraceRouter，是全文最干净的对比；但 TraceRouter 的过拒 2.5%–7.5% 与 TripWire 推理形态 2.5%–3.8% 接近，优势没有 ASR 那么大。
 - **vs RepE / 激活引导**：RepE 用平均表征差做 steering，噪声大、过拒最高 65%；TripWire 的 clamp 也是一种激活干预，但粒度到单个神经元、目标值是 harmful-conditional mean，且用统计漏斗选点——可以看作“RepE 的神经元级、认证版”。
 - **vs Circuit Breaker / 其他防御**：论文 Related Work 提到 Circuit Breaker（子模块级表征干预），但实验没比；“among all defenses” 的说法因此偏宽。
-- **vs 我们的项目（[[007-编辑防御攻防完整idea]] / [[009-撞车调研与论文结构]]）**：TripWire 是 009 里的“同行冤家”——审计对象、对照组、弹药库。它骂 DELMAN/EVA “always-on 扰良性”的原话，正好被它自己编辑形态 31.3% 的过拒反噬；它的推理形态要挂检测器，零开销卖点也没了。它没做归因、没修 DELMAN 这族锁，也没测 adaptive attack。但它的**认证漏斗**可以搬：硬负例集（含词良性 prompts）+ FDR 联合校正 + 认证支撑集联合解，正好对应 009 的可移植清单。
+- **vs 我们的项目（[[想法/007-编辑防御攻防完整idea]] / [[想法/009-撞车调研与论文结构]]）**：TripWire 是 009 里的“同行冤家”——审计对象、对照组、弹药库。它骂 DELMAN/EVA “always-on 扰良性”的原话，正好被它自己编辑形态 31.3% 的过拒反噬；它的推理形态要挂检测器，零开销卖点也没了。它没做归因、没修 DELMAN 这族锁，也没测 adaptive attack。但它的**认证漏斗**可以搬：硬负例集（含词良性 prompts）+ FDR 联合校正 + 认证支撑集联合解，正好对应 009 的可移植清单。
 
 ## 论文存在的问题与下一步研究工作
 
