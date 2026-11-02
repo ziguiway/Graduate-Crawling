@@ -1,0 +1,8 @@
+|项目|底座／规模|原生图片输入|已发布决策权重|微调支持|对你做仇恨 meme／刻板印象检测的价值|
+|---|---|---|---|---|---|
+|**[Kev](https://github.com/jaredpalmer/kev)**|Qwen 系列，0.8B／4B／9B／27B|**当前未接入**|有|提供训练器，支持继续微调|适合作为“视觉描述＋文本决策”的基线；直接看图需要改造|
+|**[imajev](https://github.com/mohit67890/imajev)**|Qwen3.5，2B／4B／9B|**支持，多图**|[已发布](https://huggingface.co/mohit67890/imajev-4b)，含 adapter、决策头和校准文件|有训练代码|适合试用现成图文决策模型，具有 `unknown` 弃答机制|
+|**[mini-jev-multimodal](https://github.com/agarwalastitwa027-svg/mini-jev-multimodal)**|Qwen3-VL-2B-Instruct|**支持，最多 8 图**|[已发布](https://huggingface.co/AstitwaAgarwal/multimodal-jev)，含 LoRA 和决策头|有训练、评测与校准脚本|**适合低成本微调入门**；作者报告在 8GB GPU 上训练|
+|**[JevAny](https://github.com/SimpleJev/JevAny)**|支持多种底座，包括 Qwen、Gemma 等|**支持图片、视频路径**|有；已发布 adapter 主要在文本决策数据上训练|有训练框架和多模态数据接口|适合搭建统一实验框架；需区分“支持视觉输入”和“经过视觉专项训练”|
+|**[OpenVisualJev](https://github.com/jin-s13/OpenVisualJev)**|Qwen3-VL-4B|**支持**|**checkpoint 尚待发布**|有自定义数据训练说明|适合研究动态候选评分、选项顺序鲁棒性；当前需要自行训练|
+|**[decider](https://github.com/Mapika/decider)**|Qwen／Gemma；图文版本包括 2B、4B、12B、31B|**新版支持**|[4B v3 等已发布](https://huggingface.co/Mapika/decider-4b)|有训练代码；最新图文 LoRA 配方与公开脚本存在差异|**适合作为任务基线**；4B v3 已训练过 HatefulMemes，默认是非概率需要重新校准|
